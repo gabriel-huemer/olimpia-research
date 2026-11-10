@@ -1,0 +1,4 @@
+questions=73 sections=10 cities=5571
+Spreadsheet options not offered:
+  antecedencia: not offered in the app (prototype/ambiguous): ['Outro']
+  motivos: not offered in the app (prototype/ambiguous): ['Evento', 'Trabalho', 'Distância']

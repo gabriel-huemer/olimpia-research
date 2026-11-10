@@ -1,0 +1,2454 @@
+{
+ "version": 1,
+ "source": "PLANILHA TABULAÇÃO PESQUISA DEMANDA TURISTICA 2026 - Cópia (1).xlsx",
+ "sections": [
+  {
+   "id": 1,
+   "title": "Origem do turista",
+   "subtitle": "De onde o entrevistado vem.",
+   "reviewTitle": "Origem"
+  },
+  {
+   "id": 2,
+   "title": "Estadia",
+   "subtitle": "Período da visita a Olímpia.",
+   "reviewTitle": "Estadia"
+  },
+  {
+   "id": 3,
+   "title": "Decisão da viagem",
+   "subtitle": "Como e por que escolheu Olímpia.",
+   "reviewTitle": "Decisão da viagem"
+  },
+  {
+   "id": 4,
+   "title": "Transporte",
+   "subtitle": "Como chegou a Olímpia.",
+   "reviewTitle": "Transporte"
+  },
+  {
+   "id": 5,
+   "title": "Grupo de viagem",
+   "subtitle": "Com quem o entrevistado está.",
+   "reviewTitle": "Grupo de viagem"
+  },
+  {
+   "id": 6,
+   "title": "Hospedagem e refeições",
+   "subtitle": "Onde ficou e onde come.",
+   "reviewTitle": "Hospedagem e refeições"
+  },
+  {
+   "id": 7,
+   "title": "Avaliação dos serviços",
+   "subtitle": "{count} itens · toque em uma opção por item.",
+   "reviewTitle": "Avaliação de serviços",
+   "layout": "ratings"
+  },
+  {
+   "id": 8,
+   "title": "Avaliação dos atrativos",
+   "subtitle": "{count} atrativos · {answered} avaliados",
+   "reviewTitle": "Avaliação de atrativos",
+   "layout": "ratings",
+   "searchable": true,
+   "searchPlaceholder": "Buscar atrativo…",
+   "bulkValue": "Não utilizei"
+  },
+  {
+   "id": 9,
+   "title": "Satisfação",
+   "subtitle": "Experiência geral com o destino.",
+   "reviewTitle": "Satisfação"
+  },
+  {
+   "id": 10,
+   "title": "Perfil do entrevistado",
+   "subtitle": "Últimas perguntas.",
+   "reviewTitle": "Perfil"
+  }
+ ],
+ "questions": [
+  {
+   "key": "estado",
+   "section": 1,
+   "type": "state",
+   "label": "Em qual Estado reside?",
+   "exteriorValue": "Residente Exterior",
+   "exteriorLabel": "Reside no exterior",
+   "xlsxColumn": 3,
+   "sourceText": "Em qual Estado reside?",
+   "options": [
+    {
+     "value": "Acre (AC)",
+     "label": "Acre (AC)",
+     "uf": "AC"
+    },
+    {
+     "value": "Alagoas (AL)",
+     "label": "Alagoas (AL)",
+     "uf": "AL"
+    },
+    {
+     "value": "Amapá (AP)",
+     "label": "Amapá (AP)",
+     "uf": "AP"
+    },
+    {
+     "value": "Amazonas (AM)",
+     "label": "Amazonas (AM)",
+     "uf": "AM"
+    },
+    {
+     "value": "Bahia (BA)",
+     "label": "Bahia (BA)",
+     "uf": "BA"
+    },
+    {
+     "value": "Ceará (CE)",
+     "label": "Ceará (CE)",
+     "uf": "CE"
+    },
+    {
+     "value": "Distrito Federal (DF)",
+     "label": "Distrito Federal (DF)",
+     "uf": "DF"
+    },
+    {
+     "value": "Espírito Santo (ES)",
+     "label": "Espírito Santo (ES)",
+     "uf": "ES"
+    },
+    {
+     "value": "Goiás (GO)",
+     "label": "Goiás (GO)",
+     "uf": "GO"
+    },
+    {
+     "value": "Maranhão (MA)",
+     "label": "Maranhão (MA)",
+     "uf": "MA"
+    },
+    {
+     "value": "Mato Grosso (MT)",
+     "label": "Mato Grosso (MT)",
+     "uf": "MT"
+    },
+    {
+     "value": "Mato Grosso do Sul (MS)",
+     "label": "Mato Grosso do Sul (MS)",
+     "uf": "MS"
+    },
+    {
+     "value": "Minas Gerais (MG)",
+     "label": "Minas Gerais (MG)",
+     "uf": "MG"
+    },
+    {
+     "value": "Pará (PA)",
+     "label": "Pará (PA)",
+     "uf": "PA"
+    },
+    {
+     "value": "Paraíba ((PB)",
+     "label": "Paraíba (PB)",
+     "uf": "PB"
+    },
+    {
+     "value": "Paraná (PR)",
+     "label": "Paraná (PR)",
+     "uf": "PR"
+    },
+    {
+     "value": "Pernambuco (PE)",
+     "label": "Pernambuco (PE)",
+     "uf": "PE"
+    },
+    {
+     "value": "Piauí (PI)",
+     "label": "Piauí (PI)",
+     "uf": "PI"
+    },
+    {
+     "value": "Rio de Janeiro (RJ)",
+     "label": "Rio de Janeiro (RJ)",
+     "uf": "RJ"
+    },
+    {
+     "value": "Rio Grande do Norte (RN)",
+     "label": "Rio Grande do Norte (RN)",
+     "uf": "RN"
+    },
+    {
+     "value": "Rio Grande do Sul (RS)",
+     "label": "Rio Grande do Sul (RS)",
+     "uf": "RS"
+    },
+    {
+     "value": "Rondônia (RO)",
+     "label": "Rondônia (RO)",
+     "uf": "RO"
+    },
+    {
+     "value": "Roraima (RR)",
+     "label": "Roraima (RR)",
+     "uf": "RR"
+    },
+    {
+     "value": "Santa Catarina (SC)",
+     "label": "Santa Catarina (SC)",
+     "uf": "SC"
+    },
+    {
+     "value": "São Paulo (SP)",
+     "label": "São Paulo (SP)",
+     "uf": "SP"
+    },
+    {
+     "value": "Sergipe (SE)",
+     "label": "Sergipe (SE)",
+     "uf": "SE"
+    },
+    {
+     "value": "Tocantins (TO)",
+     "label": "Tocantins (TO)",
+     "uf": "TO"
+    }
+   ],
+   "position": 1
+  },
+  {
+   "key": "cidade",
+   "section": 1,
+   "type": "city",
+   "label": "Em qual cidade reside?",
+   "placeholder": "Digite a cidade…",
+   "dependsOn": {
+    "key": "estado",
+    "notValues": [
+     "Residente Exterior"
+    ]
+   },
+   "footnote": "Lista de cidades do IBGE embutida no app: funciona sem internet.",
+   "xlsxColumn": 4,
+   "sourceText": "Em qual cidade reside?",
+   "position": 2
+  },
+  {
+   "key": "data_chegada",
+   "section": 2,
+   "type": "date",
+   "label": "Data de chegada",
+   "labelStyle": "caps",
+   "card": "estadia",
+   "xlsxColumn": 5,
+   "sourceText": "Data de chegada:",
+   "position": 1
+  },
+  {
+   "key": "data_partida",
+   "section": 2,
+   "type": "date",
+   "label": "Data de partida",
+   "labelStyle": "caps",
+   "card": "estadia",
+   "xlsxColumn": 6,
+   "sourceText": "Data de partida:",
+   "position": 2
+  },
+  {
+   "key": "pernoites",
+   "section": 2,
+   "type": "nights",
+   "label": "Pernoites (calculado automaticamente)",
+   "labelStyle": "row",
+   "card": "estadia",
+   "dayUseLabel": "Day use (não pernoitou)",
+   "suspectMax": 30,
+   "suspectTitle": "Estadia fora do esperado",
+   "suspectMessage": "{value} pernoites parece incorreto. Confirme com o entrevistado.",
+   "reviewTag": "Pernoites: {value}",
+   "xlsxColumn": 7,
+   "sourceText": "Pernoites",
+   "position": 3
+  },
+  {
+   "key": "antecedencia",
+   "section": 2,
+   "type": "single",
+   "display": "radio",
+   "label": "Com quanto tempo de antecedência decidiu vir para Olímpia?",
+   "xlsxColumn": 9,
+   "sourceText": "Com quanto tempo de antecedência você decidiu vir para Olímpia?",
+   "options": [
+    {
+     "value": "No dia da viagem (Decisão de última hora/impulso)",
+     "label": "No dia da viagem"
+    },
+    {
+     "value": "De 1 a 7 dias",
+     "label": "De 1 a 7 dias"
+    },
+    {
+     "value": "De 8 a 15 dias",
+     "label": "De 8 a 15 dias"
+    },
+    {
+     "value": "De 16 a 30 dias",
+     "label": "De 16 a 30 dias"
+    },
+    {
+     "value": "De 1 a 3 meses",
+     "label": "De 1 a 3 meses"
+    },
+    {
+     "value": "De 4 a 6 meses",
+     "label": "De 4 a 6 meses"
+    },
+    {
+     "value": "Mais de 6 meses",
+     "label": "Mais de 6 meses"
+    },
+    {
+     "value": "Não sei / Não me recordo",
+     "label": "Não sei / Não me recordo"
+    }
+   ],
+   "position": 4
+  },
+  {
+   "key": "conhecimento",
+   "section": 3,
+   "type": "single",
+   "display": "chips",
+   "label": "Como tomou conhecimento sobre Olímpia?",
+   "xlsxColumn": 8,
+   "sourceText": "Como você tomou conhecimento sobre a cidade de Olímpia?",
+   "options": [
+    {
+     "value": "Agência de Viagem",
+     "label": "Agência de Viagem"
+    },
+    {
+     "value": "Indicação de Amigos/Parentes",
+     "label": "Indicação de amigos/parentes"
+    },
+    {
+     "value": "Influenciadores digitais",
+     "label": "Influenciadores digitais"
+    },
+    {
+     "value": "Mora próximo",
+     "label": "Mora próximo"
+    },
+    {
+     "value": "Redes socias (Facebook, Instagram e etc.)",
+     "label": "Redes sociais"
+    },
+    {
+     "value": "Sites de busca (Google e etc.)",
+     "label": "Sites de busca"
+    },
+    {
+     "value": "Site de Reserva (Booking, Hoteis.com, Tripadvisor e etc.)",
+     "label": "Site de reserva"
+    },
+    {
+     "value": "TV/rádio",
+     "label": "TV/rádio"
+    },
+    {
+     "value": "Não me recordo, já venho há muito tempo",
+     "label": "Não me recordo"
+    },
+    {
+     "value": "Outro:",
+     "label": "Outro"
+    }
+   ],
+   "position": 1
+  },
+  {
+   "key": "motivos",
+   "section": 3,
+   "type": "multi",
+   "display": "chips",
+   "label": "Principais motivos da viagem",
+   "xlsxColumn": 10,
+   "sourceText": "Qual ou quais foram os principais motivos desta viagem para Olímpia?",
+   "options": [
+    {
+     "value": "Parques (Aquático/Temáticos)",
+     "label": "Parques aquáticos/temáticos"
+    },
+    {
+     "value": "Resort ou Hotelaria",
+     "label": "Resort ou hotelaria"
+    },
+    {
+     "value": "Visita à Familiares/Amigos",
+     "label": "Visita a familiares/amigos"
+    },
+    {
+     "value": "Cultura",
+     "label": "Cultura"
+    },
+    {
+     "value": "Gastronomia",
+     "label": "Gastronomia"
+    },
+    {
+     "value": "Evento/Festival",
+     "label": "Evento/Festival"
+    },
+    {
+     "value": "Negócio/trabalho",
+     "label": "Negócio/trabalho"
+    },
+    {
+     "value": "Descanso",
+     "label": "Descanso"
+    },
+    {
+     "value": "Clima",
+     "label": "Clima"
+    },
+    {
+     "value": "Outro:",
+     "label": "Outro"
+    }
+   ],
+   "position": 2
+  },
+  {
+   "key": "considerou_outro",
+   "section": 3,
+   "type": "single",
+   "display": "chips",
+   "card": "destinos",
+   "label": "Considerou outro destino antes de Olímpia?",
+   "xlsxColumn": 11,
+   "sourceText": "Você considerou viajar para outro destino antes de escolher Olímpia?",
+   "options": [
+    {
+     "value": "Sim",
+     "label": "Sim"
+    },
+    {
+     "value": "Não",
+     "label": "Não"
+    }
+   ],
+   "position": 3
+  },
+  {
+   "key": "destinos",
+   "section": 3,
+   "type": "cityMulti",
+   "label": "Quais destinos?",
+   "labelStyle": "caps",
+   "card": "destinos",
+   "placeholder": "Digite…",
+   "dependsOn": {
+    "key": "considerou_outro",
+    "values": [
+     "Sim"
+    ]
+   },
+   "xlsxColumn": 12,
+   "sourceText": "Se a resposta anterior foi \"SIM\", nos diga qual ou quais foram os destinos que você considerou viajar? (Pular se a resposta anterior for \"NÃO\")",
+   "position": 4
+  },
+  {
+   "key": "transporte",
+   "section": 4,
+   "type": "single",
+   "display": "radio",
+   "label": "Qual meio de transporte utilizado?",
+   "xlsxColumn": 13,
+   "sourceText": "Qual meio de transporte utilizado?",
+   "options": [
+    {
+     "value": "Veículo próprio",
+     "label": "Veículo próprio"
+    },
+    {
+     "value": "Ônibus de linha",
+     "label": "Ônibus de linha"
+    },
+    {
+     "value": "Ônibus/Van de excursão",
+     "label": "Ônibus/Van de excursão"
+    },
+    {
+     "value": "Aéreo",
+     "label": "Aéreo"
+    },
+    {
+     "value": "Veículo alugado",
+     "label": "Veículo alugado"
+    },
+    {
+     "value": "Outro:",
+     "label": "Outro"
+    }
+   ],
+   "position": 1
+  },
+  {
+   "key": "aeroporto",
+   "section": 4,
+   "type": "single",
+   "display": "chips",
+   "label": "Como chegou do aeroporto a Olímpia?",
+   "dependsOn": {
+    "key": "transporte",
+    "values": [
+     "Aéreo"
+    ]
+   },
+   "conditionalNote": true,
+   "xlsxColumn": 14,
+   "sourceText": "Caso respondeu \"Aéreo\", como chegou do aeroporto à Olímpia? (Pular se a resposta anterior for diferente de \"Aéreo\")",
+   "options": [
+    {
+     "value": "Táxi",
+     "label": "Táxi"
+    },
+    {
+     "value": "Aplicativo",
+     "label": "Aplicativo"
+    },
+    {
+     "value": "Ônibus de linha",
+     "label": "Ônibus de linha"
+    },
+    {
+     "value": "Transfer oferecido pelo Meio de Hospedagem",
+     "label": "Transfer da hospedagem"
+    },
+    {
+     "value": "Veículo alugado",
+     "label": "Veículo alugado"
+    },
+    {
+     "value": "Outro",
+     "label": "Outro"
+    }
+   ],
+   "position": 2
+  },
+  {
+   "key": "com_quem",
+   "section": 5,
+   "type": "multi",
+   "display": "chips",
+   "label": "Com quem está viajando?",
+   "hint": "",
+   "xlsxColumn": 15,
+   "sourceText": "Com quem está viajando?",
+   "options": [
+    {
+     "value": "Sozinho(a)",
+     "label": "Sozinho(a)"
+    },
+    {
+     "value": "Família",
+     "label": "Família"
+    },
+    {
+     "value": "Amigos",
+     "label": "Amigos"
+    },
+    {
+     "value": "Noivo(a)/Namorado(a)",
+     "label": "Noivo(a)/Namorado(a)"
+    },
+    {
+     "value": "Colegas de trabalho",
+     "label": "Colegas de trabalho"
+    },
+    {
+     "value": "Excursão",
+     "label": "Excursão"
+    },
+    {
+     "value": "Outro:",
+     "label": "Outro"
+    }
+   ],
+   "position": 1
+  },
+  {
+   "key": "acomp_0_12",
+   "section": 5,
+   "type": "counter",
+   "label": "0 a 12 anos",
+   "labelStyle": "row",
+   "card": "acompanhantes",
+   "cardTitle": "Nº de acompanhantes por faixa etária",
+   "suspectMax": 15,
+   "suspectTitle": "Quantidade fora do esperado",
+   "suspectMessage": "{value} acompanhantes de 0 a 12 anos parece incorreto. Confirme com o entrevistado.",
+   "reviewTag": "Acompanhantes: {value}",
+   "xlsxColumn": 16,
+   "sourceText": "Nº de acompanhantes de 0 a 12 anos:",
+   "position": 2
+  },
+  {
+   "key": "acomp_13_17",
+   "section": 5,
+   "type": "counter",
+   "label": "13 a 17 anos",
+   "labelStyle": "row",
+   "card": "acompanhantes",
+   "cardTitle": "Nº de acompanhantes por faixa etária",
+   "suspectMax": 15,
+   "suspectTitle": "Quantidade fora do esperado",
+   "suspectMessage": "{value} acompanhantes de 13 a 17 anos parece incorreto. Confirme com o entrevistado.",
+   "reviewTag": "Acompanhantes: {value}",
+   "xlsxColumn": 17,
+   "sourceText": "Nº de acompanhantes de 13 a 17 anos:",
+   "position": 3
+  },
+  {
+   "key": "acomp_18_29",
+   "section": 5,
+   "type": "counter",
+   "label": "18 a 29 anos",
+   "labelStyle": "row",
+   "card": "acompanhantes",
+   "cardTitle": "Nº de acompanhantes por faixa etária",
+   "suspectMax": 15,
+   "suspectTitle": "Quantidade fora do esperado",
+   "suspectMessage": "{value} acompanhantes de 18 a 29 anos parece incorreto. Confirme com o entrevistado.",
+   "reviewTag": "Acompanhantes: {value}",
+   "xlsxColumn": 18,
+   "sourceText": "Nº de acompanhantes de 18 a 29 anos:",
+   "position": 4
+  },
+  {
+   "key": "acomp_30_44",
+   "section": 5,
+   "type": "counter",
+   "label": "30 a 44 anos",
+   "labelStyle": "row",
+   "card": "acompanhantes",
+   "cardTitle": "Nº de acompanhantes por faixa etária",
+   "suspectMax": 15,
+   "suspectTitle": "Quantidade fora do esperado",
+   "suspectMessage": "{value} acompanhantes de 30 a 44 anos parece incorreto. Confirme com o entrevistado.",
+   "reviewTag": "Acompanhantes: {value}",
+   "xlsxColumn": 19,
+   "sourceText": "Nº de acompanhantes de 30 a 44 anos:",
+   "position": 5
+  },
+  {
+   "key": "acomp_45_64",
+   "section": 5,
+   "type": "counter",
+   "label": "45 a 64 anos",
+   "labelStyle": "row",
+   "card": "acompanhantes",
+   "cardTitle": "Nº de acompanhantes por faixa etária",
+   "suspectMax": 15,
+   "suspectTitle": "Quantidade fora do esperado",
+   "suspectMessage": "{value} acompanhantes de 45 a 64 anos parece incorreto. Confirme com o entrevistado.",
+   "reviewTag": "Acompanhantes: {value}",
+   "xlsxColumn": 20,
+   "sourceText": "Nº de acompanhantes de 45 a 64 anos:",
+   "position": 6
+  },
+  {
+   "key": "acomp_65_mais",
+   "section": 5,
+   "type": "counter",
+   "label": "Acima de 65 anos",
+   "labelStyle": "row",
+   "card": "acompanhantes",
+   "cardTitle": "Nº de acompanhantes por faixa etária",
+   "suspectMax": 15,
+   "suspectTitle": "Quantidade fora do esperado",
+   "suspectMessage": "{value} acompanhantes de Acima de 65 anos parece incorreto. Confirme com o entrevistado.",
+   "reviewTag": "Acompanhantes: {value}",
+   "xlsxColumn": 21,
+   "sourceText": "Nº de acompanhantes acima de 65 anos:",
+   "position": 7
+  },
+  {
+   "key": "pcd",
+   "section": 5,
+   "type": "single",
+   "display": "chips",
+   "card": "pcd",
+   "label": "No grupo há pessoas com alguma deficiência?",
+   "xlsxColumn": 22,
+   "sourceText": "No seu grupo há pessoas com alguma deficiência?",
+   "options": [
+    {
+     "value": "Sim",
+     "label": "Sim"
+    },
+    {
+     "value": "Não",
+     "label": "Não"
+    }
+   ],
+   "position": 8
+  },
+  {
+   "key": "pcd_quantidade",
+   "section": 5,
+   "type": "counter",
+   "label": "Quantas pessoas",
+   "labelStyle": "row",
+   "card": "pcd",
+   "min": 1,
+   "dependsOn": {
+    "key": "pcd",
+    "values": [
+     "Sim"
+    ]
+   },
+   "xlsxColumn": 23,
+   "sourceText": "Se a resposta anterior for \"SIM\", quantas pessoas possuem alguma deficiência? (Pular se a resposta anterior for \"NÃO\")",
+   "position": 9
+  },
+  {
+   "key": "pcd_tipo",
+   "section": 5,
+   "type": "multi",
+   "display": "chips",
+   "label": "Tipo de deficiência",
+   "labelStyle": "caps",
+   "card": "pcd",
+   "dependsOn": {
+    "key": "pcd",
+    "values": [
+     "Sim"
+    ]
+   },
+   "xlsxColumn": 24,
+   "sourceText": "Qual o tipo de deficiência? (Pular se a resposta anterior for \"NÃO\")",
+   "options": [
+    {
+     "value": "Física",
+     "label": "Física"
+    },
+    {
+     "value": "Visual",
+     "label": "Visual"
+    },
+    {
+     "value": "Auditiva",
+     "label": "Auditiva"
+    },
+    {
+     "value": "Intelectual",
+     "label": "Intelectual"
+    },
+    {
+     "value": "Múltipla",
+     "label": "Múltipla"
+    },
+    {
+     "value": "Outros",
+     "label": "Outros"
+    }
+   ],
+   "position": 10
+  },
+  {
+   "key": "hospedagem",
+   "section": 6,
+   "type": "single",
+   "display": "radio",
+   "label": "Qual meio de hospedagem utilizado?",
+   "xlsxColumn": 25,
+   "sourceText": "Qual meio de hospedagem utilizado?:",
+   "options": [
+    {
+     "value": "Hotel",
+     "label": "Hotel"
+    },
+    {
+     "value": "Pousada",
+     "label": "Pousada"
+    },
+    {
+     "value": "Resort",
+     "label": "Resort"
+    },
+    {
+     "value": "Hotel fazenda",
+     "label": "Hotel fazenda"
+    },
+    {
+     "value": "Hostel",
+     "label": "Hostel"
+    },
+    {
+     "value": "Flat",
+     "label": "Flat"
+    },
+    {
+     "value": "Imóvel alugado / Casa de Temporada / Airbnb",
+     "label": "Imóvel alugado / Airbnb"
+    },
+    {
+     "value": "Casa de Parentes e Amigos",
+     "label": "Casa de parentes e amigos"
+    },
+    {
+     "value": "Day use/não me hospedei",
+     "label": "Day use / não se hospedou"
+    },
+    {
+     "value": "Outros – Imóvel próprio (veraneio), motorhome e camping",
+     "label": "Outros"
+    }
+   ],
+   "position": 1
+  },
+  {
+   "key": "refeicoes",
+   "section": 6,
+   "type": "multi",
+   "display": "chips",
+   "label": "Onde faz / fez as refeições?",
+   "xlsxColumn": 26,
+   "sourceText": "Onde faz / fez as refeições?:",
+   "options": [
+    {
+     "value": "Dentro dos parques aquáticos",
+     "label": "Dentro dos parques"
+    },
+    {
+     "value": "No local onde está hospedado",
+     "label": "No local de hospedagem"
+    },
+    {
+     "value": "Estabelecimentos na cidade",
+     "label": "Estabelecimentos na cidade"
+    },
+    {
+     "value": "Trouxe de casa",
+     "label": "Trouxe de casa"
+    },
+    {
+     "value": "Não Utilizou",
+     "label": "Não utilizou"
+    }
+   ],
+   "position": 2
+  },
+  {
+   "key": "costuma_visitar",
+   "section": 9,
+   "type": "single",
+   "display": "segmented",
+   "labelStyle": "row",
+   "card": "satisfacao",
+   "label": "Costuma visitar Olímpia?",
+   "xlsxColumn": 61,
+   "sourceText": "Costuma visitar Olímpia?:",
+   "options": [
+    {
+     "value": "Já visitei / Já conheço",
+     "label": "Sim",
+     "tone": "positive"
+    },
+    {
+     "value": "1º vez que visita",
+     "label": "Não",
+     "tone": "negative"
+    }
+   ],
+   "position": 1
+  },
+  {
+   "key": "voltaria",
+   "section": 9,
+   "type": "single",
+   "display": "segmented",
+   "labelStyle": "row",
+   "card": "satisfacao",
+   "label": "Voltaria à cidade?",
+   "xlsxColumn": 62,
+   "sourceText": "Voltaria a cidade em outra oportunidade?",
+   "options": [
+    {
+     "value": "Sim",
+     "label": "Sim",
+     "tone": "positive"
+    },
+    {
+     "value": "Não",
+     "label": "Não",
+     "tone": "negative"
+    },
+    {
+     "value": "Talvez",
+     "label": "Talvez",
+     "tone": "warning"
+    }
+   ],
+   "position": 2
+  },
+  {
+   "key": "indicaria",
+   "section": 9,
+   "type": "single",
+   "display": "segmented",
+   "labelStyle": "row",
+   "card": "satisfacao",
+   "label": "Indicaria a cidade?",
+   "xlsxColumn": 63,
+   "sourceText": "Você indicaria a cidade para outras pessoas?",
+   "options": [
+    {
+     "value": "Sim",
+     "label": "Sim",
+     "tone": "positive"
+    },
+    {
+     "value": "Não",
+     "label": "Não",
+     "tone": "negative"
+    },
+    {
+     "value": "Talvez",
+     "label": "Talvez",
+     "tone": "warning"
+    }
+   ],
+   "position": 3
+  },
+  {
+   "key": "expectativa",
+   "section": 9,
+   "type": "single",
+   "display": "segmented",
+   "labelStyle": "row",
+   "card": "satisfacao",
+   "label": "Expectativa atendida?",
+   "xlsxColumn": 64,
+   "sourceText": "Sua expectativa de viagem foi atendida?:",
+   "options": [
+    {
+     "value": "Sim",
+     "label": "Sim",
+     "tone": "positive"
+    },
+    {
+     "value": "Não",
+     "label": "Não",
+     "tone": "negative"
+    },
+    {
+     "value": "Em parte",
+     "label": "Em parte",
+     "tone": "warning"
+    }
+   ],
+   "position": 4
+  },
+  {
+   "key": "nps",
+   "section": 9,
+   "type": "scale",
+   "variant": "nps",
+   "min": 0,
+   "max": 10,
+   "label": "De 0 a 10, qual a probabilidade de recomendar Olímpia?",
+   "minLabel": "Nada provável",
+   "maxLabel": "Muito provável",
+   "xlsxColumn": 65,
+   "sourceText": "Em um escala de 0 a 10 qual a probabilidade de você recomendar o Destino Olímpia a um amigo, colega ou parente?:",
+   "position": 5
+  },
+  {
+   "key": "nota_destino",
+   "section": 9,
+   "type": "scale",
+   "variant": "plain",
+   "min": 0,
+   "max": 10,
+   "label": "De 0 a 10, que nota daria para Olímpia?",
+   "xlsxColumn": 66,
+   "sourceText": "Em um escala de 0 a 10 que nota você daria para o Destino Olímpia?:",
+   "position": 6
+  },
+  {
+   "key": "o_que_falta",
+   "section": 9,
+   "type": "text",
+   "maxLength": 500,
+   "label": "O que falta para Olímpia ser melhor?",
+   "placeholder": "Anote a resposta do entrevistado…",
+   "xlsxColumn": 67,
+   "sourceText": "O que falta para que Olímpia seja melhor ?",
+   "position": 7
+  },
+  {
+   "key": "genero",
+   "section": 10,
+   "type": "single",
+   "display": "chips",
+   "label": "Com qual gênero se identifica?",
+   "xlsxColumn": 68,
+   "sourceText": "Com qual gênero se identifica?",
+   "options": [
+    {
+     "value": "Feminino",
+     "label": "Feminino"
+    },
+    {
+     "value": "Masculino",
+     "label": "Masculino"
+    },
+    {
+     "value": "Outros",
+     "label": "Outro"
+    },
+    {
+     "value": "Prefiro não me identificar",
+     "label": "Prefere não dizer"
+    }
+   ],
+   "position": 1
+  },
+  {
+   "key": "idade",
+   "section": 10,
+   "type": "integer",
+   "label": "Qual a sua idade?",
+   "suffix": "anos",
+   "placeholder": "Idade",
+   "suspectMin": 16,
+   "suspectMax": 100,
+   "suspectTitle": "Idade fora do esperado",
+   "suspectMessage": "{value} anos parece incorreto. Confirme com o entrevistado.",
+   "reviewTag": "Idade: {value}",
+   "xlsxColumn": 69,
+   "sourceText": "Qual a sua Idade",
+   "position": 2
+  },
+  {
+   "key": "estado_civil",
+   "section": 10,
+   "type": "single",
+   "display": "chips",
+   "label": "Estado civil",
+   "xlsxColumn": 70,
+   "sourceText": "Estado Civil",
+   "options": [
+    {
+     "value": "Solteiro (a)",
+     "label": "Solteiro(a)"
+    },
+    {
+     "value": "Casado (a)",
+     "label": "Casado(a)"
+    },
+    {
+     "value": "União Estável",
+     "label": "União estável"
+    },
+    {
+     "value": "Separado (a)",
+     "label": "Separado(a)"
+    },
+    {
+     "value": "Divorciado (a)",
+     "label": "Divorciado(a)"
+    },
+    {
+     "value": "Viúvo (a)",
+     "label": "Viúvo(a)"
+    },
+    {
+     "value": "Outro:",
+     "label": "Outro"
+    }
+   ],
+   "position": 3
+  },
+  {
+   "key": "escolaridade",
+   "section": 10,
+   "type": "single",
+   "display": "chips",
+   "label": "Grau de escolaridade",
+   "xlsxColumn": 71,
+   "sourceText": "Grau de escolaridade",
+   "options": [
+    {
+     "value": "Sem Ensino Formal",
+     "label": "Sem ensino formal"
+    },
+    {
+     "value": "Fundamental",
+     "label": "Fundamental"
+    },
+    {
+     "value": "Médio",
+     "label": "Médio"
+    },
+    {
+     "value": "Superior",
+     "label": "Superior"
+    },
+    {
+     "value": "Pós-graduação",
+     "label": "Pós-graduação"
+    }
+   ],
+   "position": 4
+  },
+  {
+   "key": "ocupacao",
+   "section": 10,
+   "type": "multi",
+   "display": "chips",
+   "label": "Ocupação profissional",
+   "xlsxColumn": 72,
+   "sourceText": "Ocupação profissional",
+   "options": [
+    {
+     "value": "Assalariado registrado",
+     "label": "Assalariado registrado"
+    },
+    {
+     "value": "Autônomo",
+     "label": "Autônomo"
+    },
+    {
+     "value": "Empresário",
+     "label": "Empresário"
+    },
+    {
+     "value": "Funcionário público",
+     "label": "Funcionário público"
+    },
+    {
+     "value": "Aposentado",
+     "label": "Aposentado"
+    },
+    {
+     "value": "Estudante",
+     "label": "Estudante"
+    },
+    {
+     "value": "Estagiário",
+     "label": "Estagiário"
+    },
+    {
+     "value": "Dona de casa",
+     "label": "Dona de casa"
+    },
+    {
+     "value": "Desempregado",
+     "label": "Desempregado"
+    },
+    {
+     "value": "Outro",
+     "label": "Outro"
+    }
+   ],
+   "position": 5
+  },
+  {
+   "key": "renda",
+   "section": 10,
+   "type": "single",
+   "display": "radio",
+   "label": "Qual a sua renda familiar?",
+   "xlsxColumn": 73,
+   "sourceText": "Qual a sua renda familiar:",
+   "options": [
+    {
+     "value": "Até 2 Salários Mínimos (até R$ 3.242,00)",
+     "label": "Até 2 salários mínimos (até R$ 3.242)"
+    },
+    {
+     "value": "De 2 a 4 Salários Mínimos (R$ 3.242,01 a R$ 6.484,00)",
+     "label": "De 2 a 4 SM (R$ 3.242 a R$ 6.484)"
+    },
+    {
+     "value": "De 4 a 10 Salários Mínimos (R$ 6.484,01 a R$ 16.210,00)",
+     "label": "De 4 a 10 SM (R$ 6.484 a R$ 16.210)"
+    },
+    {
+     "value": "De 10 a 20 Salários Mínimos (R$ 16.210,01 a R$ 32.420,00)",
+     "label": "De 10 a 20 SM (R$ 16.210 a R$ 32.420)"
+    },
+    {
+     "value": "Mais de 20 Salários Mínimos (Acima de R$ 32.420,00)",
+     "label": "Mais de 20 SM (acima de R$ 32.420)"
+    },
+    {
+     "value": "Prefiro não responder / Não sei",
+     "label": "Prefiro não responder / Não sei"
+    }
+   ],
+   "position": 6
+  },
+  {
+   "key": "pessoas_renda",
+   "section": 10,
+   "type": "counter",
+   "label": "Pessoas",
+   "labelStyle": "row",
+   "min": 1,
+   "card": "pessoas_renda",
+   "cardTitle": "Quantas pessoas estão inclusas nessa renda, incluindo você?",
+   "suspectMax": 15,
+   "suspectTitle": "Quantidade fora do esperado",
+   "suspectMessage": "{value} pessoas na renda parece incorreto. Confirme com o entrevistado.",
+   "reviewTag": "Pessoas: {value}",
+   "xlsxColumn": 74,
+   "sourceText": "Quantas pessoas estão inclusas nessa renda familiar, incluindo você?",
+   "position": 7
+  },
+  {
+   "key": "gasto_diario",
+   "section": 10,
+   "type": "currency",
+   "label": "Gasto médio diário em Olímpia",
+   "hint": "Não incluir transporte entre cidades",
+   "placeholder": "0,00",
+   "suspectMax": 5000,
+   "suspectTitle": "Gasto fora do esperado",
+   "suspectMessage": "R$ {value} por dia parece incorreto. Confirme com o entrevistado.",
+   "reviewTag": "Gasto: R$ {value}",
+   "xlsxColumn": 75,
+   "sourceText": "Qual o seu gasto médio diário em Olímpia?: **Não incluir gastos com transporte/viagem entre cidades.",
+   "position": 8
+  },
+  {
+   "key": "servico_27",
+   "section": 7,
+   "type": "rating",
+   "label": "Hospedagem",
+   "xlsxColumn": 27,
+   "sourceText": "Avalie os serviços da Estância Turística de Olímpia: [Hospedagem]",
+   "options": [
+    {
+     "value": "Ótimo",
+     "label": "Ótimo",
+     "tone": "positive"
+    },
+    {
+     "value": "Regular",
+     "label": "Regular",
+     "tone": "warning"
+    },
+    {
+     "value": "Ruim",
+     "label": "Ruim",
+     "tone": "negative"
+    },
+    {
+     "value": "Não sei opinar",
+     "label": "Não sei",
+     "tone": "muted"
+    },
+    {
+     "value": "Não utilizei",
+     "label": "Não utilizei",
+     "tone": "muted"
+    }
+   ],
+   "position": 1
+  },
+  {
+   "key": "servico_28",
+   "section": 7,
+   "type": "rating",
+   "label": "Alimentação",
+   "xlsxColumn": 28,
+   "sourceText": "Avalie os serviços da Estância Turística de Olímpia: [Alimentação]",
+   "options": [
+    {
+     "value": "Ótimo",
+     "label": "Ótimo",
+     "tone": "positive"
+    },
+    {
+     "value": "Regular",
+     "label": "Regular",
+     "tone": "warning"
+    },
+    {
+     "value": "Ruim",
+     "label": "Ruim",
+     "tone": "negative"
+    },
+    {
+     "value": "Não sei opinar",
+     "label": "Não sei",
+     "tone": "muted"
+    },
+    {
+     "value": "Não utilizei",
+     "label": "Não utilizei",
+     "tone": "muted"
+    }
+   ],
+   "position": 2
+  },
+  {
+   "key": "servico_29",
+   "section": 7,
+   "type": "rating",
+   "label": "Artesanato",
+   "xlsxColumn": 29,
+   "sourceText": "Avalie os serviços da Estância Turística de Olímpia: [Artesanato]",
+   "options": [
+    {
+     "value": "Ótimo",
+     "label": "Ótimo",
+     "tone": "positive"
+    },
+    {
+     "value": "Regular",
+     "label": "Regular",
+     "tone": "warning"
+    },
+    {
+     "value": "Ruim",
+     "label": "Ruim",
+     "tone": "negative"
+    },
+    {
+     "value": "Não sei opinar",
+     "label": "Não sei",
+     "tone": "muted"
+    },
+    {
+     "value": "Não utilizei",
+     "label": "Não utilizei",
+     "tone": "muted"
+    }
+   ],
+   "position": 3
+  },
+  {
+   "key": "servico_30",
+   "section": 7,
+   "type": "rating",
+   "label": "Compras em geral",
+   "xlsxColumn": 30,
+   "sourceText": "Avalie os serviços da Estância Turística de Olímpia: [Compras em Geral]",
+   "options": [
+    {
+     "value": "Ótimo",
+     "label": "Ótimo",
+     "tone": "positive"
+    },
+    {
+     "value": "Regular",
+     "label": "Regular",
+     "tone": "warning"
+    },
+    {
+     "value": "Ruim",
+     "label": "Ruim",
+     "tone": "negative"
+    },
+    {
+     "value": "Não sei opinar",
+     "label": "Não sei",
+     "tone": "muted"
+    },
+    {
+     "value": "Não utilizei",
+     "label": "Não utilizei",
+     "tone": "muted"
+    }
+   ],
+   "position": 4
+  },
+  {
+   "key": "servico_31",
+   "section": 7,
+   "type": "rating",
+   "label": "Atendimento/Hospitalidade",
+   "xlsxColumn": 31,
+   "sourceText": "Avalie os serviços da Estância Turística de Olímpia: [Atendimento/Hospitalidade]",
+   "options": [
+    {
+     "value": "Ótimo",
+     "label": "Ótimo",
+     "tone": "positive"
+    },
+    {
+     "value": "Regular",
+     "label": "Regular",
+     "tone": "warning"
+    },
+    {
+     "value": "Ruim",
+     "label": "Ruim",
+     "tone": "negative"
+    },
+    {
+     "value": "Não sei opinar",
+     "label": "Não sei",
+     "tone": "muted"
+    },
+    {
+     "value": "Não utilizei",
+     "label": "Não utilizei",
+     "tone": "muted"
+    }
+   ],
+   "position": 5
+  },
+  {
+   "key": "servico_32",
+   "section": 7,
+   "type": "rating",
+   "label": "Segurança da cidade",
+   "xlsxColumn": 32,
+   "sourceText": "Avalie os serviços da Estância Turística de Olímpia: [Segurança da Cidade]",
+   "options": [
+    {
+     "value": "Ótimo",
+     "label": "Ótimo",
+     "tone": "positive"
+    },
+    {
+     "value": "Regular",
+     "label": "Regular",
+     "tone": "warning"
+    },
+    {
+     "value": "Ruim",
+     "label": "Ruim",
+     "tone": "negative"
+    },
+    {
+     "value": "Não sei opinar",
+     "label": "Não sei",
+     "tone": "muted"
+    },
+    {
+     "value": "Não utilizei",
+     "label": "Não utilizei",
+     "tone": "muted"
+    }
+   ],
+   "position": 6
+  },
+  {
+   "key": "servico_33",
+   "section": 7,
+   "type": "rating",
+   "label": "Sinalização turística e de ruas",
+   "xlsxColumn": 33,
+   "sourceText": "Avalie os serviços da Estância Turística de Olímpia: [Sinalização Turística e de Ruas]",
+   "options": [
+    {
+     "value": "Ótimo",
+     "label": "Ótimo",
+     "tone": "positive"
+    },
+    {
+     "value": "Regular",
+     "label": "Regular",
+     "tone": "warning"
+    },
+    {
+     "value": "Ruim",
+     "label": "Ruim",
+     "tone": "negative"
+    },
+    {
+     "value": "Não sei opinar",
+     "label": "Não sei",
+     "tone": "muted"
+    },
+    {
+     "value": "Não utilizei",
+     "label": "Não utilizei",
+     "tone": "muted"
+    }
+   ],
+   "position": 7
+  },
+  {
+   "key": "servico_34",
+   "section": 7,
+   "type": "rating",
+   "label": "Estrutura viária urbana",
+   "xlsxColumn": 34,
+   "sourceText": "Avalie os serviços da Estância Turística de Olímpia: [Estrutura Viária Urbana]",
+   "options": [
+    {
+     "value": "Ótimo",
+     "label": "Ótimo",
+     "tone": "positive"
+    },
+    {
+     "value": "Regular",
+     "label": "Regular",
+     "tone": "warning"
+    },
+    {
+     "value": "Ruim",
+     "label": "Ruim",
+     "tone": "negative"
+    },
+    {
+     "value": "Não sei opinar",
+     "label": "Não sei",
+     "tone": "muted"
+    },
+    {
+     "value": "Não utilizei",
+     "label": "Não utilizei",
+     "tone": "muted"
+    }
+   ],
+   "position": 8
+  },
+  {
+   "key": "servico_35",
+   "section": 7,
+   "type": "rating",
+   "label": "Rodovias de acesso à cidade",
+   "xlsxColumn": 35,
+   "sourceText": "Avalie os serviços da Estância Turística de Olímpia: [Rodovias de Acesso à Cidade]",
+   "options": [
+    {
+     "value": "Ótimo",
+     "label": "Ótimo",
+     "tone": "positive"
+    },
+    {
+     "value": "Regular",
+     "label": "Regular",
+     "tone": "warning"
+    },
+    {
+     "value": "Ruim",
+     "label": "Ruim",
+     "tone": "negative"
+    },
+    {
+     "value": "Não sei opinar",
+     "label": "Não sei",
+     "tone": "muted"
+    },
+    {
+     "value": "Não utilizei",
+     "label": "Não utilizei",
+     "tone": "muted"
+    }
+   ],
+   "position": 9
+  },
+  {
+   "key": "servico_36",
+   "section": 7,
+   "type": "rating",
+   "label": "Limpeza da cidade",
+   "xlsxColumn": 36,
+   "sourceText": "Avalie os serviços da Estância Turística de Olímpia: [Limpeza da Cidade]",
+   "options": [
+    {
+     "value": "Ótimo",
+     "label": "Ótimo",
+     "tone": "positive"
+    },
+    {
+     "value": "Regular",
+     "label": "Regular",
+     "tone": "warning"
+    },
+    {
+     "value": "Ruim",
+     "label": "Ruim",
+     "tone": "negative"
+    },
+    {
+     "value": "Não sei opinar",
+     "label": "Não sei",
+     "tone": "muted"
+    },
+    {
+     "value": "Não utilizei",
+     "label": "Não utilizei",
+     "tone": "muted"
+    }
+   ],
+   "position": 10
+  },
+  {
+   "key": "servico_37",
+   "section": 7,
+   "type": "rating",
+   "label": "Mobilidade/transporte urbano",
+   "xlsxColumn": 37,
+   "sourceText": "Avalie os serviços da Estância Turística de Olímpia: [Mobilidade/Transporte Urbano]",
+   "options": [
+    {
+     "value": "Ótimo",
+     "label": "Ótimo",
+     "tone": "positive"
+    },
+    {
+     "value": "Regular",
+     "label": "Regular",
+     "tone": "warning"
+    },
+    {
+     "value": "Ruim",
+     "label": "Ruim",
+     "tone": "negative"
+    },
+    {
+     "value": "Não sei opinar",
+     "label": "Não sei",
+     "tone": "muted"
+    },
+    {
+     "value": "Não utilizei",
+     "label": "Não utilizei",
+     "tone": "muted"
+    }
+   ],
+   "position": 11
+  },
+  {
+   "key": "servico_38",
+   "section": 7,
+   "type": "rating",
+   "label": "Acessibilidade para PCD",
+   "xlsxColumn": 38,
+   "sourceText": "Avalie os serviços da Estância Turística de Olímpia: [Acessibilidade para PCD]",
+   "options": [
+    {
+     "value": "Ótimo",
+     "label": "Ótimo",
+     "tone": "positive"
+    },
+    {
+     "value": "Regular",
+     "label": "Regular",
+     "tone": "warning"
+    },
+    {
+     "value": "Ruim",
+     "label": "Ruim",
+     "tone": "negative"
+    },
+    {
+     "value": "Não sei opinar",
+     "label": "Não sei",
+     "tone": "muted"
+    },
+    {
+     "value": "Não utilizei",
+     "label": "Não utilizei",
+     "tone": "muted"
+    }
+   ],
+   "position": 12
+  },
+  {
+   "key": "atrativo_51",
+   "section": 8,
+   "type": "rating",
+   "label": "P. Aquático Thermas dos Laranjais",
+   "xlsxColumn": 51,
+   "sourceText": "Avalie os atrativos de Olímpia [P. Aquático Thermas dos Laranjais]",
+   "options": [
+    {
+     "value": "Ótimo",
+     "label": "Ótimo",
+     "tone": "positive"
+    },
+    {
+     "value": "Regular",
+     "label": "Regular",
+     "tone": "warning"
+    },
+    {
+     "value": "Ruim",
+     "label": "Ruim",
+     "tone": "negative"
+    },
+    {
+     "value": "Não sei opinar",
+     "label": "Não sei",
+     "tone": "muted"
+    },
+    {
+     "value": "Não utilizei",
+     "label": "Não utilizei",
+     "tone": "muted"
+    }
+   ],
+   "position": 1
+  },
+  {
+   "key": "atrativo_52",
+   "section": 8,
+   "type": "rating",
+   "label": "P. Aquático Hot Beach",
+   "xlsxColumn": 52,
+   "sourceText": "Avalie os atrativos de Olímpia [P. Aquático Hot Beach]",
+   "options": [
+    {
+     "value": "Ótimo",
+     "label": "Ótimo",
+     "tone": "positive"
+    },
+    {
+     "value": "Regular",
+     "label": "Regular",
+     "tone": "warning"
+    },
+    {
+     "value": "Ruim",
+     "label": "Ruim",
+     "tone": "negative"
+    },
+    {
+     "value": "Não sei opinar",
+     "label": "Não sei",
+     "tone": "muted"
+    },
+    {
+     "value": "Não utilizei",
+     "label": "Não utilizei",
+     "tone": "muted"
+    }
+   ],
+   "position": 2
+  },
+  {
+   "key": "atrativo_58",
+   "section": 8,
+   "type": "rating",
+   "label": "Vale dos Dinossauros",
+   "xlsxColumn": 58,
+   "sourceText": "Avalie os atrativos de Olímpia [Vale dos Dinossauros]",
+   "options": [
+    {
+     "value": "Ótimo",
+     "label": "Ótimo",
+     "tone": "positive"
+    },
+    {
+     "value": "Regular",
+     "label": "Regular",
+     "tone": "warning"
+    },
+    {
+     "value": "Ruim",
+     "label": "Ruim",
+     "tone": "negative"
+    },
+    {
+     "value": "Não sei opinar",
+     "label": "Não sei",
+     "tone": "muted"
+    },
+    {
+     "value": "Não utilizei",
+     "label": "Não utilizei",
+     "tone": "muted"
+    }
+   ],
+   "position": 3
+  },
+  {
+   "key": "atrativo_49",
+   "section": 8,
+   "type": "rating",
+   "label": "Museu do Folclore",
+   "xlsxColumn": 49,
+   "sourceText": "Avalie os atrativos de Olímpia [Museu do Folclore]",
+   "options": [
+    {
+     "value": "Ótimo",
+     "label": "Ótimo",
+     "tone": "positive"
+    },
+    {
+     "value": "Regular",
+     "label": "Regular",
+     "tone": "warning"
+    },
+    {
+     "value": "Ruim",
+     "label": "Ruim",
+     "tone": "negative"
+    },
+    {
+     "value": "Não sei opinar",
+     "label": "Não sei",
+     "tone": "muted"
+    },
+    {
+     "value": "Não utilizei",
+     "label": "Não utilizei",
+     "tone": "muted"
+    }
+   ],
+   "position": 4
+  },
+  {
+   "key": "atrativo_56",
+   "section": 8,
+   "type": "rating",
+   "label": "Praça da Matriz / Coreto",
+   "xlsxColumn": 56,
+   "sourceText": "Avalie os atrativos de Olímpia [Praça da Matriz / Coreto]",
+   "options": [
+    {
+     "value": "Ótimo",
+     "label": "Ótimo",
+     "tone": "positive"
+    },
+    {
+     "value": "Regular",
+     "label": "Regular",
+     "tone": "warning"
+    },
+    {
+     "value": "Ruim",
+     "label": "Ruim",
+     "tone": "negative"
+    },
+    {
+     "value": "Não sei opinar",
+     "label": "Não sei",
+     "tone": "muted"
+    },
+    {
+     "value": "Não utilizei",
+     "label": "Não utilizei",
+     "tone": "muted"
+    }
+   ],
+   "position": 5
+  },
+  {
+   "key": "atrativo_39",
+   "section": 8,
+   "type": "rating",
+   "label": "Av. Aurora Forti Neves",
+   "xlsxColumn": 39,
+   "sourceText": "Avalie os atrativos de Olímpia [Av. Aurora Forti Neves]",
+   "options": [
+    {
+     "value": "Ótimo",
+     "label": "Ótimo",
+     "tone": "positive"
+    },
+    {
+     "value": "Regular",
+     "label": "Regular",
+     "tone": "warning"
+    },
+    {
+     "value": "Ruim",
+     "label": "Ruim",
+     "tone": "negative"
+    },
+    {
+     "value": "Não sei opinar",
+     "label": "Não sei",
+     "tone": "muted"
+    },
+    {
+     "value": "Não utilizei",
+     "label": "Não utilizei",
+     "tone": "muted"
+    }
+   ],
+   "position": 6
+  },
+  {
+   "key": "atrativo_40",
+   "section": 8,
+   "type": "rating",
+   "label": "Bosque Mun. Educação Ambiental “Walter Zucca”",
+   "xlsxColumn": 40,
+   "sourceText": "Avalie os atrativos de Olímpia [Bosque Mun. Educação Ambiental “Walter Zucca”]",
+   "options": [
+    {
+     "value": "Ótimo",
+     "label": "Ótimo",
+     "tone": "positive"
+    },
+    {
+     "value": "Regular",
+     "label": "Regular",
+     "tone": "warning"
+    },
+    {
+     "value": "Ruim",
+     "label": "Ruim",
+     "tone": "negative"
+    },
+    {
+     "value": "Não sei opinar",
+     "label": "Não sei",
+     "tone": "muted"
+    },
+    {
+     "value": "Não utilizei",
+     "label": "Não utilizei",
+     "tone": "muted"
+    }
+   ],
+   "position": 7
+  },
+  {
+   "key": "atrativo_41",
+   "section": 8,
+   "type": "rating",
+   "label": "Bosque Mun. “Rivaldo Mussolin” / Gruta de São José",
+   "xlsxColumn": 41,
+   "sourceText": "Avalie os atrativos de Olímpia [Bosque Mun. “Rivaldo Mussolin” / Gruta de São José]",
+   "options": [
+    {
+     "value": "Ótimo",
+     "label": "Ótimo",
+     "tone": "positive"
+    },
+    {
+     "value": "Regular",
+     "label": "Regular",
+     "tone": "warning"
+    },
+    {
+     "value": "Ruim",
+     "label": "Ruim",
+     "tone": "negative"
+    },
+    {
+     "value": "Não sei opinar",
+     "label": "Não sei",
+     "tone": "muted"
+    },
+    {
+     "value": "Não utilizei",
+     "label": "Não utilizei",
+     "tone": "muted"
+    }
+   ],
+   "position": 8
+  },
+  {
+   "key": "atrativo_42",
+   "section": 8,
+   "type": "rating",
+   "label": "Centro Cultural Ruy Ohtake",
+   "xlsxColumn": 42,
+   "sourceText": "Avalie os atrativos de Olímpia [Centro Cultural Ruy Ohtake]",
+   "options": [
+    {
+     "value": "Ótimo",
+     "label": "Ótimo",
+     "tone": "positive"
+    },
+    {
+     "value": "Regular",
+     "label": "Regular",
+     "tone": "warning"
+    },
+    {
+     "value": "Ruim",
+     "label": "Ruim",
+     "tone": "negative"
+    },
+    {
+     "value": "Não sei opinar",
+     "label": "Não sei",
+     "tone": "muted"
+    },
+    {
+     "value": "Não utilizei",
+     "label": "Não utilizei",
+     "tone": "muted"
+    }
+   ],
+   "position": 9
+  },
+  {
+   "key": "atrativo_43",
+   "section": 8,
+   "type": "rating",
+   "label": "Dreams Ice Bar",
+   "xlsxColumn": 43,
+   "sourceText": "Avalie os atrativos de Olímpia [Dreams Ice Bar]",
+   "options": [
+    {
+     "value": "Ótimo",
+     "label": "Ótimo",
+     "tone": "positive"
+    },
+    {
+     "value": "Regular",
+     "label": "Regular",
+     "tone": "warning"
+    },
+    {
+     "value": "Ruim",
+     "label": "Ruim",
+     "tone": "negative"
+    },
+    {
+     "value": "Não sei opinar",
+     "label": "Não sei",
+     "tone": "muted"
+    },
+    {
+     "value": "Não utilizei",
+     "label": "Não utilizei",
+     "tone": "muted"
+    }
+   ],
+   "position": 10
+  },
+  {
+   "key": "atrativo_44",
+   "section": 8,
+   "type": "rating",
+   "label": "ECO - Estação Cultural de Olímpia",
+   "xlsxColumn": 44,
+   "sourceText": "Avalie os atrativos de Olímpia [ECO - Estação Cultural de Olímpia]",
+   "options": [
+    {
+     "value": "Ótimo",
+     "label": "Ótimo",
+     "tone": "positive"
+    },
+    {
+     "value": "Regular",
+     "label": "Regular",
+     "tone": "warning"
+    },
+    {
+     "value": "Ruim",
+     "label": "Ruim",
+     "tone": "negative"
+    },
+    {
+     "value": "Não sei opinar",
+     "label": "Não sei",
+     "tone": "muted"
+    },
+    {
+     "value": "Não utilizei",
+     "label": "Não utilizei",
+     "tone": "muted"
+    }
+   ],
+   "position": 11
+  },
+  {
+   "key": "atrativo_45",
+   "section": 8,
+   "type": "rating",
+   "label": "Happy Jump Trampolim",
+   "xlsxColumn": 45,
+   "sourceText": "Avalie os atrativos de Olímpia [Happy Jump Trampolim]",
+   "options": [
+    {
+     "value": "Ótimo",
+     "label": "Ótimo",
+     "tone": "positive"
+    },
+    {
+     "value": "Regular",
+     "label": "Regular",
+     "tone": "warning"
+    },
+    {
+     "value": "Ruim",
+     "label": "Ruim",
+     "tone": "negative"
+    },
+    {
+     "value": "Não sei opinar",
+     "label": "Não sei",
+     "tone": "muted"
+    },
+    {
+     "value": "Não utilizei",
+     "label": "Não utilizei",
+     "tone": "muted"
+    }
+   ],
+   "position": 12
+  },
+  {
+   "key": "atrativo_46",
+   "section": 8,
+   "type": "rating",
+   "label": "Igreja Matriz de São João Batista",
+   "xlsxColumn": 46,
+   "sourceText": "Avalie os atrativos de Olímpia [Igreja Matriz de São João Batista]",
+   "options": [
+    {
+     "value": "Ótimo",
+     "label": "Ótimo",
+     "tone": "positive"
+    },
+    {
+     "value": "Regular",
+     "label": "Regular",
+     "tone": "warning"
+    },
+    {
+     "value": "Ruim",
+     "label": "Ruim",
+     "tone": "negative"
+    },
+    {
+     "value": "Não sei opinar",
+     "label": "Não sei",
+     "tone": "muted"
+    },
+    {
+     "value": "Não utilizei",
+     "label": "Não utilizei",
+     "tone": "muted"
+    }
+   ],
+   "position": 13
+  },
+  {
+   "key": "atrativo_47",
+   "section": 8,
+   "type": "rating",
+   "label": "Museu de Arte Sacra e Diversidade Religiosa",
+   "xlsxColumn": 47,
+   "sourceText": "Avalie os atrativos de Olímpia [Museu de Arte Sacra e Diversidade Religiosa]",
+   "options": [
+    {
+     "value": "Ótimo",
+     "label": "Ótimo",
+     "tone": "positive"
+    },
+    {
+     "value": "Regular",
+     "label": "Regular",
+     "tone": "warning"
+    },
+    {
+     "value": "Ruim",
+     "label": "Ruim",
+     "tone": "negative"
+    },
+    {
+     "value": "Não sei opinar",
+     "label": "Não sei",
+     "tone": "muted"
+    },
+    {
+     "value": "Não utilizei",
+     "label": "Não utilizei",
+     "tone": "muted"
+    }
+   ],
+   "position": 14
+  },
+  {
+   "key": "atrativo_48",
+   "section": 8,
+   "type": "rating",
+   "label": "Museu de Cera Dreamland",
+   "xlsxColumn": 48,
+   "sourceText": "Avalie os atrativos de Olímpia [Museu de Cera Dreamland]",
+   "options": [
+    {
+     "value": "Ótimo",
+     "label": "Ótimo",
+     "tone": "positive"
+    },
+    {
+     "value": "Regular",
+     "label": "Regular",
+     "tone": "warning"
+    },
+    {
+     "value": "Ruim",
+     "label": "Ruim",
+     "tone": "negative"
+    },
+    {
+     "value": "Não sei opinar",
+     "label": "Não sei",
+     "tone": "muted"
+    },
+    {
+     "value": "Não utilizei",
+     "label": "Não utilizei",
+     "tone": "muted"
+    }
+   ],
+   "position": 15
+  },
+  {
+   "key": "atrativo_50",
+   "section": 8,
+   "type": "rating",
+   "label": "Orionverso Mundo Virtual",
+   "xlsxColumn": 50,
+   "sourceText": "Avalie os atrativos de Olímpia [Orionverso Mundo Virtual ]",
+   "options": [
+    {
+     "value": "Ótimo",
+     "label": "Ótimo",
+     "tone": "positive"
+    },
+    {
+     "value": "Regular",
+     "label": "Regular",
+     "tone": "warning"
+    },
+    {
+     "value": "Ruim",
+     "label": "Ruim",
+     "tone": "negative"
+    },
+    {
+     "value": "Não sei opinar",
+     "label": "Não sei",
+     "tone": "muted"
+    },
+    {
+     "value": "Não utilizei",
+     "label": "Não utilizei",
+     "tone": "muted"
+    }
+   ],
+   "position": 16
+  },
+  {
+   "key": "atrativo_53",
+   "section": 8,
+   "type": "rating",
+   "label": "P. Aquático Dolce Dulce",
+   "xlsxColumn": 53,
+   "sourceText": "Avalie os atrativos de Olímpia [P. Aquático Dolce Dulce]",
+   "options": [
+    {
+     "value": "Ótimo",
+     "label": "Ótimo",
+     "tone": "positive"
+    },
+    {
+     "value": "Regular",
+     "label": "Regular",
+     "tone": "warning"
+    },
+    {
+     "value": "Ruim",
+     "label": "Ruim",
+     "tone": "negative"
+    },
+    {
+     "value": "Não sei opinar",
+     "label": "Não sei",
+     "tone": "muted"
+    },
+    {
+     "value": "Não utilizei",
+     "label": "Não utilizei",
+     "tone": "muted"
+    }
+   ],
+   "position": 17
+  },
+  {
+   "key": "atrativo_54",
+   "section": 8,
+   "type": "rating",
+   "label": "Praia do Mirante Clube",
+   "xlsxColumn": 54,
+   "sourceText": "Avalie os atrativos de Olímpia [Praia do Mirante Clube]",
+   "options": [
+    {
+     "value": "Ótimo",
+     "label": "Ótimo",
+     "tone": "positive"
+    },
+    {
+     "value": "Regular",
+     "label": "Regular",
+     "tone": "warning"
+    },
+    {
+     "value": "Ruim",
+     "label": "Ruim",
+     "tone": "negative"
+    },
+    {
+     "value": "Não sei opinar",
+     "label": "Não sei",
+     "tone": "muted"
+    },
+    {
+     "value": "Não utilizei",
+     "label": "Não utilizei",
+     "tone": "muted"
+    }
+   ],
+   "position": 18
+  },
+  {
+   "key": "atrativo_55",
+   "section": 8,
+   "type": "rating",
+   "label": "Radical Play Park",
+   "xlsxColumn": 55,
+   "sourceText": "Avalie os atrativos de Olímpia [Radical Play Park]",
+   "options": [
+    {
+     "value": "Ótimo",
+     "label": "Ótimo",
+     "tone": "positive"
+    },
+    {
+     "value": "Regular",
+     "label": "Regular",
+     "tone": "warning"
+    },
+    {
+     "value": "Ruim",
+     "label": "Ruim",
+     "tone": "negative"
+    },
+    {
+     "value": "Não sei opinar",
+     "label": "Não sei",
+     "tone": "muted"
+    },
+    {
+     "value": "Não utilizei",
+     "label": "Não utilizei",
+     "tone": "muted"
+    }
+   ],
+   "position": 19
+  },
+  {
+   "key": "atrativo_57",
+   "section": 8,
+   "type": "rating",
+   "label": "Santuário de Nossa Senhora Aparecida",
+   "xlsxColumn": 57,
+   "sourceText": "Avalie os atrativos de Olímpia [Santuário de Nossa Senhora Aparecida]",
+   "options": [
+    {
+     "value": "Ótimo",
+     "label": "Ótimo",
+     "tone": "positive"
+    },
+    {
+     "value": "Regular",
+     "label": "Regular",
+     "tone": "warning"
+    },
+    {
+     "value": "Ruim",
+     "label": "Ruim",
+     "tone": "negative"
+    },
+    {
+     "value": "Não sei opinar",
+     "label": "Não sei",
+     "tone": "muted"
+    },
+    {
+     "value": "Não utilizei",
+     "label": "Não utilizei",
+     "tone": "muted"
+    }
+   ],
+   "position": 20
+  },
+  {
+   "key": "atrativo_59",
+   "section": 8,
+   "type": "rating",
+   "label": "Vila Guarani - Hot Beach",
+   "xlsxColumn": 59,
+   "sourceText": "Avalie os atrativos de Olímpia [Vila Guarani - Hot Beach]",
+   "options": [
+    {
+     "value": "Ótimo",
+     "label": "Ótimo",
+     "tone": "positive"
+    },
+    {
+     "value": "Regular",
+     "label": "Regular",
+     "tone": "warning"
+    },
+    {
+     "value": "Ruim",
+     "label": "Ruim",
+     "tone": "negative"
+    },
+    {
+     "value": "Não sei opinar",
+     "label": "Não sei",
+     "tone": "muted"
+    },
+    {
+     "value": "Não utilizei",
+     "label": "Não utilizei",
+     "tone": "muted"
+    }
+   ],
+   "position": 21
+  },
+  {
+   "key": "atrativo_60",
+   "section": 8,
+   "type": "rating",
+   "label": "Villa Mall Olímpia Park - Enjoy",
+   "xlsxColumn": 60,
+   "sourceText": "Avalie os atrativos de Olímpia [Villa Mall Olímpia Park - Enjoy]",
+   "options": [
+    {
+     "value": "Ótimo",
+     "label": "Ótimo",
+     "tone": "positive"
+    },
+    {
+     "value": "Regular",
+     "label": "Regular",
+     "tone": "warning"
+    },
+    {
+     "value": "Ruim",
+     "label": "Ruim",
+     "tone": "negative"
+    },
+    {
+     "value": "Não sei opinar",
+     "label": "Não sei",
+     "tone": "muted"
+    },
+    {
+     "value": "Não utilizei",
+     "label": "Não utilizei",
+     "tone": "muted"
+    }
+   ],
+   "position": 22
+  }
+ ]
+}

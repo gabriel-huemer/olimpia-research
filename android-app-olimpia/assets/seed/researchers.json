@@ -1,0 +1,9 @@
+{
+  "version": 1,
+  "note": "Cadastro local de demonstração. Em produção, a lista vem da Secretaria de Turismo (API).",
+  "researchers": [
+    { "code": "OTO482", "name": "Ana Souza", "location": "Thermas dos Laranjais" },
+    { "code": "OTO117", "name": "Bruno Lima", "location": "Hot Beach Olímpia" },
+    { "code": "OTO305", "name": "Carla Mendes", "location": "Praça da Matriz" }
+  ]
+}

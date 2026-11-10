@@ -1,0 +1,949 @@
+TEXT RUN STYLES: {"ts1": "800/36/c#FFFFFF", "ts2": "Semi Bold/15/c#FFFFFF", "ts3": "Bold/17/c#1A2233", "ts4": "500/14/c#8C96A8", "ts5": "Medium/c#5A6478", "ts6": "700/c#007F74", "ts7": "Bold/14/c#007F74", "ts8": "14/c#1A2233", "ts9": "lh18/c#5A6478", "ts10": "Bold/c#5A6478", "ts11": "15/lh22.5/c#5A6478", "ts12": "Bold/15/lh22.5/c#1A2233"}
+CANV Protótipo – App do Pesquisador
+  FRAM 01 Acesso @0,0 390x844 bg#F4F6FA
+    RECT DIV @0,40 390x330 bg#1B2556
+    TEXT @28,168 264.3x65 bg#FFFFFF ts800/28/lh32.2 T=Pesquisa de\\nDemanda Turística
+    TEXT @28,250 284x17 bg#FFFFFF ts400/14 T=Observatório de Turismo de Olímpia · 2026
+    RECT DIV @0,331 390x40 bg#F4F6FA r20 20 0 0
+    TEXT @28,374 250x24 bg#1A2233 ts800/20 T=Entrar como pesquisador
+    TEXT @28,403 336.5x37 bg#5A6478 ts400/13/lh18.2 T=Digite o código individual fornecido pela Secretaria de Turismo.
+    TEXT @28,456.4 159x15 bg#5A6478 ts600/12 T=CÓDIGO DO PESQUISADOR
+    RECT DIV @28,477.4 49x56 bg#FFFFFF bd#007F74/1px r10
+    TEXT @44,492.4 18x27 bg#1B2556 ts800/22 T=O
+    RECT DIV @85,477.4 49x56 bg#FFFFFF bd#007F74/1px r10
+    TEXT @102,492.4 15x27 bg#1B2556 ts800/22 T=T
+    RECT DIV @142,477.4 49x56 bg#FFFFFF bd#007F74/1px r10
+    TEXT @158,492.4 18x27 bg#1B2556 ts800/22 T=O
+    RECT DIV @199,477.4 49x56 bg#FFFFFF bd#007F74/1px r10
+    TEXT @215.9,492.4 16x27 bg#1B2556 ts800/22 T=4
+    RECT DIV @256,477.4 49x56 bg#FFFFFF bd#007F74/1px r10
+    TEXT @273.2,492.4 15x27 bg#1B2556 ts800/22 T=8
+    RECT DIV @313,477.4 49x56 bg#FFFFFF bd#007F74/1px r10
+    TEXT @330.5,492.4 15x27 bg#1B2556 ts800/22 T=2
+    RECT btn pri @28,551.4 334x52 bg#1B2556 r12
+    TEXT @171.2,567.4 49x19 bg#FFFFFF ts700/16 T=Entrar
+    TEXT @35,620 311.4x15 bg#5A6478 ts400/12/C T=Esqueceu o código? Fale com a coordenação do OTO.
+    GROU Faixa institucional @0,40 390.29x5 r0 0 0 0
+    FRAM Logo OTO @28,66 150x72 bg#FFFFFF r14
+    TEXT @28,282 243x34 bg#C9CFE6 ts500/12/lh17 T=Prefeitura da Estância Turística de Olímpia\\nSecretaria de Turismo
+  FRAM 02 Início @0,0 390x844 bg#F4F6FA
+    RECT appbar @0,40 390x79 bg#FFFFFF
+    RECT divider @0,118 390x1 bg#E3E7EF
+    TEXT @20,50 23x15 bg#5A6478 ts400/12 T=Olá,
+    TEXT @20,65 105x24 bg#1A2233 ts700/20 T=Ana Souza
+    TEXT @20,89 236x15 bg#5A6478 ts400/12 T=Código OTO-482 · Thermas dos Laranjais
+    RECT pill off @297.2,64.5 72.8x25 bg#FDECEC r12.5
+    RECT dot @307.2,73 8x8 bg#A12B2B r4
+    TEXT @321.2,69.5 40x15 bg#A12B2B ts600/12 T=Offline
+    RECT DIV @20,137 350x132 bg#007F74 r16
+    TEXT @36,153 164x16 bg#FFFFFF ts400/13 T=Aguardando sincronização
+    TEXT @36,173 124.8x44 bg#FFFFFF ts400/12 T={ts1}**12** {/ts1}{ts2}**pesquisas**{/ts2}
+    RECT DIV @288.5,186 65.5x31 bgrgba(255, 255, 255, 0.15) r9
+    TEXT @300.5,194 42x15 bg#FFFFFF ts700/12 T=Ver fila
+    TEXT @36,223 312x30 bg#FFFFFF ts400/12 T=Tudo salvo no aparelho. Enviaremos assim que houver internet.
+    RECT btn pri @20,285 350x60 bg#1B2556 r12
+    TEXT @125.9,305 138x21 bg#FFFFFF ts700/17 T=+ Nova pesquisa
+    RECT card half @20,361 170x89 bg#FFFFFF bd#E3E7EF/1px r14
+    TEXT @35,376 26x15 bg#5A6478 ts400/12 T=Hoje
+    TEXT @35,391 29x29 bg#1B2556 ts800/24 T=14
+    TEXT @35,420 56x15 bg#5A6478 ts400/12 T=coletadas
+    RECT card half @200,361 170x89 bg#FFFFFF bd#E3E7EF/1px r14
+    TEXT @215,376 63x15 bg#5A6478 ts400/12 T=Com alerta
+    TEXT @215,391 16x29 bg#B88400 ts800/24 T=2
+    TEXT @215,420 93x15 bg#5A6478 ts400/12 T=dados suspeitos
+    RECT card @20,466 350x276 bg#FFFFFF bd#E3E7EF/1px r14
+    TEXT @35,481 107x17 bg#1A2233 ts800/14 T=Coletas de hoje
+    RECT divider @35,560 320x1 bg#EEF1F6
+    TEXT @35,514 180x17 bg#1A2233 ts700/14 T=#0046 · Ribeirão Preto, SP
+    TEXT @35,533 93x15 bg#5A6478 ts400/12 T=10:31 · completa
+    RECT tag pend @287.8,520 67.3x22 bg#E6F0FA r6
+    TEXT @295.8,524 52x13 bg#1F6FB0 ts700/11 T=Pendente
+    RECT divider @35,619 320x1 bg#EEF1F6
+    TEXT @35,573 163x17 bg#1A2233 ts700/14 T=#0045 · Uberlândia, MG
+    TEXT @35,592 149x15 bg#5A6478 ts400/12 T=10:12 · 1 resposta suspeita
+    RECT tag warn @306.1,579 48.9x22 bg#FFF4D6 r6
+    TEXT @314.1,583 34x13 bg#7A5200 ts700/11 T=Alerta
+    RECT divider @35,678 320x1 bg#EEF1F6
+    TEXT @35,632 153x17 bg#1A2233 ts700/14 T=#0044 · Campinas, SP
+    TEXT @35,651 96x15 bg#5A6478 ts400/12 T=09:50 · completa
+    RECT tag pend @287.8,638 67.3x22 bg#E6F0FA r6
+    TEXT @295.8,642 52x13 bg#1F6FB0 ts700/11 T=Pendente
+    TEXT @35,691 139x17 bg#1A2233 ts700/14 T=#0043 · Goiânia, GO
+    TEXT @35,710 139x15 bg#5A6478 ts400/12 T=09:20 · enviada às 09:41
+    RECT tag ok @268.7,697 86.3x22 bg#E3F4EC r6
+    TEXT @276.7,701 71x13 bg#1E7A4E ts700/11 T=Sincronizada
+    GROU Faixa institucional @0,115 390.29x4 r0 0 0 0
+  FRAM 03 Seção 1 – Origem (autocomplete) @0,0 390x876 bg#F4F6FA
+    RECT appbar @0,40 390x96 bg#FFFFFF
+    RECT divider @0,135 390x1 bg#E3E7EF
+    RECT back @20,50 32x32 bg#EEF1F6 r16
+    TEXT @32.1,55.5 8x22 bg#1B2556 ts700/18 T=‹
+    TEXT @89.2,56 171x21 bg#000000 ts400/12 T={ts3}**Nova pesquisa** {/ts3}{ts4}**#0047**{/ts4}
+    RECT pill off @297.2,53.5 72.8x25 bg#FDECEC r12.5
+    RECT dot @307.2,62 8x8 bg#A12B2B r4
+    TEXT @321.2,58.5 40x15 bg#A12B2B ts600/12 T=Offline
+    TEXT @20,94 80x15 bg#000000 ts400/12 T={ts5}**Seção** {/ts5}{ts6}**1**{/ts6}{ts5} **de 10**{/ts5}
+    TEXT @253.6,94 116x15 bg#5A6478 ts500/12 T=Salvo no aparelho ✓
+    RECT track @20,115 350x6 bg#E3E7EF r3
+    RECT fill @20,115 35x6 bg#00A395 r3
+    TEXT @20,154 186x27 bg#1B2556 ts800/22/ls-0.0136em T=Origem do turista
+    TEXT @20,185 177x19 bg#5A6478 ts400/13/lh18.2 T=De onde o entrevistado vem.
+    RECT q @20,218.2 350x154.9 bg#FFFFFF bd#E3E7EF/1px r14
+    TEXT @35,233.2 159x19 bg#1A2233 ts700/14/lh18.9 T=Em qual Estado reside?
+    RECT input @35,262.1 320x46 bg#FFFFFF bd#CBD2DE/1px r10
+    TEXT @48,275.6 105x18 bg#1A2233 ts400/15 T=São Paulo \\(SP\\)
+    TEXT @328.8,275.6 14x18 bg#1E8E5A ts800/15 T=✓
+    RECT radio @35,328.1 20x20 bd#A7B0C0/2px r10
+    TEXT @65,329.6 120x17 bg#1A2233 ts400/14 T=Reside no exterior
+    RECT q @20,389.1 350x330.9 bg#FFFFFF bd#E3E7EF/1px r14
+    TEXT @35,404.1 158x19 bg#1A2233 ts700/14/lh18.9 T=Em qual cidade reside?
+    TEXT @35,427 163x15 bg#5A6478 ts400/12 T=Mostrando só cidades de SP
+    RECT input focus @35,452 320x46 bg#FFFFFF bd#007F74/1px r10 fx{"boxShadow":"0px 0px 0px 3px rgba(0, 127, 116, 0.15)"}
+    TEXT @48,465.5 37x18 bg#1A2233 ts700/15 T=Ribei
+    RECT caret @92.4,465 2x20 bg#00A395
+    RECT dd @35,504 320x201 bg#FFFFFF bd#D6DCE6/1px r10 fx{"boxShadow":"0px 8px 20px 0px rgba(27, 37, 86, 0.12)"}
+    RECT ddi sel @36,505 318x40 bg#E6F5F3
+    RECT divider @36,544 318x1 bg#EEF1F6
+    TEXT @48,516 95x17 bg#000000 ts400/12 T={ts7}**Ribei**{/ts7}{ts8}rão Preto{/ts8}
+    TEXT @326.6,516 16x15 bg#8C96A8 ts400/12 T=SP
+    RECT divider @36,584 318x1 bg#EEF1F6
+    TEXT @48,556 93x17 bg#000000 ts400/12 T={ts7}**Ribei**{/ts7}{ts8}rão Pires{/ts8}
+    TEXT @326.6,556 16x15 bg#8C96A8 ts400/12 T=SP
+    RECT divider @36,624 318x1 bg#EEF1F6
+    TEXT @48,596 102x17 bg#000000 ts400/12 T={ts7}**Ribei**{/ts7}{ts8}rão Bonito{/ts8}
+    TEXT @326.6,596 16x15 bg#8C96A8 ts400/12 T=SP
+    RECT divider @36,664 318x1 bg#EEF1F6
+    TEXT @48,636 101x17 bg#000000 ts400/12 T={ts7}**Ribei**{/ts7}{ts8}rão do Sul{/ts8}
+    TEXT @326.6,636 16x15 bg#8C96A8 ts400/12 T=SP
+    TEXT @48,676 48x17 bg#000000 ts400/12 T={ts7}**Ribei**{/ts7}{ts8}ra{/ts8}
+    TEXT @326.6,676 16x15 bg#8C96A8 ts400/12 T=SP
+    TEXT @31.5,736 327.1x30 bg#5A6478 ts400/12/C T=Lista de cidades do IBGE embutida no app: funciona sem internet.
+    RECT bottom @0,783 390x93 bg#FFFFFF
+    RECT divider @0,783 390x1 bg#E3E7EF
+    RECT btn sec @20,798 110x52 bg#FFFFFF bd#CBD2DE/1px r12
+    TEXT @51.5,814 48x19 bg#1B2556 ts700/16 T=Voltar
+    RECT btn pri @142,798 228x52 bg#1B2556 r12
+    TEXT @198.8,814 115x19 bg#FFFFFF ts700/16 T=Próxima seção
+  FRAM 04 Seção 2 – Estadia @0,0 390x943 bg#F4F6FA
+    RECT appbar @0,40 390x96 bg#FFFFFF
+    RECT divider @0,135 390x1 bg#E3E7EF
+    RECT back @20,50 32x32 bg#EEF1F6 r16
+    TEXT @32.1,55.5 8x22 bg#1B2556 ts700/18 T=‹
+    TEXT @89.2,56 171x21 bg#000000 ts400/12 T={ts3}**Nova pesquisa** {/ts3}{ts4}**#0047**{/ts4}
+    RECT pill off @297.2,53.5 72.8x25 bg#FDECEC r12.5
+    RECT dot @307.2,62 8x8 bg#A12B2B r4
+    TEXT @321.2,58.5 40x15 bg#A12B2B ts600/12 T=Offline
+    TEXT @20,94 81x15 bg#000000 ts400/12 T={ts5}**Seção** {/ts5}{ts6}**2**{/ts6}{ts5} **de 10**{/ts5}
+    TEXT @253.6,94 116x15 bg#5A6478 ts500/12 T=Salvo no aparelho ✓
+    RECT track @20,115 350x6 bg#E3E7EF r3
+    RECT fill @20,115 70x6 bg#00A395 r3
+    TEXT @20,154 80x27 bg#1B2556 ts800/22/ls-0.0136em T=Estadia
+    TEXT @20,185 167x19 bg#5A6478 ts400/13/lh18.2 T=Período da visita a Olímpia.
+    RECT q @20,218.2 350x194 bg#FFFFFF bd#E3E7EF/1px r14
+    TEXT @35,233.2 113x15 bg#5A6478 ts600/12 T=DATA DE CHEGADA
+    RECT input @35,254.2 155x46 bg#FFFFFF bd#CBD2DE/1px r10
+    TEXT @48,267.7 83x18 bg#1A2233 ts400/15 T=24/10/2026
+    TEXT @200,233.2 105x15 bg#5A6478 ts600/12 T=DATA DE PARTIDA
+    RECT input @200,254.2 155x46 bg#FFFFFF bd#CBD2DE/1px r10
+    TEXT @213,267.7 82x18 bg#1A2233 ts400/15 T=27/10/2026
+    RECT auto @35,310.2 320x41 bg#E6F5F3 r10
+    TEXT @47,322.7 241x16 bg#1B2556 ts400/13 T=Pernoites \\(calculado automaticamente\\)
+    TEXT @331.4,320.2 12x22 bg#1B2556 ts700/18 T=3
+    RECT radio @35,367.2 20x20 bd#A7B0C0/2px r10
+    TEXT @65,368.7 159x17 bg#1A2233 ts400/14 T=Day use \\(não pernoitou\\)
+    RECT q @20,428.2 350x404.8 bg#FFFFFF bd#E3E7EF/1px r14
+    TEXT @35,443.2 304.3x38 bg#1A2233 ts700/14/lh18.9 T=Com quanto tempo de antecedência decidiu vir para Olímpia?
+    RECT divider @35,531 320x1 bg#EEF1F6
+    RECT radio @35,501 20x20 bd#A7B0C0/2px r10
+    TEXT @65,502.5 116x17 bg#1A2233 ts400/14 T=No dia da viagem
+    RECT divider @35,572 320x1 bg#EEF1F6
+    RECT radio @35,542 20x20 bd#A7B0C0/2px r10
+    TEXT @65,543.5 84x17 bg#1A2233 ts400/14 T=De 1 a 7 dias
+    RECT divider @35,613 320x1 bg#EEF1F6
+    RECT radio @35,583 20x20 bd#A7B0C0/2px r10
+    TEXT @65,584.5 93x17 bg#1A2233 ts400/14 T=De 8 a 15 dias
+    RECT divider @35,654 320x1 bg#EEF1F6
+    RECT radio sel @35,624 20x20 bd#007F74/2px r10
+    RECT radio-dot @40,629 10x10 bg#007F74 r5
+    TEXT @65,625.5 102x17 bg#1A2233 ts400/14 T=De 16 a 30 dias
+    RECT divider @35,695 320x1 bg#EEF1F6
+    RECT radio @35,665 20x20 bd#A7B0C0/2px r10
+    TEXT @65,666.5 101x17 bg#1A2233 ts400/14 T=De 1 a 3 meses
+    RECT divider @35,736 320x1 bg#EEF1F6
+    RECT radio @35,706 20x20 bd#A7B0C0/2px r10
+    TEXT @65,707.5 103x17 bg#1A2233 ts400/14 T=De 4 a 6 meses
+    RECT divider @35,777 320x1 bg#EEF1F6
+    RECT radio @35,747 20x20 bd#A7B0C0/2px r10
+    TEXT @65,748.5 112x17 bg#1A2233 ts400/14 T=Mais de 6 meses
+    RECT radio @35,788 20x20 bd#A7B0C0/2px r10
+    TEXT @65,789.5 169x17 bg#1A2233 ts400/14 T=Não sei / Não me recordo
+    RECT bottom @0,850 390x93 bg#FFFFFF
+    RECT divider @0,850 390x1 bg#E3E7EF
+    RECT btn sec @20,865 110x52 bg#FFFFFF bd#CBD2DE/1px r12
+    TEXT @51.5,881 48x19 bg#1B2556 ts700/16 T=Voltar
+    RECT btn pri @142,865 228x52 bg#1B2556 r12
+    TEXT @198.8,881 115x19 bg#FFFFFF ts700/16 T=Próxima seção
+  FRAM 05 Seção 3 – Decisão da viagem @0,0 390x1183 bg#F4F6FA
+    RECT appbar @0,40 390x96 bg#FFFFFF
+    RECT divider @0,135 390x1 bg#E3E7EF
+    RECT back @20,50 32x32 bg#EEF1F6 r16
+    TEXT @32.1,55.5 8x22 bg#1B2556 ts700/18 T=‹
+    TEXT @89.2,56 171x21 bg#000000 ts400/12 T={ts3}**Nova pesquisa** {/ts3}{ts4}**#0047**{/ts4}
+    RECT pill off @297.2,53.5 72.8x25 bg#FDECEC r12.5
+    RECT dot @307.2,62 8x8 bg#A12B2B r4
+    TEXT @321.2,58.5 40x15 bg#A12B2B ts600/12 T=Offline
+    TEXT @20,94 82x15 bg#000000 ts400/12 T={ts5}**Seção** {/ts5}{ts6}**3**{/ts6}{ts5} **de 10**{/ts5}
+    TEXT @253.6,94 116x15 bg#5A6478 ts500/12 T=Salvo no aparelho ✓
+    RECT track @20,115 350x6 bg#E3E7EF r3
+    RECT fill @20,115 105x6 bg#00A395 r3
+    TEXT @20,154 200x27 bg#1B2556 ts800/22/ls-0.0136em T=Decisão da viagem
+    TEXT @20,185 211x19 bg#5A6478 ts400/13/lh18.2 T=Como e por que escolheu Olímpia.
+    RECT q @20,218.2 350x314.9 bg#FFFFFF bd#E3E7EF/1px r14
+    TEXT @35,233.2 295x19 bg#1A2233 ts700/14/lh18.9 T=Como tomou conhecimento sobre Olímpia?
+    RECT chip @35,262.1 148.5x36 bg#FFFFFF bd#CBD2DE/1px r18
+    TEXT @49,272.1 120x16 bg#343E52 ts500/13 T=Agência de Viagem
+    RECT chip @35,306.1 215.8x36 bg#FFFFFF bd#CBD2DE/1px r18
+    TEXT @49,316.1 188x16 bg#343E52 ts500/13 T=Indicação de amigos/parentes
+    RECT chip @35,350.1 172.6x36 bg#FFFFFF bd#CBD2DE/1px r18
+    TEXT @49,360.1 145x16 bg#343E52 ts500/13 T=Influenciadores digitais
+    RECT chip @215.6,350.1 113.8x36 bg#FFFFFF bd#CBD2DE/1px r18
+    TEXT @229.6,360.1 86x16 bg#343E52 ts500/13 T=Mora próximo
+    RECT chip sel @35,394.1 114.3x36 bg#007F74 bd#007F74/1px r18
+    TEXT @49,404.1 87x16 bg#FFFFFF ts600/13 T=Redes sociais
+    RECT chip @157.3,394.1 119.1x36 bg#FFFFFF bd#CBD2DE/1px r18
+    TEXT @171.3,404.1 92x16 bg#343E52 ts500/13 T=Sites de busca
+    RECT chip @35,438.1 121.3x36 bg#FFFFFF bd#CBD2DE/1px r18
+    TEXT @49,448.1 94x16 bg#343E52 ts500/13 T=Site de reserva
+    RECT chip @164.3,438.1 81.4x36 bg#FFFFFF bd#CBD2DE/1px r18
+    TEXT @178.3,448.1 53x16 bg#343E52 ts500/13 T=TV/rádio
+    RECT chip @35,482.1 127.6x36 bg#FFFFFF bd#CBD2DE/1px r18
+    TEXT @49,492.1 100x16 bg#343E52 ts500/13 T=Não me recordo
+    RECT chip @170.6,482.1 62.8x36 bg#FFFFFF bd#CBD2DE/1px r18
+    TEXT @184.6,492.1 36x16 bg#343E52 ts500/13 T=Outro
+    RECT q @20,549.1 350x333.9 bg#FFFFFF bd#E3E7EF/1px r14
+    TEXT @35,564.1 200x19 bg#1A2233 ts700/14/lh18.9 T=Principais motivos da viagem
+    TEXT @35,587 141x15 bg#5A6478 ts400/12 T=Pode marcar mais de um
+    RECT chip sel @35,612 211.3x36 bg#007F74 bd#007F74/1px r18
+    TEXT @49,622 185x16 bg#FFFFFF ts600/13 T=Parques aquáticos/temáticos
+    RECT chip @35,656 145.1x36 bg#FFFFFF bd#CBD2DE/1px r18
+    TEXT @49,666 118x16 bg#343E52 ts500/13 T=Resort ou hotelaria
+    RECT chip @35,700 187.1x36 bg#FFFFFF bd#CBD2DE/1px r18
+    TEXT @49,710 159x16 bg#343E52 ts500/13 T=Visita a familiares/amigos
+    RECT chip @230.1,700 73.4x36 bg#FFFFFF bd#CBD2DE/1px r18
+    TEXT @244.1,710 46x16 bg#343E52 ts500/13 T=Cultura
+    RECT chip @35,744 107x36 bg#FFFFFF bd#CBD2DE/1px r18
+    TEXT @49,754 80x16 bg#343E52 ts500/13 T=Gastronomia
+    RECT chip @150,744 123.1x36 bg#FFFFFF bd#CBD2DE/1px r18
+    TEXT @164,754 96x16 bg#343E52 ts500/13 T=Evento/Festival
+    RECT chip @35,788 136.1x36 bg#FFFFFF bd#CBD2DE/1px r18
+    TEXT @49,798 109x16 bg#343E52 ts500/13 T=Negócio/trabalho
+    RECT chip sel @179.1,788 90.4x36 bg#007F74 bd#007F74/1px r18
+    TEXT @193.1,798 63x16 bg#FFFFFF ts600/13 T=Descanso
+    RECT chip @277.5,788 63x36 bg#FFFFFF bd#CBD2DE/1px r18
+    TEXT @291.5,798 35x16 bg#343E52 ts500/13 T=Clima
+    RECT chip @35,832 62.8x36 bg#FFFFFF bd#CBD2DE/1px r18
+    TEXT @49,842 36x16 bg#343E52 ts500/13 T=Outro
+    RECT q @20,899 350x173.9 bg#FFFFFF bd#E3E7EF/1px r14
+    TEXT @35,914 300x19 bg#1A2233 ts700/14/lh18.9 T=Considerou outro destino antes de Olímpia?
+    RECT chip sel @35,942.9 51.6x36 bg#007F74 bd#007F74/1px r18
+    TEXT @49,952.9 24x16 bg#FFFFFF ts600/13 T=Sim
+    RECT chip @94.6,942.9 53.1x36 bg#FFFFFF bd#CBD2DE/1px r18
+    TEXT @108.6,952.9 25x16 bg#343E52 ts500/13 T=Não
+    TEXT @35,990.9 109x15 bg#5A6478 ts600/12 T=QUAIS DESTINOS?
+    RECT input @35,1011.9 320x46 bg#FFFFFF bd#CBD2DE/1px r10
+    RECT chip sel @48,1020.9 147x28 bg#007F74 bd#007F74/1px r14
+    TEXT @59,1026.9 125x16 bg#FFFFFF ts600/13 T=Caldas Novas, GO ×
+    TEXT @205,1025.4 54x18 bg#8C96A8 ts400/15 T=Digite…
+    RECT bottom @0,1089.9 390x93 bg#FFFFFF
+    RECT divider @0,1089.9 390x1 bg#E3E7EF
+    RECT btn sec @20,1104.9 110x52 bg#FFFFFF bd#CBD2DE/1px r12
+    TEXT @51.5,1120.9 48x19 bg#1B2556 ts700/16 T=Voltar
+    RECT btn pri @142,1104.9 228x52 bg#1B2556 r12
+    TEXT @198.8,1120.9 115x19 bg#FFFFFF ts700/16 T=Próxima seção
+  FRAM 06 Seção 4 – Transporte @0,0 390x852 bg#F4F6FA
+    RECT appbar @0,40 390x96 bg#FFFFFF
+    RECT divider @0,135 390x1 bg#E3E7EF
+    RECT back @20,50 32x32 bg#EEF1F6 r16
+    TEXT @32.1,55.5 8x22 bg#1B2556 ts700/18 T=‹
+    TEXT @89.2,56 171x21 bg#000000 ts400/12 T={ts3}**Nova pesquisa** {/ts3}{ts4}**#0047**{/ts4}
+    RECT pill off @297.2,53.5 72.8x25 bg#FDECEC r12.5
+    RECT dot @307.2,62 8x8 bg#A12B2B r4
+    TEXT @321.2,58.5 40x15 bg#A12B2B ts600/12 T=Offline
+    TEXT @20,94 82x15 bg#000000 ts400/12 T={ts5}**Seção** {/ts5}{ts6}**4**{/ts6}{ts5} **de 10**{/ts5}
+    TEXT @253.6,94 116x15 bg#5A6478 ts500/12 T=Salvo no aparelho ✓
+    RECT track @20,115 350x6 bg#E3E7EF r3
+    RECT fill @20,115 140x6 bg#00A395 r3
+    TEXT @20,154 119x27 bg#1B2556 ts800/22/ls-0.0136em T=Transporte
+    TEXT @20,185 150x19 bg#5A6478 ts400/13/lh18.2 T=Como chegou a Olímpia.
+    RECT q @20,218.2 350x303.9 bg#FFFFFF bd#E3E7EF/1px r14
+    TEXT @35,233.2 236x19 bg#1A2233 ts700/14/lh18.9 T=Qual meio de transporte utilizado?
+    RECT divider @35,302.1 320x1 bg#EEF1F6
+    RECT radio @35,272.1 20x20 bd#A7B0C0/2px r10
+    TEXT @65,273.6 100x17 bg#1A2233 ts400/14 T=Veículo próprio
+    RECT divider @35,343.1 320x1 bg#EEF1F6
+    RECT radio @35,313.1 20x20 bd#A7B0C0/2px r10
+    TEXT @65,314.6 103x17 bg#1A2233 ts400/14 T=Ônibus de linha
+    RECT divider @35,384.1 320x1 bg#EEF1F6
+    RECT radio @35,354.1 20x20 bd#A7B0C0/2px r10
+    TEXT @65,355.6 161x17 bg#1A2233 ts400/14 T=Ônibus/Van de excursão
+    RECT divider @35,425.1 320x1 bg#EEF1F6
+    RECT radio sel @35,395.1 20x20 bd#007F74/2px r10
+    RECT radio-dot @40,400.1 10x10 bg#007F74 r5
+    TEXT @65,396.6 40x17 bg#1A2233 ts400/14 T=Aéreo
+    RECT divider @35,466.1 320x1 bg#EEF1F6
+    RECT radio @35,436.1 20x20 bd#A7B0C0/2px r10
+    TEXT @65,437.6 105x17 bg#1A2233 ts400/14 T=Veículo alugado
+    RECT radio @35,477.1 20x20 bd#A7B0C0/2px r10
+    TEXT @65,478.6 38x17 bg#1A2233 ts400/14 T=Outro
+    RECT q @20,538.1 350x203.9 bg#F3FBFA bd#8FD3C9/1px r14
+    TEXT @35,553.1 202x15 bg#007F74 ts700/12 T=→ Aparece porque marcou \"Aéreo\
+    TEXT @35,574.1 262x19 bg#1A2233 ts700/14/lh18.9 T=Como chegou do aeroporto a Olímpia?
+    RECT chip @35,603 53.4x36 bg#FFFFFF bd#CBD2DE/1px r18
+    TEXT @49,613 26x16 bg#343E52 ts500/13 T=Táxi
+    RECT chip @96.4,603 89.6x36 bg#FFFFFF bd#CBD2DE/1px r18
+    TEXT @110.4,613 62x16 bg#343E52 ts500/13 T=Aplicativo
+    RECT chip @194,603 124.1x36 bg#FFFFFF bd#CBD2DE/1px r18
+    TEXT @208,613 96x16 bg#343E52 ts500/13 T=Ônibus de linha
+    RECT chip sel @35,647 185.1x36 bg#007F74 bd#007F74/1px r18
+    TEXT @49,657 157x16 bg#FFFFFF ts600/13 T=Transfer da hospedagem
+    RECT chip @35,691 127.2x36 bg#FFFFFF bd#CBD2DE/1px r18
+    TEXT @49,701 99x16 bg#343E52 ts500/13 T=Veículo alugado
+    RECT chip @170.2,691 62.8x36 bg#FFFFFF bd#CBD2DE/1px r18
+    TEXT @184.2,701 36x16 bg#343E52 ts500/13 T=Outro
+    RECT bottom @0,759 390x93 bg#FFFFFF
+    RECT divider @0,759 390x1 bg#E3E7EF
+    RECT btn sec @20,774 110x52 bg#FFFFFF bd#CBD2DE/1px r12
+    TEXT @51.5,790 48x19 bg#1B2556 ts700/16 T=Voltar
+    RECT btn pri @142,774 228x52 bg#1B2556 r12
+    TEXT @198.8,790 115x19 bg#FFFFFF ts700/16 T=Próxima seção
+  FRAM 07 Seção 5 – Grupo (inconsistência) @0,0 390x1048 bg#F4F6FA
+    RECT appbar @0,40 390x96 bg#FFFFFF
+    RECT divider @0,135 390x1 bg#E3E7EF
+    RECT back @20,50 32x32 bg#EEF1F6 r16
+    TEXT @32.1,55.5 8x22 bg#1B2556 ts700/18 T=‹
+    TEXT @89.2,56 171x21 bg#000000 ts400/12 T={ts3}**Nova pesquisa** {/ts3}{ts4}**#0047**{/ts4}
+    RECT pill off @297.2,53.5 72.8x25 bg#FDECEC r12.5
+    RECT dot @307.2,62 8x8 bg#A12B2B r4
+    TEXT @321.2,58.5 40x15 bg#A12B2B ts600/12 T=Offline
+    TEXT @20,94 81x15 bg#000000 ts400/12 T={ts5}**Seção** {/ts5}{ts6}**5**{/ts6}{ts5} **de 10**{/ts5}
+    TEXT @253.6,94 116x15 bg#5A6478 ts500/12 T=Salvo no aparelho ✓
+    RECT track @20,115 350x6 bg#E3E7EF r3
+    RECT fill @20,115 175x6 bg#00A395 r3
+    TEXT @20,154 181x27 bg#1B2556 ts800/22/ls-0.0136em T=Grupo de viagem
+    TEXT @20,185 193x19 bg#5A6478 ts400/13/lh18.2 T=Com quem o entrevistado está.
+    RECT q @20,218.2 350x182.9 bg#FFFFFF bd#E3E7EF/1px r14
+    TEXT @35,233.2 177x19 bg#1A2233 ts700/14/lh18.9 T=Com quem está viajando?
+    RECT chip sel @35,262.1 95.9x36 bg#007F74 bd#007F74/1px r18
+    TEXT @49,272.1 69x16 bg#FFFFFF ts600/13 T=Sozinho\\(a\\)
+    RECT chip @138.9,262.1 71.5x36 bg#FFFFFF bd#CBD2DE/1px r18
+    TEXT @152.9,272.1 44x16 bg#343E52 ts500/13 T=Família
+    RECT chip @218.4,262.1 75x36 bg#FFFFFF bd#CBD2DE/1px r18
+    TEXT @232.4,272.1 47x16 bg#343E52 ts500/13 T=Amigos
+    RECT chip @35,306.1 167.6x36 bg#FFFFFF bd#CBD2DE/1px r18
+    TEXT @49,316.1 140x16 bg#343E52 ts500/13 T=Noivo\\(a\\)/Namorado\\(a\\)
+    RECT chip @35,350.1 152.6x36 bg#FFFFFF bd#CBD2DE/1px r18
+    TEXT @49,360.1 125x16 bg#343E52 ts500/13 T=Colegas de trabalho
+    RECT chip @195.6,350.1 85.4x36 bg#FFFFFF bd#CBD2DE/1px r18
+    TEXT @209.6,360.1 58x16 bg#343E52 ts500/13 T=Excursão
+    RECT chip @289,350.1 62.8x36 bg#FFFFFF bd#CBD2DE/1px r18
+    TEXT @303,360.1 36x16 bg#343E52 ts500/13 T=Outro
+    RECT q @20,417.1 350x375.9 bg#FFFFFF bd#E3E7EF/1px r14
+    TEXT @35,432.1 258x19 bg#1A2233 ts700/14/lh18.9 T=Nº de acompanhantes por faixa etária
+    RECT divider @35,513 320x1 bg#EEF1F6
+    TEXT @35,478.5 76x17 bg#1A2233 ts400/14 T=0 a 12 anos
+    RECT sb @245,470 34x34 bg#FFFFFF bd#CBD2DE/1px r9
+    TEXT @255.9,476.5 13x22 bg#1B2556 ts700/18 T=−
+    TEXT @292.6,477 14.8x19 bg#1A2233 ts700/16/C T=0
+    RECT sb p @321,470 34x34 bg#007F74 bd#007F74/1px r9
+    TEXT @331.9,476.5 13x22 bg#FFFFFF ts700/18 T=+
+    RECT divider @35,566 320x1 bg#EEF1F6
+    TEXT @35,531.5 82x17 bg#1A2233 ts400/14 T=13 a 17 anos
+    RECT sb @245,523 34x34 bg#FFFFFF bd#CBD2DE/1px r9
+    TEXT @255.9,529.5 13x22 bg#1B2556 ts700/18 T=−
+    TEXT @292.6,530 14.8x19 bg#1A2233 ts700/16/C T=0
+    RECT sb p @321,523 34x34 bg#007F74 bd#007F74/1px r9
+    TEXT @331.9,529.5 13x22 bg#FFFFFF ts700/18 T=+
+    RECT divider @35,619 320x1 bg#EEF1F6
+    TEXT @35,584.5 84x17 bg#1A2233 ts400/14 T=18 a 29 anos
+    RECT sb @245,576 34x34 bg#FFFFFF bd#CBD2DE/1px r9
+    TEXT @255.9,582.5 13x22 bg#1B2556 ts700/18 T=−
+    TEXT @292.6,583 14.8x19 bg#1A2233 ts700/16/C T=0
+    RECT sb p @321,576 34x34 bg#007F74 bd#007F74/1px r9
+    TEXT @331.9,582.5 13x22 bg#FFFFFF ts700/18 T=+
+    RECT divider @35,672 320x1 bg#EEF1F6
+    TEXT @35,637.5 88x17 bg#1A2233 ts400/14 T=30 a 44 anos
+    RECT sb @245,629 34x34 bg#FFFFFF bd#CBD2DE/1px r9
+    TEXT @255.9,635.5 13x22 bg#1B2556 ts700/18 T=−
+    TEXT @293,636 14.1x19 bg#1A2233 ts700/16/C T=2
+    RECT sb p @321,629 34x34 bg#007F74 bd#007F74/1px r9
+    TEXT @331.9,635.5 13x22 bg#FFFFFF ts700/18 T=+
+    RECT divider @35,725 320x1 bg#EEF1F6
+    TEXT @35,690.5 87x17 bg#1A2233 ts400/14 T=45 a 64 anos
+    RECT sb @245,682 34x34 bg#FFFFFF bd#CBD2DE/1px r9
+    TEXT @255.9,688.5 13x22 bg#1B2556 ts700/18 T=−
+    TEXT @292.6,689 14.8x19 bg#1A2233 ts700/16/C T=0
+    RECT sb p @321,682 34x34 bg#007F74 bd#007F74/1px r9
+    TEXT @331.9,688.5 13x22 bg#FFFFFF ts700/18 T=+
+    TEXT @35,743.5 119x17 bg#1A2233 ts400/14 T=Acima de 65 anos
+    RECT sb @245,735 34x34 bg#FFFFFF bd#CBD2DE/1px r9
+    TEXT @255.9,741.5 13x22 bg#1B2556 ts700/18 T=−
+    TEXT @292.6,742 14.8x19 bg#1A2233 ts700/16/C T=0
+    RECT sb p @321,735 34x34 bg#007F74 bd#007F74/1px r9
+    TEXT @331.9,741.5 13x22 bg#FFFFFF ts700/18 T=+
+    RECT alert @20,809 350x129.5 bg#FFF4D6 bd#E0A100/1px r12
+    RECT ic @33,822 24x24 bg#E0A100 r12
+    TEXT @42.5,825.5 5x17 bg#FFFFFF ts800/14 T=!
+    TEXT @67,823 266x20 bg#3D2E00 ts700/14/lh19.6 T=Resposta possivelmente inconsistente
+    TEXT @67,844.6 291.9x37 bg#5C3F00 ts400/13/lh18.2 T=Marcou \"Sozinho\\(a\\)\", mas informou 2 acompanhantes. Confirme com o entrevistado.
+    RECT ab pri @67,889.9 71x35.5 bg#3D2E00 r8
+    TEXT @79,898.9 48x18 bg#FFFFFF ts700/12.5/lh17.5 T=Corrigir
+    RECT ab sec @146,889.9 134.8x35.5 bd#B88400/1px r8
+    TEXT @159,899.9 109x18 bg#5C3F00 ts700/12.5/lh17.5 T=Manter e sinalizar
+    RECT bottom @0,955.4 390x93 bg#FFFFFF
+    RECT divider @0,955.4 390x1 bg#E3E7EF
+    RECT btn sec @20,970.4 110x52 bg#FFFFFF bd#CBD2DE/1px r12
+    TEXT @51.5,986.4 48x19 bg#1B2556 ts700/16 T=Voltar
+    RECT btn pri @142,970.4 228x52 bg#1B2556 r12
+    TEXT @198.8,986.4 115x19 bg#FFFFFF ts700/16 T=Próxima seção
+  FRAM 08 Seção 6 – Hospedagem e refeições @0,0 390x1058 bg#F4F6FA
+    RECT appbar @0,40 390x96 bg#FFFFFF
+    RECT divider @0,135 390x1 bg#E3E7EF
+    RECT back @20,50 32x32 bg#EEF1F6 r16
+    TEXT @32.1,55.5 8x22 bg#1B2556 ts700/18 T=‹
+    TEXT @89.2,56 171x21 bg#000000 ts400/12 T={ts3}**Nova pesquisa** {/ts3}{ts4}**#0047**{/ts4}
+    RECT pill off @297.2,53.5 72.8x25 bg#FDECEC r12.5
+    RECT dot @307.2,62 8x8 bg#A12B2B r4
+    TEXT @321.2,58.5 40x15 bg#A12B2B ts600/12 T=Offline
+    TEXT @20,94 82x15 bg#000000 ts400/12 T={ts5}**Seção** {/ts5}{ts6}**6**{/ts6}{ts5} **de 10**{/ts5}
+    TEXT @253.6,94 116x15 bg#5A6478 ts500/12 T=Salvo no aparelho ✓
+    RECT track @20,115 350x6 bg#E3E7EF r3
+    RECT fill @20,115 210x6 bg#00A395 r3
+    TEXT @20,154 264x27 bg#1B2556 ts800/22/ls-0.0136em T=Hospedagem e refeições
+    TEXT @20,185 155x19 bg#5A6478 ts400/13/lh18.2 T=Onde ficou e onde come.
+    RECT q @20,218.2 350x467.9 bg#FFFFFF bd#E3E7EF/1px r14
+    TEXT @35,233.2 252x19 bg#1A2233 ts700/14/lh18.9 T=Qual meio de hospedagem utilizado?
+    RECT divider @35,302.1 320x1 bg#EEF1F6
+    RECT radio @35,272.1 20x20 bd#A7B0C0/2px r10
+    TEXT @65,273.6 36x17 bg#1A2233 ts400/14 T=Hotel
+    RECT divider @35,343.1 320x1 bg#EEF1F6
+    RECT radio @35,313.1 20x20 bd#A7B0C0/2px r10
+    TEXT @65,314.6 58x17 bg#1A2233 ts400/14 T=Pousada
+    RECT divider @35,384.1 320x1 bg#EEF1F6
+    RECT radio sel @35,354.1 20x20 bd#007F74/2px r10
+    RECT radio-dot @40,359.1 10x10 bg#007F74 r5
+    TEXT @65,355.6 44x17 bg#1A2233 ts400/14 T=Resort
+    RECT divider @35,425.1 320x1 bg#EEF1F6
+    RECT radio @35,395.1 20x20 bd#A7B0C0/2px r10
+    TEXT @65,396.6 93x17 bg#1A2233 ts400/14 T=Hotel fazenda
+    RECT divider @35,466.1 320x1 bg#EEF1F6
+    RECT radio @35,436.1 20x20 bd#A7B0C0/2px r10
+    TEXT @65,437.6 43x17 bg#1A2233 ts400/14 T=Hostel
+    RECT divider @35,507.1 320x1 bg#EEF1F6
+    RECT radio @35,477.1 20x20 bd#A7B0C0/2px r10
+    TEXT @65,478.6 25x17 bg#1A2233 ts400/14 T=Flat
+    RECT divider @35,548.1 320x1 bg#EEF1F6
+    RECT radio @35,518.1 20x20 bd#A7B0C0/2px r10
+    TEXT @65,519.6 157x17 bg#1A2233 ts400/14 T=Imóvel alugado / Airbnb
+    RECT divider @35,589.1 320x1 bg#EEF1F6
+    RECT radio @35,559.1 20x20 bd#A7B0C0/2px r10
+    TEXT @65,560.6 180x17 bg#1A2233 ts400/14 T=Casa de parentes e amigos
+    RECT divider @35,630.1 320x1 bg#EEF1F6
+    RECT radio @35,600.1 20x20 bd#A7B0C0/2px r10
+    TEXT @65,601.6 180x17 bg#1A2233 ts400/14 T=Day use / não se hospedou
+    RECT radio @35,641.1 20x20 bd#A7B0C0/2px r10
+    TEXT @65,642.6 45x17 bg#1A2233 ts400/14 T=Outros
+    RECT q @20,702.1 350x245.9 bg#FFFFFF bd#E3E7EF/1px r14
+    TEXT @35,717.1 190x19 bg#1A2233 ts700/14/lh18.9 T=Onde faz / fez as refeições?
+    TEXT @35,740 141x15 bg#5A6478 ts400/12 T=Pode marcar mais de um
+    RECT chip sel @35,765 151.6x36 bg#007F74 bd#007F74/1px r18
+    TEXT @49,775 124x16 bg#FFFFFF ts600/13 T=Dentro dos parques
+    RECT chip sel @35,809 183.2x36 bg#007F74 bd#007F74/1px r18
+    TEXT @49,819 155x16 bg#FFFFFF ts600/13 T=No local de hospedagem
+    RECT chip @35,853 202.2x36 bg#FFFFFF bd#CBD2DE/1px r18
+    TEXT @49,863 175x16 bg#343E52 ts500/13 T=Estabelecimentos na cidade
+    RECT chip @35,897 122.8x36 bg#FFFFFF bd#CBD2DE/1px r18
+    TEXT @49,907 95x16 bg#343E52 ts500/13 T=Trouxe de casa
+    RECT chip @165.8,897 101.3x36 bg#FFFFFF bd#CBD2DE/1px r18
+    TEXT @179.8,907 74x16 bg#343E52 ts500/13 T=Não utilizou
+    RECT bottom @0,965 390x93 bg#FFFFFF
+    RECT divider @0,965 390x1 bg#E3E7EF
+    RECT btn sec @20,980 110x52 bg#FFFFFF bd#CBD2DE/1px r12
+    TEXT @51.5,996 48x19 bg#1B2556 ts700/16 T=Voltar
+    RECT btn pri @142,980 228x52 bg#1B2556 r12
+    TEXT @198.8,996 115x19 bg#FFFFFF ts700/16 T=Próxima seção
+  FRAM 09 Seção 7 – Avaliação de serviços @0,0 390x1026 bg#F4F6FA
+    RECT appbar @0,40 390x96 bg#FFFFFF
+    RECT divider @0,135 390x1 bg#E3E7EF
+    RECT back @20,50 32x32 bg#EEF1F6 r16
+    TEXT @32.1,55.5 8x22 bg#1B2556 ts700/18 T=‹
+    TEXT @89.2,56 171x21 bg#000000 ts400/12 T={ts3}**Nova pesquisa** {/ts3}{ts4}**#0047**{/ts4}
+    RECT pill off @297.2,53.5 72.8x25 bg#FDECEC r12.5
+    RECT dot @307.2,62 8x8 bg#A12B2B r4
+    TEXT @321.2,58.5 40x15 bg#A12B2B ts600/12 T=Offline
+    TEXT @20,94 81x15 bg#000000 ts400/12 T={ts5}**Seção** {/ts5}{ts6}**7**{/ts6}{ts5} **de 10**{/ts5}
+    TEXT @253.6,94 116x15 bg#5A6478 ts500/12 T=Salvo no aparelho ✓
+    RECT track @20,115 350x6 bg#E3E7EF r3
+    RECT fill @20,115 245x6 bg#00A395 r3
+    TEXT @20,154 244x27 bg#1B2556 ts800/22/ls-0.0136em T=Avaliação dos serviços
+    TEXT @20,185 246x19 bg#5A6478 ts400/13/lh18.2 T=12 itens · toque em uma opção por item.
+    RECT rate @20,212.2 350x92 bg#FFFFFF bd#E3E7EF/1px r12
+    TEXT @33,225.2 92x17 bg#1A2233 ts700/14 T=Hospedagem
+    TEXT @347.3,225.2 10x13 bg#1E7A4E ts600/11 T=✓
+    RECT sg g @33,251.2 60x40 bg#1E8E5A bd#1E8E5A/1px r9
+    TEXT @44.4,263.9 37.3x13 bg#FFFFFF ts600/11.5/lh12.7/C T=Ótimo
+    RECT sg @99,251.2 60x40 bg#FFFFFF bd#D6DCE6/1px r9
+    TEXT @105.7,263.9 46.6x13 bg#5A6478 ts600/11.5/lh12.7/C T=Regular
+    RECT sg @165,251.2 60x40 bg#FFFFFF bd#D6DCE6/1px r9
+    TEXT @179,263.9 31.9x13 bg#5A6478 ts600/11.5/lh12.7/C T=Ruim
+    RECT sg @231,251.2 60x40 bg#FFFFFF bd#D6DCE6/1px r9
+    TEXT @238.3,263.9 45.4x13 bg#5A6478 ts600/11.5/lh12.7/C T=Não sei
+    RECT sg @297,251.2 60x40 bg#FFFFFF bd#D6DCE6/1px r9
+    TEXT @306.9,257.5 40.3x26 bg#5A6478 ts600/11.5/lh12.7/C T=Não utilizei
+    RECT rate @20,314.2 350x92 bg#FFFFFF bd#E3E7EF/1px r12
+    TEXT @33,327.2 87x17 bg#1A2233 ts700/14 T=Alimentação
+    TEXT @347.3,327.2 10x13 bg#1E7A4E ts600/11 T=✓
+    RECT sg @33,353.2 60x40 bg#FFFFFF bd#D6DCE6/1px r9
+    TEXT @44.4,365.9 37.3x13 bg#5A6478 ts600/11.5/lh12.7/C T=Ótimo
+    RECT sg y @99,353.2 60x40 bg#F6C944 bd#F6C944/1px r9
+    TEXT @105.7,365.9 46.6x13 bg#3D2E00 ts600/11.5/lh12.7/C T=Regular
+    RECT sg @165,353.2 60x40 bg#FFFFFF bd#D6DCE6/1px r9
+    TEXT @179,365.9 31.9x13 bg#5A6478 ts600/11.5/lh12.7/C T=Ruim
+    RECT sg @231,353.2 60x40 bg#FFFFFF bd#D6DCE6/1px r9
+    TEXT @238.3,365.9 45.4x13 bg#5A6478 ts600/11.5/lh12.7/C T=Não sei
+    RECT sg @297,353.2 60x40 bg#FFFFFF bd#D6DCE6/1px r9
+    TEXT @306.9,359.5 40.3x26 bg#5A6478 ts600/11.5/lh12.7/C T=Não utilizei
+    RECT rate @20,416.2 350x92 bg#FFFFFF bd#E3E7EF/1px r12
+    TEXT @33,429.2 78x17 bg#1A2233 ts700/14 T=Artesanato
+    TEXT @347.3,429.2 10x13 bg#1E7A4E ts600/11 T=✓
+    RECT sg @33,455.2 60x40 bg#FFFFFF bd#D6DCE6/1px r9
+    TEXT @44.4,467.9 37.3x13 bg#5A6478 ts600/11.5/lh12.7/C T=Ótimo
+    RECT sg @99,455.2 60x40 bg#FFFFFF bd#D6DCE6/1px r9
+    TEXT @105.7,467.9 46.6x13 bg#5A6478 ts600/11.5/lh12.7/C T=Regular
+    RECT sg @165,455.2 60x40 bg#FFFFFF bd#D6DCE6/1px r9
+    TEXT @179,467.9 31.9x13 bg#5A6478 ts600/11.5/lh12.7/C T=Ruim
+    RECT sg @231,455.2 60x40 bg#FFFFFF bd#D6DCE6/1px r9
+    TEXT @238.3,467.9 45.4x13 bg#5A6478 ts600/11.5/lh12.7/C T=Não sei
+    RECT sg n @297,455.2 60x40 bg#5A6478 bd#5A6478/1px r9
+    TEXT @306.9,461.5 40.3x26 bg#FFFFFF ts600/11.5/lh12.7/C T=Não utilizei
+    RECT rate @20,518.2 350x92 bg#FFFFFF bd#E3E7EF/1px r12
+    TEXT @33,531.2 190x17 bg#1A2233 ts700/14 T=Atendimento/Hospitalidade
+    TEXT @347.3,531.2 10x13 bg#1E7A4E ts600/11 T=✓
+    RECT sg g @33,557.2 60x40 bg#1E8E5A bd#1E8E5A/1px r9
+    TEXT @44.4,569.9 37.3x13 bg#FFFFFF ts600/11.5/lh12.7/C T=Ótimo
+    RECT sg @99,557.2 60x40 bg#FFFFFF bd#D6DCE6/1px r9
+    TEXT @105.7,569.9 46.6x13 bg#5A6478 ts600/11.5/lh12.7/C T=Regular
+    RECT sg @165,557.2 60x40 bg#FFFFFF bd#D6DCE6/1px r9
+    TEXT @179,569.9 31.9x13 bg#5A6478 ts600/11.5/lh12.7/C T=Ruim
+    RECT sg @231,557.2 60x40 bg#FFFFFF bd#D6DCE6/1px r9
+    TEXT @238.3,569.9 45.4x13 bg#5A6478 ts600/11.5/lh12.7/C T=Não sei
+    RECT sg @297,557.2 60x40 bg#FFFFFF bd#D6DCE6/1px r9
+    TEXT @306.9,563.5 40.3x26 bg#5A6478 ts600/11.5/lh12.7/C T=Não utilizei
+    RECT rate @20,620.2 350x92 bg#FFFFFF bd#E3E7EF/1px r12
+    TEXT @33,633.2 144x17 bg#1A2233 ts700/14 T=Segurança da cidade
+    TEXT @347.3,633.2 10x13 bg#1E7A4E ts600/11 T=✓
+    RECT sg g @33,659.2 60x40 bg#1E8E5A bd#1E8E5A/1px r9
+    TEXT @44.4,671.9 37.3x13 bg#FFFFFF ts600/11.5/lh12.7/C T=Ótimo
+    RECT sg @99,659.2 60x40 bg#FFFFFF bd#D6DCE6/1px r9
+    TEXT @105.7,671.9 46.6x13 bg#5A6478 ts600/11.5/lh12.7/C T=Regular
+    RECT sg @165,659.2 60x40 bg#FFFFFF bd#D6DCE6/1px r9
+    TEXT @179,671.9 31.9x13 bg#5A6478 ts600/11.5/lh12.7/C T=Ruim
+    RECT sg @231,659.2 60x40 bg#FFFFFF bd#D6DCE6/1px r9
+    TEXT @238.3,671.9 45.4x13 bg#5A6478 ts600/11.5/lh12.7/C T=Não sei
+    RECT sg @297,659.2 60x40 bg#FFFFFF bd#D6DCE6/1px r9
+    TEXT @306.9,665.5 40.3x26 bg#5A6478 ts600/11.5/lh12.7/C T=Não utilizei
+    RECT rate @20,722.2 350x92 bg#FFFFFF bd#E3E7EF/1px r12
+    TEXT @33,735.2 205x17 bg#1A2233 ts700/14 T=Sinalização turística e de ruas
+    TEXT @347.3,735.2 10x13 bg#1E7A4E ts600/11 T=✓
+    RECT sg @33,761.2 60x40 bg#FFFFFF bd#D6DCE6/1px r9
+    TEXT @44.4,773.9 37.3x13 bg#5A6478 ts600/11.5/lh12.7/C T=Ótimo
+    RECT sg @99,761.2 60x40 bg#FFFFFF bd#D6DCE6/1px r9
+    TEXT @105.7,773.9 46.6x13 bg#5A6478 ts600/11.5/lh12.7/C T=Regular
+    RECT sg r @165,761.2 60x40 bg#D32A30 bd#D32A30/1px r9
+    TEXT @179,773.9 31.9x13 bg#FFFFFF ts600/11.5/lh12.7/C T=Ruim
+    RECT sg @231,761.2 60x40 bg#FFFFFF bd#D6DCE6/1px r9
+    TEXT @238.3,773.9 45.4x13 bg#5A6478 ts600/11.5/lh12.7/C T=Não sei
+    RECT sg @297,761.2 60x40 bg#FFFFFF bd#D6DCE6/1px r9
+    TEXT @306.9,767.5 40.3x26 bg#5A6478 ts600/11.5/lh12.7/C T=Não utilizei
+    RECT rate @20,824.2 350x92 bg#FFFFFF bd#E3E7EF/1px r12
+    TEXT @33,837.2 128x17 bg#1A2233 ts700/14 T=Limpeza da cidade
+    RECT sg @33,863.2 60x40 bg#FFFFFF bd#D6DCE6/1px r9
+    TEXT @44.4,875.9 37.3x13 bg#5A6478 ts600/11.5/lh12.7/C T=Ótimo
+    RECT sg @99,863.2 60x40 bg#FFFFFF bd#D6DCE6/1px r9
+    TEXT @105.7,875.9 46.6x13 bg#5A6478 ts600/11.5/lh12.7/C T=Regular
+    RECT sg @165,863.2 60x40 bg#FFFFFF bd#D6DCE6/1px r9
+    TEXT @179,875.9 31.9x13 bg#5A6478 ts600/11.5/lh12.7/C T=Ruim
+    RECT sg @231,863.2 60x40 bg#FFFFFF bd#D6DCE6/1px r9
+    TEXT @238.3,875.9 45.4x13 bg#5A6478 ts600/11.5/lh12.7/C T=Não sei
+    RECT sg @297,863.2 60x40 bg#FFFFFF bd#D6DCE6/1px r9
+    TEXT @306.9,869.5 40.3x26 bg#5A6478 ts600/11.5/lh12.7/C T=Não utilizei
+    RECT bottom @0,933.2 390x93 bg#FFFFFF
+    RECT divider @0,933.2 390x1 bg#E3E7EF
+    RECT btn sec @20,948.2 110x52 bg#FFFFFF bd#CBD2DE/1px r12
+    TEXT @51.5,964.2 48x19 bg#1B2556 ts700/16 T=Voltar
+    RECT btn pri @142,948.2 228x52 bg#1B2556 r12
+    TEXT @198.8,964.2 115x19 bg#FFFFFF ts700/16 T=Próxima seção
+  FRAM 10 Seção 8 – Avaliação de atrativos @0,0 390x930 bg#F4F6FA
+    RECT appbar @0,40 390x96 bg#FFFFFF
+    RECT divider @0,135 390x1 bg#E3E7EF
+    RECT back @20,50 32x32 bg#EEF1F6 r16
+    TEXT @32.1,55.5 8x22 bg#1B2556 ts700/18 T=‹
+    TEXT @89.2,56 171x21 bg#000000 ts400/12 T={ts3}**Nova pesquisa** {/ts3}{ts4}**#0047**{/ts4}
+    RECT pill off @297.2,53.5 72.8x25 bg#FDECEC r12.5
+    RECT dot @307.2,62 8x8 bg#A12B2B r4
+    TEXT @321.2,58.5 40x15 bg#A12B2B ts600/12 T=Offline
+    TEXT @20,94 82x15 bg#000000 ts400/12 T={ts5}**Seção** {/ts5}{ts6}**8**{/ts6}{ts5} **de 10**{/ts5}
+    TEXT @253.6,94 116x15 bg#5A6478 ts500/12 T=Salvo no aparelho ✓
+    RECT track @20,115 350x6 bg#E3E7EF r3
+    RECT fill @20,115 280x6 bg#00A395 r3
+    TEXT @20,154 247x27 bg#1B2556 ts800/22/ls-0.0136em T=Avaliação dos atrativos
+    TEXT @20,185 154x19 bg#5A6478 ts400/13/lh18.2 T=22 atrativos · 3 avaliados
+    RECT input @20,212.2 350x46 bg#FFFFFF bd#CBD2DE/1px r10
+    TEXT @33,225.7 120x18 bg#8C96A8 ts400/15 T=Buscar atrativo…
+    RECT rate @20,268.2 350x92 bg#FFFFFF bd#E3E7EF/1px r12
+    TEXT @33,281.2 236x17 bg#1A2233 ts700/14 T=P. Aquático Thermas dos Laranjais
+    TEXT @347.3,281.2 10x13 bg#1E7A4E ts600/11 T=✓
+    RECT sg g @33,307.2 60x40 bg#1E8E5A bd#1E8E5A/1px r9
+    TEXT @44.4,319.9 37.3x13 bg#FFFFFF ts600/11.5/lh12.7/C T=Ótimo
+    RECT sg @99,307.2 60x40 bg#FFFFFF bd#D6DCE6/1px r9
+    TEXT @105.7,319.9 46.6x13 bg#5A6478 ts600/11.5/lh12.7/C T=Regular
+    RECT sg @165,307.2 60x40 bg#FFFFFF bd#D6DCE6/1px r9
+    TEXT @179,319.9 31.9x13 bg#5A6478 ts600/11.5/lh12.7/C T=Ruim
+    RECT sg @231,307.2 60x40 bg#FFFFFF bd#D6DCE6/1px r9
+    TEXT @238.3,319.9 45.4x13 bg#5A6478 ts600/11.5/lh12.7/C T=Não sei
+    RECT sg @297,307.2 60x40 bg#FFFFFF bd#D6DCE6/1px r9
+    TEXT @306.9,313.5 40.3x26 bg#5A6478 ts600/11.5/lh12.7/C T=Não utilizei
+    RECT rate @20,370.2 350x92 bg#FFFFFF bd#E3E7EF/1px r12
+    TEXT @33,383.2 152x17 bg#1A2233 ts700/14 T=P. Aquático Hot Beach
+    TEXT @347.3,383.2 10x13 bg#1E7A4E ts600/11 T=✓
+    RECT sg g @33,409.2 60x40 bg#1E8E5A bd#1E8E5A/1px r9
+    TEXT @44.4,421.9 37.3x13 bg#FFFFFF ts600/11.5/lh12.7/C T=Ótimo
+    RECT sg @99,409.2 60x40 bg#FFFFFF bd#D6DCE6/1px r9
+    TEXT @105.7,421.9 46.6x13 bg#5A6478 ts600/11.5/lh12.7/C T=Regular
+    RECT sg @165,409.2 60x40 bg#FFFFFF bd#D6DCE6/1px r9
+    TEXT @179,421.9 31.9x13 bg#5A6478 ts600/11.5/lh12.7/C T=Ruim
+    RECT sg @231,409.2 60x40 bg#FFFFFF bd#D6DCE6/1px r9
+    TEXT @238.3,421.9 45.4x13 bg#5A6478 ts600/11.5/lh12.7/C T=Não sei
+    RECT sg @297,409.2 60x40 bg#FFFFFF bd#D6DCE6/1px r9
+    TEXT @306.9,415.5 40.3x26 bg#5A6478 ts600/11.5/lh12.7/C T=Não utilizei
+    RECT rate @20,472.2 350x92 bg#FFFFFF bd#E3E7EF/1px r12
+    TEXT @33,485.2 148x17 bg#1A2233 ts700/14 T=Vale dos Dinossauros
+    TEXT @347.3,485.2 10x13 bg#1E7A4E ts600/11 T=✓
+    RECT sg @33,511.2 60x40 bg#FFFFFF bd#D6DCE6/1px r9
+    TEXT @44.4,523.9 37.3x13 bg#5A6478 ts600/11.5/lh12.7/C T=Ótimo
+    RECT sg y @99,511.2 60x40 bg#F6C944 bd#F6C944/1px r9
+    TEXT @105.7,523.9 46.6x13 bg#3D2E00 ts600/11.5/lh12.7/C T=Regular
+    RECT sg @165,511.2 60x40 bg#FFFFFF bd#D6DCE6/1px r9
+    TEXT @179,523.9 31.9x13 bg#5A6478 ts600/11.5/lh12.7/C T=Ruim
+    RECT sg @231,511.2 60x40 bg#FFFFFF bd#D6DCE6/1px r9
+    TEXT @238.3,523.9 45.4x13 bg#5A6478 ts600/11.5/lh12.7/C T=Não sei
+    RECT sg @297,511.2 60x40 bg#FFFFFF bd#D6DCE6/1px r9
+    TEXT @306.9,517.5 40.3x26 bg#5A6478 ts600/11.5/lh12.7/C T=Não utilizei
+    RECT rate @20,574.2 350x92 bg#FFFFFF bd#E3E7EF/1px r12
+    TEXT @33,587.2 125x17 bg#1A2233 ts700/14 T=Museu do Folclore
+    RECT sg @33,613.2 60x40 bg#FFFFFF bd#D6DCE6/1px r9
+    TEXT @44.4,625.9 37.3x13 bg#5A6478 ts600/11.5/lh12.7/C T=Ótimo
+    RECT sg @99,613.2 60x40 bg#FFFFFF bd#D6DCE6/1px r9
+    TEXT @105.7,625.9 46.6x13 bg#5A6478 ts600/11.5/lh12.7/C T=Regular
+    RECT sg @165,613.2 60x40 bg#FFFFFF bd#D6DCE6/1px r9
+    TEXT @179,625.9 31.9x13 bg#5A6478 ts600/11.5/lh12.7/C T=Ruim
+    RECT sg @231,613.2 60x40 bg#FFFFFF bd#D6DCE6/1px r9
+    TEXT @238.3,625.9 45.4x13 bg#5A6478 ts600/11.5/lh12.7/C T=Não sei
+    RECT sg @297,613.2 60x40 bg#FFFFFF bd#D6DCE6/1px r9
+    TEXT @306.9,619.5 40.3x26 bg#5A6478 ts600/11.5/lh12.7/C T=Não utilizei
+    RECT rate @20,676.2 350x92 bg#FFFFFF bd#E3E7EF/1px r12
+    TEXT @33,689.2 166x17 bg#1A2233 ts700/14 T=Praça da Matriz / Coreto
+    RECT sg @33,715.2 60x40 bg#FFFFFF bd#D6DCE6/1px r9
+    TEXT @44.4,727.9 37.3x13 bg#5A6478 ts600/11.5/lh12.7/C T=Ótimo
+    RECT sg @99,715.2 60x40 bg#FFFFFF bd#D6DCE6/1px r9
+    TEXT @105.7,727.9 46.6x13 bg#5A6478 ts600/11.5/lh12.7/C T=Regular
+    RECT sg @165,715.2 60x40 bg#FFFFFF bd#D6DCE6/1px r9
+    TEXT @179,727.9 31.9x13 bg#5A6478 ts600/11.5/lh12.7/C T=Ruim
+    RECT sg @231,715.2 60x40 bg#FFFFFF bd#D6DCE6/1px r9
+    TEXT @238.3,727.9 45.4x13 bg#5A6478 ts600/11.5/lh12.7/C T=Não sei
+    RECT sg @297,715.2 60x40 bg#FFFFFF bd#D6DCE6/1px r9
+    TEXT @306.9,721.5 40.3x26 bg#5A6478 ts600/11.5/lh12.7/C T=Não utilizei
+    RECT link @20,778.2 350x42 bd#8FD3C9/1px r12
+    TEXT @57.9,791.2 274.3x16 bg#007F74 ts700/13/C T=Marcar os 19 restantes como \"Não utilizei\
+    RECT bottom @0,837.2 390x93 bg#FFFFFF
+    RECT divider @0,837.2 390x1 bg#E3E7EF
+    RECT btn sec @20,852.2 110x52 bg#FFFFFF bd#CBD2DE/1px r12
+    TEXT @51.5,868.2 48x19 bg#1B2556 ts700/16 T=Voltar
+    RECT btn pri @142,852.2 228x52 bg#1B2556 r12
+    TEXT @198.8,868.2 115x19 bg#FFFFFF ts700/16 T=Próxima seção
+  FRAM 11 Seção 9 – Satisfação @0,0 390x1004 bg#F4F6FA
+    RECT appbar @0,40 390x96 bg#FFFFFF
+    RECT divider @0,135 390x1 bg#E3E7EF
+    RECT back @20,50 32x32 bg#EEF1F6 r16
+    TEXT @32.1,55.5 8x22 bg#1B2556 ts700/18 T=‹
+    TEXT @89.2,56 171x21 bg#000000 ts400/12 T={ts3}**Nova pesquisa** {/ts3}{ts4}**#0047**{/ts4}
+    RECT pill off @297.2,53.5 72.8x25 bg#FDECEC r12.5
+    RECT dot @307.2,62 8x8 bg#A12B2B r4
+    TEXT @321.2,58.5 40x15 bg#A12B2B ts600/12 T=Offline
+    TEXT @20,94 82x15 bg#000000 ts400/12 T={ts5}**Seção** {/ts5}{ts6}**9**{/ts6}{ts5} **de 10**{/ts5}
+    TEXT @253.6,94 116x15 bg#5A6478 ts500/12 T=Salvo no aparelho ✓
+    RECT track @20,115 350x6 bg#E3E7EF r3
+    RECT fill @20,115 315x6 bg#00A395 r3
+    TEXT @20,154 114x27 bg#1B2556 ts800/22/ls-0.0136em T=Satisfação
+    TEXT @20,185 200x19 bg#5A6478 ts400/13/lh18.2 T=Experiência geral com o destino.
+    RECT q @20,214.2 350x249 bg#FFFFFF bd#E3E7EF/1px r14
+    RECT divider @35,279.2 320x1 bg#EEF1F6
+    TEXT @35,241.7 164x17 bg#1A2233 ts400/14 T=Costuma visitar Olímpia?
+    RECT sg @235,230.2 57x40 bg#FFFFFF bd#D6DCE6/1px r9
+    TEXT @251.1,242.9 24.8x13 bg#5A6478 ts600/11.5/lh12.7/C T=Sim
+    RECT sg r @298,230.2 57x40 bg#D32A30 bd#D32A30/1px r9
+    TEXT @313.3,242.9 26.3x13 bg#FFFFFF ts600/11.5/lh12.7/C T=Não
+    RECT divider @35,338.2 320x1 bg#EEF1F6
+    TEXT @35,300.7 118x17 bg#1A2233 ts400/14 T=Voltaria à cidade?
+    RECT sg g @235,289.2 57x40 bg#1E8E5A bd#1E8E5A/1px r9
+    TEXT @251.1,301.9 24.8x13 bg#FFFFFF ts600/11.5/lh12.7/C T=Sim
+    RECT sg @298,289.2 57x40 bg#FFFFFF bd#D6DCE6/1px r9
+    TEXT @313.3,301.9 26.3x13 bg#5A6478 ts600/11.5/lh12.7/C T=Não
+    RECT divider @35,397.2 320x1 bg#EEF1F6
+    TEXT @35,359.7 124x17 bg#1A2233 ts400/14 T=Indicaria a cidade?
+    RECT sg g @235,348.2 57x40 bg#1E8E5A bd#1E8E5A/1px r9
+    TEXT @251.1,360.9 24.8x13 bg#FFFFFF ts600/11.5/lh12.7/C T=Sim
+    RECT sg @298,348.2 57x40 bg#FFFFFF bd#D6DCE6/1px r9
+    TEXT @313.3,360.9 26.3x13 bg#5A6478 ts600/11.5/lh12.7/C T=Não
+    TEXT @35,418.7 147x17 bg#1A2233 ts400/14 T=Expectativa atendida?
+    RECT sg g @235,407.2 57x40 bg#1E8E5A bd#1E8E5A/1px r9
+    TEXT @251.1,419.9 24.8x13 bg#FFFFFF ts600/11.5/lh12.7/C T=Sim
+    RECT sg @298,407.2 57x40 bg#FFFFFF bd#D6DCE6/1px r9
+    TEXT @313.3,419.9 26.3x13 bg#5A6478 ts600/11.5/lh12.7/C T=Não
+    RECT q @20,475.2 350x136.8 bg#FFFFFF bd#E3E7EF/1px r14
+    TEXT @35,490.2 317.8x38 bg#1A2233 ts700/14/lh18.9 T=De 0 a 10, qual a probabilidade de recomendar Olímpia?
+    RECT n @35,538 25.5x38 bg#F6DADA r7
+    TEXT @43,548.5 10x17 bg#343E52 ts700/14 T=0
+    RECT n @64.5,538 25.5x38 bg#F6DADA r7
+    TEXT @74.2,548.5 7x17 bg#343E52 ts700/14 T=1
+    RECT n @93.9,538 25.5x38 bg#F6DADA r7
+    TEXT @102.2,548.5 9x17 bg#343E52 ts700/14 T=2
+    RECT n @123.4,538 25.5x38 bg#F6DADA r7
+    TEXT @131.6,548.5 10x17 bg#343E52 ts700/14 T=3
+    RECT n @152.8,538 25.5x38 bg#F6DADA r7
+    TEXT @160.8,548.5 10x17 bg#343E52 ts700/14 T=4
+    RECT n @182.3,538 25.5x38 bg#F6DADA r7
+    TEXT @190.5,548.5 10x17 bg#343E52 ts700/14 T=5
+    RECT n @211.7,538 25.5x38 bg#F6DADA r7
+    TEXT @219.9,548.5 10x17 bg#343E52 ts700/14 T=6
+    RECT n @241.2,538 25.5x38 bg#FBEFC9 r7
+    TEXT @249.8,548.5 9x17 bg#343E52 ts700/14 T=7
+    RECT n @270.6,538 25.5x38 bg#FBEFC9 r7
+    TEXT @278.8,548.5 10x17 bg#343E52 ts700/14 T=8
+    RECT n @300.1,538 25.5x38 bg#007F74 r7
+    TEXT @308.3,548.5 10x17 bg#FFFFFF ts700/14 T=9
+    RECT n @329.5,538 25.5x38 bg#D8EFE4 r7
+    TEXT @334.5,548.5 17x17 bg#343E52 ts700/14 T=10
+    TEXT @35,582 82x15 bg#5A6478 ts400/12 T=Nada provável
+    TEXT @271.5,582 84x15 bg#5A6478 ts400/12 T=Muito provável
+    RECT q @20,624 350x96.9 bg#FFFFFF bd#E3E7EF/1px r14
+    TEXT @35,639 265x19 bg#1A2233 ts700/14/lh18.9 T=De 0 a 10, que nota daria para Olímpia?
+    RECT n @35,667.9 25.5x38 bg#EEF1F6 r7
+    TEXT @43,678.4 10x17 bg#343E52 ts700/14 T=0
+    RECT n @64.5,667.9 25.5x38 bg#EEF1F6 r7
+    TEXT @74.2,678.4 7x17 bg#343E52 ts700/14 T=1
+    RECT n @93.9,667.9 25.5x38 bg#EEF1F6 r7
+    TEXT @102.2,678.4 9x17 bg#343E52 ts700/14 T=2
+    RECT n @123.4,667.9 25.5x38 bg#EEF1F6 r7
+    TEXT @131.6,678.4 10x17 bg#343E52 ts700/14 T=3
+    RECT n @152.8,667.9 25.5x38 bg#EEF1F6 r7
+    TEXT @160.8,678.4 10x17 bg#343E52 ts700/14 T=4
+    RECT n @182.3,667.9 25.5x38 bg#EEF1F6 r7
+    TEXT @190.5,678.4 10x17 bg#343E52 ts700/14 T=5
+    RECT n @211.7,667.9 25.5x38 bg#EEF1F6 r7
+    TEXT @219.9,678.4 10x17 bg#343E52 ts700/14 T=6
+    RECT n @241.2,667.9 25.5x38 bg#EEF1F6 r7
+    TEXT @249.8,678.4 9x17 bg#343E52 ts700/14 T=7
+    RECT n @270.6,667.9 25.5x38 bg#007F74 r7
+    TEXT @278.8,678.4 10x17 bg#FFFFFF ts700/14 T=8
+    RECT n @300.1,667.9 25.5x38 bg#EEF1F6 r7
+    TEXT @308.3,678.4 10x17 bg#343E52 ts700/14 T=9
+    RECT n @329.5,667.9 25.5x38 bg#EEF1F6 r7
+    TEXT @334.5,678.4 17x17 bg#343E52 ts700/14 T=10
+    RECT q @20,732.9 350x160.9 bg#FFFFFF bd#E3E7EF/1px r14
+    TEXT @35,747.9 248x19 bg#1A2233 ts700/14/lh18.9 T=O que falta para Olímpia ser melhor?
+    RECT textarea @35,776.8 320x84 bd#CBD2DE/1px r10
+    TEXT @48,788.8 277.8x40 bg#343E52 ts400/14/lh19.6 T=Mais opções de transporte público até os parques.
+    TEXT @313.1,864.8 41.9x13 bg#8C96A8 ts400/11/R T=52/500
+    RECT bottom @0,910.8 390x93 bg#FFFFFF
+    RECT divider @0,910.8 390x1 bg#E3E7EF
+    RECT btn sec @20,925.8 110x52 bg#FFFFFF bd#CBD2DE/1px r12
+    TEXT @51.5,941.8 48x19 bg#1B2556 ts700/16 T=Voltar
+    RECT btn pri @142,925.8 228x52 bg#1B2556 r12
+    TEXT @198.8,941.8 115x19 bg#FFFFFF ts700/16 T=Próxima seção
+  FRAM 12 Seção 10 – Perfil (dado suspeito) @0,0 390x1043 bg#F4F6FA
+    RECT appbar @0,40 390x96 bg#FFFFFF
+    RECT divider @0,135 390x1 bg#E3E7EF
+    RECT back @20,50 32x32 bg#EEF1F6 r16
+    TEXT @32.1,55.5 8x22 bg#1B2556 ts700/18 T=‹
+    TEXT @89.2,56 171x21 bg#000000 ts400/12 T={ts3}**Nova pesquisa** {/ts3}{ts4}**#0047**{/ts4}
+    RECT pill off @297.2,53.5 72.8x25 bg#FDECEC r12.5
+    RECT dot @307.2,62 8x8 bg#A12B2B r4
+    TEXT @321.2,58.5 40x15 bg#A12B2B ts600/12 T=Offline
+    TEXT @20,94 88x15 bg#000000 ts400/12 T={ts5}**Seção** {/ts5}{ts6}**10**{/ts6}{ts5} **de 10**{/ts5}
+    TEXT @253.6,94 116x15 bg#5A6478 ts500/12 T=Salvo no aparelho ✓
+    RECT track @20,115 350x6 bg#E3E7EF r3
+    RECT fill @20,115 350x6 bg#00A395 r3
+    TEXT @20,154 229x27 bg#1B2556 ts800/22/ls-0.0136em T=Perfil do entrevistado
+    TEXT @20,185 116x19 bg#5A6478 ts400/13/lh18.2 T=Últimas perguntas.
+    RECT q @20,214.2 350x138.9 bg#FFFFFF bd#E3E7EF/1px r14
+    TEXT @35,229.2 212x19 bg#1A2233 ts700/14/lh18.9 T=Com qual gênero se identifica?
+    RECT chip sel @35,258.1 85.3x36 bg#007F74 bd#007F74/1px r18
+    TEXT @49,268.1 58x16 bg#FFFFFF ts600/13 T=Feminino
+    RECT chip @128.3,258.1 91.8x36 bg#FFFFFF bd#CBD2DE/1px r18
+    TEXT @142.3,268.1 64x16 bg#343E52 ts500/13 T=Masculino
+    RECT chip @228,258.1 62.8x36 bg#FFFFFF bd#CBD2DE/1px r18
+    TEXT @242,268.1 36x16 bg#343E52 ts500/13 T=Outro
+    RECT chip @35,302.1 134.4x36 bg#FFFFFF bd#CBD2DE/1px r18
+    TEXT @49,312.1 107x16 bg#343E52 ts500/13 T=Prefere não dizer
+    RECT q @20,365.1 350x266 bg#FFFFFF bd#E3E7EF/1px r14
+    TEXT @35,380.1 121x19 bg#1A2233 ts700/14/lh18.9 T=Qual a sua idade?
+    RECT input warn @35,409 320x46 bg#FFFBEF bd#E0A100/1px r10
+    TEXT @48,422.5 31x18 bg#1A2233 ts700/15 T=500
+    TEXT @314.6,424.5 28x15 bg#5A6478 ts400/12 T=anos
+    RECT alert @35,465.1 320x127 bg#FFF4D6 bd#E0A100/1px r12
+    RECT ic @48,478 24x24 bg#E0A100 r12
+    TEXT @57.5,481.5 5x17 bg#FFFFFF ts800/14 T=!
+    TEXT @82,479 158x20 bg#3D2E00 ts700/14/lh19.6 T=Idade fora do esperado
+    TEXT @82,500.6 261.6x37 bg#5C3F00 ts400/13/lh18.2 T=500 anos parece incorreto. Confirme com o entrevistado. 
+    RECT ab pri @81,546.1 71x35.5 bg#3D2E00 r8
+    TEXT @93,555.1 48x18 bg#FFFFFF ts700/12.5/lh17.5 T=Corrigir
+    RECT ab sec @172,546.1 133x36 bd#B88400/1px r8
+    TEXT @182,555.1 109x18 bg#5C3F00 ts700/12.5/lh17.5 T=Manter e sinalizar
+    RECT q @20,657.8 350x138.9 bg#FFFFFF bd#E3E7EF/1px r14
+    TEXT @35,672.8 79x19 bg#1A2233 ts700/14/lh18.9 T=Estado civil
+    RECT chip @35,701.7 92.5x36 bg#FFFFFF bd#CBD2DE/1px r18
+    TEXT @49,711.7 65x16 bg#343E52 ts500/13 T=Solteiro\\(a\\)
+    RECT chip sel @135.5,701.7 182.6x36 bg#007F74 bd#007F74/1px r18
+    TEXT @149.5,711.7 156x16 bg#FFFFFF ts600/13 T=Casado\\(a\\)/União estável
+    RECT chip @35,745.7 111.5x36 bg#FFFFFF bd#CBD2DE/1px r18
+    TEXT @49,755.7 84x16 bg#343E52 ts500/13 T=Divorciado\\(a\\)
+    RECT chip @154.5,745.7 80.4x36 bg#FFFFFF bd#CBD2DE/1px r18
+    TEXT @168.5,755.7 53x16 bg#343E52 ts500/13 T=Viúvo\\(a\\)
+    RECT q @20,808.7 350x123.9 bg#FFFFFF bd#E3E7EF/1px r14
+    TEXT @35,823.7 209x19 bg#1A2233 ts700/14/lh18.9 T=Gasto médio diário em Olímpia
+    TEXT @35,846.6 204x15 bg#5A6478 ts400/12 T=Não incluir transporte entre cidades
+    RECT input @35,871.6 320x46 bg#FFFFFF bd#CBD2DE/1px r10
+    TEXT @48,887.1 16x15 bg#5A6478 ts400/12 T=R$
+    TEXT @71.4,885.1 55x18 bg#1A2233 ts700/15 T=450,00
+    RECT bottom @0,949.6 390x93 bg#FFFFFF
+    RECT divider @0,949.6 390x1 bg#E3E7EF
+    RECT btn sec @20,964.6 110x52 bg#FFFFFF bd#CBD2DE/1px r12
+    TEXT @51.5,980.6 48x19 bg#1B2556 ts700/16 T=Voltar
+    RECT btn pri @142,964.6 228x52 bg#1B2556 r12
+    TEXT @189.4,980.6 134x19 bg#FFFFFF ts700/16 T=Revisar pesquisa
+  FRAM 13 Revisão antes de salvar @0,0 390x850 bg#F4F6FA
+    RECT appbar @0,40 390x57 bg#FFFFFF
+    RECT divider @0,96 390x1 bg#E3E7EF
+    RECT back @20,50 32x32 bg#EEF1F6 r16
+    TEXT @32.1,55.5 8x22 bg#1B2556 ts700/18 T=‹
+    TEXT @117.8,56 114x21 bg#000000 ts400/12 T={ts3}**Revisão** {/ts3}{ts4}**#0047**{/ts4}
+    RECT pill off @297.2,53.5 72.8x25 bg#FDECEC r12.5
+    RECT dot @307.2,62 8x8 bg#A12B2B r4
+    TEXT @321.2,58.5 40x15 bg#A12B2B ts600/12 T=Offline
+    TEXT @20,115 244x27 bg#1B2556 ts800/22/ls-0.0136em T=Confira antes de salvar
+    TEXT @20,146 204x19 bg#5A6478 ts400/13/lh18.2 T=Toque em uma seção para editar.
+    RECT alert @20,177.2 350x84 bg#FFF4D6 bd#E0A100/1px r12
+    RECT ic @33,190.2 24x24 bg#E0A100 r12
+    TEXT @42.5,193.7 5x17 bg#FFFFFF ts800/14 T=!
+    TEXT @67,191.2 161x20 bg#3D2E00 ts700/14/lh19.6 T=2 respostas sinalizadas
+    TEXT @67,212.8 263.9x37 bg#5C3F00 ts400/13/lh18.2 T=Elas serão salvas normalmente e enviadas para a curadoria do gestor.
+    RECT card @20,275.2 350x415 bg#FFFFFF bd#E3E7EF/1px r14
+    RECT divider @35,317.2 320x1 bg#EEF1F6
+    TEXT @35,289.2 62x17 bg#1A2233 ts400/14 T=1. Origem
+    TEXT @342.6,289.2 13x17 bg#1E8E5A ts700/14 T=✓
+    RECT divider @35,357.2 320x1 bg#EEF1F6
+    TEXT @35,329.2 65x17 bg#1A2233 ts400/14 T=2. Estadia
+    TEXT @342.6,329.2 13x17 bg#1E8E5A ts700/14 T=✓
+    RECT divider @35,397.2 320x1 bg#EEF1F6
+    TEXT @35,369.2 142x17 bg#1A2233 ts400/14 T=3. Decisão da viagem
+    TEXT @342.6,369.2 13x17 bg#1E8E5A ts700/14 T=✓
+    RECT divider @35,437.2 320x1 bg#EEF1F6
+    TEXT @35,409.2 89x17 bg#1A2233 ts400/14 T=4. Transporte
+    TEXT @342.6,409.2 13x17 bg#1E8E5A ts700/14 T=✓
+    RECT divider @35,482.2 320x1 bg#EEF1F6
+    TEXT @35,451.7 130x17 bg#1A2233 ts400/14 T=5. Grupo de viagem
+    RECT tag warn @260.5,449.2 94.5x22 bg#FFF4D6 r6
+    TEXT @268.5,453.2 79x13 bg#7A5200 ts700/11 T=Inconsistência
+    RECT divider @35,522.2 320x1 bg#EEF1F6
+    TEXT @35,494.2 182x17 bg#1A2233 ts400/14 T=6. Hospedagem e refeições
+    TEXT @342.6,494.2 13x17 bg#1E8E5A ts700/14 T=✓
+    RECT divider @35,562.2 320x1 bg#EEF1F6
+    TEXT @35,534.2 157x17 bg#1A2233 ts400/14 T=7. Avaliação de serviços
+    TEXT @342.6,534.2 13x17 bg#1E8E5A ts700/14 T=✓
+    RECT divider @35,602.2 320x1 bg#EEF1F6
+    TEXT @35,574.2 162x17 bg#1A2233 ts400/14 T=8. Avaliação de atrativos
+    TEXT @342.6,574.2 13x17 bg#1E8E5A ts700/14 T=✓
+    RECT divider @35,642.2 320x1 bg#EEF1F6
+    TEXT @35,614.2 86x17 bg#1A2233 ts400/14 T=9. Satisfação
+    TEXT @342.6,614.2 13x17 bg#1E8E5A ts700/14 T=✓
+    TEXT @35,656.7 58x17 bg#1A2233 ts400/14 T=10. Perfil
+    RECT tag warn @281,654.2 74x22 bg#FFF4D6 r6
+    TEXT @289,658.2 59x13 bg#7A5200 ts700/11 T=Idade: 500
+    TEXT @20,705.2 276x36 bg#5A6478 ts400/12/lh18 T={ts9}Pesquisador: {/ts9}{ts10}**OTO-482**{/ts10}{ts9} · Início 10:34 · Fim 10:42{/ts9}\\n{ts9}Local: Thermas dos Laranjais{/ts9}
+    RECT bottom @0,757.2 390x93 bg#FFFFFF
+    RECT divider @0,757.2 390x1 bg#E3E7EF
+    RECT btn sec @20,772.2 110x52 bg#FFFFFF bd#CBD2DE/1px r12
+    TEXT @51.5,788.2 48x19 bg#1B2556 ts700/16 T=Voltar
+    RECT btn pri @142,772.2 228x52 bg#1B2556 r12
+    TEXT @193.7,788.2 125x19 bg#FFFFFF ts700/16 T=Salvar pesquisa
+  FRAM 14 Pesquisa salva (offline) @0,0 390x844 bg#F4F6FA
+    RECT DIV @147,262.8 96x96 bg#E3F4EC r48
+    RECT DIV @163,278.8 64x64 bg#1E8E5A r32
+    TEXT @178,290.3 34x41 bg#FFFFFF ts800/34/C T=✓
+    TEXT @61.8,372.8 266.5x29 bg#1B2556 ts800/24/C T=Pesquisa #0047 salva
+    TEXT @30,416.8 330x68 bg#000000 ts400/12/lh22.5/C T={ts11}Você está offline. A pesquisa ficou guardada no aparelho e será {/ts11}{ts12}**enviada automaticamente**{/ts12}{ts11} quando houver internet.{/ts11}
+    RECT card @32,497.3 326x64 bg#FFFFFF bd#E3E7EF/1px r14
+    TEXT @47,512.3 135x17 bg#1A2233 ts700/14 T=13 pesquisas na fila
+    TEXT @47,531.3 155x15 bg#5A6478 ts400/12 T=Nenhum dado será perdido
+    RECT tag pend @275.8,518.3 67.3x22 bg#E6F0FA r6
+    TEXT @283.8,522.3 52x13 bg#1F6FB0 ts700/11 T=Pendente
+    RECT bottom @0,701 390x143 bg#FFFFFF
+    RECT divider @0,701 390x1 bg#E3E7EF
+    RECT btn pri @20,716 350x52 bg#1B2556 r12
+    TEXT @130,732 130x19 bg#FFFFFF ts700/16 T=+ Nova pesquisa
+    TEXT @140.6,788.5 109x18 bg#1B2556 ts700/15 T=Voltar ao início
+  FRAM 15 Sincronização (internet voltou) @0,0 390x844 bg#F4F6FA
+    RECT appbar @0,40 390x57 bg#FFFFFF
+    RECT divider @0,96 390x1 bg#E3E7EF
+    RECT back @20,50 32x32 bg#EEF1F6 r16
+    TEXT @32.1,55.5 8x22 bg#1B2556 ts700/18 T=‹
+    TEXT @116.1,56 119x21 bg#1A2233 ts700/17 T=Sincronização
+    RECT pill on @298.7,53.5 71.3x25 bg#E3F4EC r12.5
+    RECT dot @308.7,62 8x8 bg#1E7A4E r4
+    TEXT @322.7,58.5 38x15 bg#1E7A4E ts600/12 T=Online
+    RECT DIV @20,115 350x84 bg#E3F4EC r14
+    TEXT @34,129 230x18 bg#1E7A4E ts800/15 T=Internet detectada · enviando…
+    RECT track @34,158 322x6 bg#C6E6D5 r3
+    RECT fill @34,158 199.6x6 bg#1E8E5A r3
+    TEXT @34,170 98x15 bg#1E7A4E ts600/12 T=8 de 13 enviadas
+    TEXT @278.5,170 78x15 bg#1E7A4E ts600/12 T=Em lotes de 5
+    RECT card @20,213 350x363 bg#FFFFFF bd#E3E7EF/1px r14
+    RECT divider @35,276 320x1 bg#EEF1F6
+    TEXT @35,230 179x17 bg#1A2233 ts700/14 T=#0047 · Ribeirão Preto, SP
+    TEXT @35,249 132x15 bg#5A6478 ts400/12 T=2 respostas sinalizadas
+    RECT tag pend @304.8,236 50.2x22 bg#E6F0FA r6
+    TEXT @312.8,240 34x13 bg#1F6FB0 ts700/11 T=Na fila
+    RECT divider @35,335 320x1 bg#EEF1F6
+    TEXT @35,289 180x17 bg#1A2233 ts700/14 T=#0046 · Ribeirão Preto, SP
+    TEXT @35,308 85x15 bg#5A6478 ts400/12 T=Coletada 10:31
+    RECT tag pend @278.1,295 76.9x22 bg#E6F0FA r6
+    TEXT @286.1,299 59x13 bg#1F6FB0 ts700/11 T=Enviando…
+    RECT divider @35,394 320x1 bg#EEF1F6
+    TEXT @35,348 163x17 bg#1A2233 ts700/14 T=#0045 · Uberlândia, MG
+    TEXT @35,367 131x15 bg#5A6478 ts400/12 T=Enviada para curadoria
+    RECT tag warn @280.2,354 74.8x22 bg#FFF4D6 r6
+    TEXT @288.2,358 59x13 bg#7A5200 ts700/11 T=Em revisão
+    RECT divider @35,453 320x1 bg#EEF1F6
+    TEXT @35,407 153x17 bg#1A2233 ts700/14 T=#0044 · Campinas, SP
+    TEXT @35,426 80x15 bg#5A6478 ts400/12 T=Enviada 10:44
+    RECT tag ok @268.7,413 86.3x22 bg#E3F4EC r6
+    TEXT @276.7,417 71x13 bg#1E7A4E ts700/11 T=Sincronizada
+    RECT divider @35,512 320x1 bg#EEF1F6
+    TEXT @35,466 142x17 bg#1A2233 ts700/14 T=#0042 · Barretos, SP
+    TEXT @35,485 80x15 bg#5A6478 ts400/12 T=Enviada 10:44
+    RECT tag ok @268.7,472 86.3x22 bg#E3F4EC r6
+    TEXT @276.7,476 71x13 bg#1E7A4E ts700/11 T=Sincronizada
+    TEXT @35,525 228x17 bg#1A2233 ts700/14 T=#0041 · São José do Rio Preto, SP
+    TEXT @35,544 80x15 bg#5A6478 ts400/12 T=Enviada 10:43
+    RECT tag ok @268.7,531 86.3x22 bg#E3F4EC r6
+    TEXT @276.7,535 71x13 bg#1E7A4E ts700/11 T=Sincronizada

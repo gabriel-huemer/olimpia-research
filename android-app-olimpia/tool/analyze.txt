@@ -1,0 +1,9 @@
+Analyzing android-app-olimpia...                                
+
+   info - The member 'history' overrides an inherited member but isn't annotated with '@override' - lib\data\repositories\survey_repository_impl.dart:160:28 - annotate_overrides
+  error - The name 'AuditEntry' isn't a type, so it can't be used as a type argument - lib\domain\repositories\survey_repository.dart:29:15 - non_type_as_type_argument
+   info - Statements in an if should be enclosed in a block - lib\domain\rules\suspicion_rules.dart:50:7 - curly_braces_in_flow_control_structures
+   info - Statements in an if should be enclosed in a block - lib\domain\rules\suspicion_rules.dart:122:7 - curly_braces_in_flow_control_structures
+   info - Statements in an if should be enclosed in a block - lib\domain\rules\suspicion_rules.dart:148:7 - curly_braces_in_flow_control_structures
+
+5 issues found. (ran in 2.1s)

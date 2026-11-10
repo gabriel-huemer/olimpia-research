@@ -1,0 +1,112 @@
+00:00 +0: loading C:/Users/gabriel/developer/olimpia-research/android-app-olimpia/test/smoke_flow_test.dart
+00:00 +0: (setUpAll)
+00:00 +0: seed from xlsx is cached in SQLite
+00:00 +0 -1: seed from xlsx is cached in SQLite [E]
+  Expected: 'Ribeirão Bonito'
+    Actual: 'Ribeira'
+     Which: is different.
+            Expected: Ribeirão Bonito
+              Actual: Ribeira
+                            ^
+             Differ at offset 6
+  
+  package:matcher                                     expect
+  package:flutter_test/src/widget_tester.dart 473:18  expect
+  test\smoke_flow_test.dart 41:5                      main.<fn>
+  
+00:00 +0 -1: rules flag suspicious answers without blocking (RF13)
+00:00 +1 -1: protocol, audit history and idempotent batch sync (RF08/15/16)
+00:00 +2 -1: navigates through all 15 screens
+══╡ EXCEPTION CAUGHT BY RENDERING LIBRARY ╞═════════════════════════════════════════════════════════
+The following assertion was thrown during layout:
+A RenderFlex overflowed by 17 pixels on the bottom.
+
+The overflowing RenderFlex has an orientation of Axis.vertical.
+The edge of the RenderFlex that is overflowing has been marked in the rendering with a yellow and
+black striped pattern. This is usually caused by the contents being too big for the RenderFlex.
+Consider applying a flex factor (e.g. using an Expanded widget) to force the children of the
+RenderFlex to fit within the available space instead of being sized to their natural size.
+This is considered an error condition because it indicates that there is content that cannot be
+seen. If the content is legitimately bigger than the available space, consider clipping it with a
+ClipRect widget before putting it in the flex, or using a scrollable container rather than a Flex,
+like a ListView.
+The specific RenderFlex in question is: RenderFlex#f4215 DISPOSED OVERFLOWING:
+  creator: MultiChildRenderObjectElement#94e38(DEFUNCT) ←
+    SingleChildRenderObjectElement#1f3f4(DEFUNCT) ← SingleChildRenderObjectElement#67667(DEFUNCT) ←
+    StatelessElement#17543(DEFUNCT) ← StatelessElement#cd7fa(DEFUNCT) ←
+    MultiChildRenderObjectElement#c9370(DEFUNCT) ← _SingleChildViewportElement#cf015(DEFUNCT) ←
+    SingleChildRenderObjectElement#b69d5(DEFUNCT) ← SingleChildRenderObjectElement#35dde(DEFUNCT) ←
+    SingleChildRenderObjectElement#fc278(DEFUNCT) ← SingleChildRenderObjectElement#7ba90(DEFUNCT) ←
+    StatefulElement#e1178(DEFUNCT) ← ⋯
+  parentData: <none> (can use size)
+  constraints: BoxConstraints(w=390.0, h=330.0)
+  size: Size(390.0, 330.0)
+  direction: vertical
+  mainAxisAlignment: start
+  mainAxisSize: max
+  crossAxisAlignment: start
+  textDirection: ltr
+  verticalDirection: down
+  spacing: 0.0
+◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤
+════════════════════════════════════════════════════════════════════════════════════════════════════
+══╡ EXCEPTION CAUGHT BY FLUTTER TEST FRAMEWORK ╞════════════════════════════════════════════════════
+The following TestFailure was thrown running a test:
+Expected: exactly one matching candidate
+  Actual: _TextWidgetFinder:<Found 0 widgets with text "Origem do turista": []>
+   Which: means none were found but one was expected
+
+When the exception was thrown, this was the stack:
+#4      main.<anonymous closure> (file:///C:/Users/gabriel/developer/olimpia-research/android-app-olimpia/test/smoke_flow_test.dart:114:5)
+<asynchronous suspension>
+#5      testWidgets.<anonymous closure>.<anonymous closure> (package:flutter_test/src/widget_tester.dart:192:15)
+<asynchronous suspension>
+#6      TestWidgetsFlutterBinding._runTestBody (package:flutter_test/src/binding.dart:1682:5)
+<asynchronous suspension>
+<asynchronous suspension>
+(elided one frame from package:stack_trace)
+
+This was caught by the test expectation on the following line:
+  file:///C:/Users/gabriel/developer/olimpia-research/android-app-olimpia/test/smoke_flow_test.dart line 114
+The test description was:
+  navigates through all 15 screens
+════════════════════════════════════════════════════════════════════════════════════════════════════
+══╡ EXCEPTION CAUGHT BY FLUTTER TEST FRAMEWORK ╞════════════════════════════════════════════════════
+The following message was thrown:
+Multiple exceptions (2) were detected during the running of the current test, and at least one was
+unexpected.
+════════════════════════════════════════════════════════════════════════════════════════════════════
+00:03 +2 -2: navigates through all 15 screens [E]
+  Test failed. See exception logs above.
+  The test description was: navigates through all 15 screens
+  
+══╡ EXCEPTION CAUGHT BY WIDGET INSPECTOR ╞══════════════════════════════════════════════════════════
+The following assertion was thrown:
+Looking up a deactivated widget's ancestor is unsafe.
+At this point the state of the widget's element tree is no longer stable.
+To safely refer to a widget's ancestor in its dispose() method, save a reference to the ancestor by
+calling dependOnInheritedWidgetOfExactType() in the widget's didChangeDependencies() method.
+
+When the exception was thrown, this was the stack:
+#0      Element._debugCheckStateIsActiveForAncestorLookup.<anonymous closure> (package:flutter/src/widgets/framework.dart:5049:9)
+#1      Element._debugCheckStateIsActiveForAncestorLookup (package:flutter/src/widgets/framework.dart:5063:6)
+#2      Element.visitAncestorElements (package:flutter/src/widgets/framework.dart:5174:12)
+#3      _describeRelevantUserCode (package:flutter/src/widgets/widget_inspector.dart:4236:13)
+#4      _parseDiagnosticsNode (package:flutter/src/widgets/widget_inspector.dart:4155:12)
+#5      debugTransformDebugCreator (package:flutter/src/widgets/widget_inspector.dart:4134:21)
+#6      _FlutterErrorDetailsNode.builder (package:flutter/src/foundation/assertions.dart:1310:31)
+#7      DiagnosticableNode.emptyBodyDescription (package:flutter/src/foundation/diagnostics.dart:2939:45)
+#8      TextTreeRenderer._debugRender (package:flutter/src/foundation/diagnostics.dart:1307:14)
+#9      TextTreeRenderer.render (package:flutter/src/foundation/diagnostics.dart:1137:14)
+#10     FlutterError.dumpErrorToConsole (package:flutter/src/foundation/assertions.dart:1040:13)
+#11     TestWidgetsFlutterBinding._runTest.<anonymous closure> (package:flutter_test/src/binding.dart:1509:24)
+#12     FlutterError.reportError (package:flutter/src/foundation/assertions.dart:1203:14)
+#13     TestWidgetsFlutterBinding._runTest.handleUncaughtError (package:flutter_test/src/binding.dart:1608:20)
+#14     TestWidgetsFlutterBinding._runTest.<anonymous closure> (package:flutter_test/src/binding.dart:1650:13)
+<asynchronous suspension>
+(elided 5 frames from dart:async)
+
+This exception was caught while trying to describe the user-relevant code of another error.
+════════════════════════════════════════════════════════════════════════════════════════════════════
+00:03 +2 -2: (tearDownAll)
+00:03 +2 -2: Some tests failed.

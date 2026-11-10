@@ -1,0 +1,14 @@
+
+Nome da imagem            Identifi Nome da sess∆o       Sess∆o# Uso de mem¢r
+========================= ======== ================ =========== ============
+dart.exe                     21736 Console                    1    481.940 K
+dart.exe                     25644 Console                    1     52.752 K
+dart.exe                     19040 Console                    1     51.120 K
+dart.exe                     14668 Console                    1     11.224 K
+dart.exe                     23940 Console                    1     11.376 K
+
+Nome da imagem            Identifi Nome da sess∆o       Sess∆o# Uso de mem¢r
+========================= ======== ================ =========== ============
+flutter_tester.exe           13636 Console                    1    232.212 K
+'wmic' n∆o Ç reconhecido como um comando interno
+ou externo, um programa oper†vel ou um arquivo em lotes.

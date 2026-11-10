@@ -1,0 +1,9 @@
+Analyzing lib...
+
+  error - domain\repositories\survey_repository.dart:29:15 - The name 'AuditEntry' isn't a type, so it can't be used as a type argument. Try correcting the name to an existing type, or defining a type named 'AuditEntry'. - non_type_as_type_argument
+   info - data\repositories\survey_repository_impl.dart:160:28 - The member 'history' overrides an inherited member but isn't annotated with '@override'. Try adding the '@override' annotation. - annotate_overrides
+   info - domain\rules\suspicion_rules.dart:50:7 - Statements in an if should be enclosed in a block. Try wrapping the statement in a block. - curly_braces_in_flow_control_structures
+   info - domain\rules\suspicion_rules.dart:122:7 - Statements in an if should be enclosed in a block. Try wrapping the statement in a block. - curly_braces_in_flow_control_structures
+   info - domain\rules\suspicion_rules.dart:148:7 - Statements in an if should be enclosed in a block. Try wrapping the statement in a block. - curly_braces_in_flow_control_structures
+
+5 issues found.

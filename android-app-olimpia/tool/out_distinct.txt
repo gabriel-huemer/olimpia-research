@@ -1,0 +1,150 @@
+
+### [1] Carimbo de data/hora  (distinct=0, filled=0)
+
+### [2] Nome do pesquisador  (distinct=0, filled=0)
+
+### [3] Em qual Estado reside?  (distinct=0, filled=0)
+
+### [4] Em qual cidade reside?  (distinct=0, filled=0)
+
+### [5] Data de chegada:  (distinct=0, filled=0)
+
+### [6] Data de partida:  (distinct=0, filled=0)
+
+### [7] Pernoites  (distinct=0, filled=0)
+
+### [8] Como você tomou conhecimento sobre a cidade de Olímpia?  (distinct=0, filled=0)
+
+### [9] Com quanto tempo de antecedência você decidiu vir para Olímpia?  (distinct=0, filled=0)
+
+### [10] Qual ou quais foram os principais motivos desta viagem para Olímpia?  (distinct=0, filled=0)
+
+### [11] Você considerou viajar para outro destino antes de escolher Olímpia?  (distinct=0, filled=0)
+
+### [12] Se a resposta anterior foi "SIM", nos diga qual ou quais foram os destinos que você considerou viajar? (Pular se a resposta anterior for "NÃO")  (distinct=0, filled=0)
+
+### [13] Qual meio de transporte utilizado?  (distinct=0, filled=0)
+
+### [14] Caso respondeu "Aéreo", como chegou do aeroporto à Olímpia? (Pular se a resposta anterior for diferente de "Aéreo")  (distinct=0, filled=0)
+
+### [15] Com quem está viajando?  (distinct=0, filled=0)
+
+### [16] Nº de acompanhantes de 0 a 12 anos:  (distinct=0, filled=0)
+
+### [17] Nº de acompanhantes de 13 a 17 anos:  (distinct=0, filled=0)
+
+### [18] Nº de acompanhantes de 18 a 29 anos:  (distinct=0, filled=0)
+
+### [19] Nº de acompanhantes de 30 a 44 anos:  (distinct=0, filled=0)
+
+### [20] Nº de acompanhantes de 45 a 64 anos:  (distinct=0, filled=0)
+
+### [21] Nº de acompanhantes acima de 65 anos:  (distinct=0, filled=0)
+
+### [22] No seu grupo há pessoas com alguma deficiência?  (distinct=0, filled=0)
+
+### [23] Se a resposta anterior for "SIM", quantas pessoas possuem alguma deficiência? (Pular se a resposta anterior for "NÃO")  (distinct=0, filled=0)
+
+### [24] Qual o tipo de deficiência? (Pular se a resposta anterior for "NÃO")  (distinct=0, filled=0)
+
+### [25] Qual meio de hospedagem utilizado?:  (distinct=0, filled=0)
+
+### [26] Onde faz / fez as refeições?:  (distinct=0, filled=0)
+
+### [27] Avalie os serviços da Estância Turística de Olímpia: [Hospedagem]  (distinct=0, filled=0)
+
+### [28] Avalie os serviços da Estância Turística de Olímpia: [Alimentação]  (distinct=0, filled=0)
+
+### [29] Avalie os serviços da Estância Turística de Olímpia: [Artesanato]  (distinct=0, filled=0)
+
+### [30] Avalie os serviços da Estância Turística de Olímpia: [Compras em Geral]  (distinct=0, filled=0)
+
+### [31] Avalie os serviços da Estância Turística de Olímpia: [Atendimento/Hospitalidade]  (distinct=0, filled=0)
+
+### [32] Avalie os serviços da Estância Turística de Olímpia: [Segurança da Cidade]  (distinct=0, filled=0)
+
+### [33] Avalie os serviços da Estância Turística de Olímpia: [Sinalização Turística e de Ruas]  (distinct=0, filled=0)
+
+### [34] Avalie os serviços da Estância Turística de Olímpia: [Estrutura Viária Urbana]  (distinct=0, filled=0)
+
+### [35] Avalie os serviços da Estância Turística de Olímpia: [Rodovias de Acesso à Cidade]  (distinct=0, filled=0)
+
+### [36] Avalie os serviços da Estância Turística de Olímpia: [Limpeza da Cidade]  (distinct=0, filled=0)
+
+### [37] Avalie os serviços da Estância Turística de Olímpia: [Mobilidade/Transporte Urbano]  (distinct=0, filled=0)
+
+### [38] Avalie os serviços da Estância Turística de Olímpia: [Acessibilidade para PCD]  (distinct=0, filled=0)
+
+### [39] Avalie os atrativos de Olímpia [Av. Aurora Forti Neves]  (distinct=0, filled=0)
+
+### [40] Avalie os atrativos de Olímpia [Bosque Mun. Educação Ambiental “Walter Zucca”]  (distinct=0, filled=0)
+
+### [41] Avalie os atrativos de Olímpia [Bosque Mun. “Rivaldo Mussolin” / Gruta de São José]  (distinct=0, filled=0)
+
+### [42] Avalie os atrativos de Olímpia [Centro Cultural Ruy Ohtake]  (distinct=0, filled=0)
+
+### [43] Avalie os atrativos de Olímpia [Dreams Ice Bar]  (distinct=0, filled=0)
+
+### [44] Avalie os atrativos de Olímpia [ECO - Estação Cultural de Olímpia]  (distinct=0, filled=0)
+
+### [45] Avalie os atrativos de Olímpia [Happy Jump Trampolim]  (distinct=0, filled=0)
+
+### [46] Avalie os atrativos de Olímpia [Igreja Matriz de São João Batista]  (distinct=0, filled=0)
+
+### [47] Avalie os atrativos de Olímpia [Museu de Arte Sacra e Diversidade Religiosa]  (distinct=0, filled=0)
+
+### [48] Avalie os atrativos de Olímpia [Museu de Cera Dreamland]  (distinct=0, filled=0)
+
+### [49] Avalie os atrativos de Olímpia [Museu do Folclore]  (distinct=0, filled=0)
+
+### [50] Avalie os atrativos de Olímpia [Orionverso Mundo Virtual ]  (distinct=0, filled=0)
+
+### [51] Avalie os atrativos de Olímpia [P. Aquático Thermas dos Laranjais]  (distinct=0, filled=0)
+
+### [52] Avalie os atrativos de Olímpia [P. Aquático Hot Beach]  (distinct=0, filled=0)
+
+### [53] Avalie os atrativos de Olímpia [P. Aquático Dolce Dulce]  (distinct=0, filled=0)
+
+### [54] Avalie os atrativos de Olímpia [Praia do Mirante Clube]  (distinct=0, filled=0)
+
+### [55] Avalie os atrativos de Olímpia [Radical Play Park]  (distinct=0, filled=0)
+
+### [56] Avalie os atrativos de Olímpia [Praça da Matriz / Coreto]  (distinct=0, filled=0)
+
+### [57] Avalie os atrativos de Olímpia [Santuário de Nossa Senhora Aparecida]  (distinct=0, filled=0)
+
+### [58] Avalie os atrativos de Olímpia [Vale dos Dinossauros]  (distinct=0, filled=0)
+
+### [59] Avalie os atrativos de Olímpia [Vila Guarani - Hot Beach]  (distinct=0, filled=0)
+
+### [60] Avalie os atrativos de Olímpia [Villa Mall Olímpia Park - Enjoy]  (distinct=0, filled=0)
+
+### [61] Costuma visitar Olímpia?:  (distinct=0, filled=0)
+
+### [62] Voltaria a cidade em outra oportunidade?  (distinct=0, filled=0)
+
+### [63] Você indicaria a cidade para outras pessoas?  (distinct=0, filled=0)
+
+### [64] Sua expectativa de viagem foi atendida?:  (distinct=0, filled=0)
+
+### [65] Em um escala de 0 a 10 qual a probabilidade de você recomendar o Destino Olímpia a um amigo, colega ou parente?:  (distinct=0, filled=0)
+
+### [66] Em um escala de 0 a 10 que nota você daria para o Destino Olímpia?:  (distinct=0, filled=0)
+
+### [67] O que falta para que Olímpia seja melhor ?  (distinct=0, filled=0)
+
+### [68] Com qual gênero se identifica?  (distinct=0, filled=0)
+
+### [69] Qual a sua Idade  (distinct=0, filled=0)
+
+### [70] Estado Civil  (distinct=0, filled=0)
+
+### [71] Grau de escolaridade  (distinct=0, filled=0)
+
+### [72] Ocupação profissional  (distinct=0, filled=0)
+
+### [73] Qual a sua renda familiar:  (distinct=0, filled=0)
+
+### [74] Quantas pessoas estão inclusas nessa renda familiar, incluindo você?  (distinct=0, filled=0)
+
+### [75] Qual o seu gasto médio diário em Olímpia?: **Não incluir gastos com transporte/viagem entre cidades.  (distinct=0, filled=0)

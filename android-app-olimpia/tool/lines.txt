@@ -1,0 +1,34 @@
+    ..registerFactoryParam<SurveySectionPresenter, SectionArgs, void>(
+      (args, _) => SurveySectionPresenter(args!, sl(), sl(), sl(), sl()),
+    )
+    ..registerFactoryParam<ReviewPresenter, String, void>(
+      (surveyId, _) => ReviewPresenter(surveyId!, sl(), sl(), sl(), sl()),
+    )
+    ..registerFactoryParam<SavedPresenter, String, void>(
+      (surveyId, _) => SavedPresenter(surveyId!, sl(), sl(), sl()),
+    )
+    ..registerFactory(() => SyncPresenter(sl(), sl(), sl(), sl()));
+    );
+    return [
+      for (final row in ids)
+        if (await byId(row['id']! as String) case final survey?) survey,
+    ];
+  }
+
+    if (values.isNotEmpty) return selected.any(values.contains);
+    if (notValues.isNotEmpty)
+      return selected.isNotEmpty && !selected.any(notValues.contains);
+    return true;
+  }
+}
+  List<RuleHit> evaluate(Map<String, Object?> answers) => [
+        for (final rule in _rules)
+          if (rule.evaluate(_questionnaire, answers) case final hit?) hit,
+      ];
+}
+    final current = [...?(_answers[key] as List?)?.cast<Object?>()];
+    if (!current.any((c) => City.fromAnswer(c) == city))
+      current.add(city.toAnswer());
+    setAnswer(key, current);
+  }
+

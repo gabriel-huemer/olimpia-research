@@ -1,0 +1,55 @@
+1 | 1:REGIÃO METROPOLITANA
+2 | 1:Arujá;
+3 | 1:Barueri;
+4 | 1:Biritiba Mirim;
+5 | 1:Caieiras;
+6 | 1:Cajamar;
+7 | 1:Carapicuíba;
+8 | 1:Cotia;
+9 | 1:Cotia.
+10 | 1:Diadema;
+11 | 1:Embu-Guaçu;
+12 | 1:Embu;
+13 | 1:Ferraz de Vasconcelos;
+14 | 1:Francisco Morato;
+15 | 1:Franco da Rocha;
+16 | 1:Guararema;
+17 | 1:Guarulhos;
+18 | 1:Itapevi;
+19 | 1:Itaquaquecetuba;
+20 | 1:Jandira;
+21 | 1:Juquitiba;
+22 | 1:Mairiporã;
+23 | 1:Mogi das Cruzes;
+24 | 1:Osasco;
+25 | 1:Pirapora do Bom Jesus;
+26 | 1:Poá;
+27 | 1:Ribeirão Pires;
+28 | 1:Rio Grande da Serra;
+29 | 1:Salesópolis;
+30 | 1:Santa Isabel;
+31 | 1:Santana do Parnaíba;
+32 | 1:Santo André;
+33 | 1:São Bernardo do Campo;
+34 | 1:São Caetano do Sul;
+35 | 1:São Caetano do Sul;
+36 | 1:São Lourenço da Serra;
+37 | 1:São Paulo;
+38 | 1:Suzano;
+39 | 1:Taboão da Serra;
+40 | 1:Vargem Grande Paulista;
+41 | 1:Críticas e sugestões em relação à:
+42 | 1:Atrativos em geral
+43 | 1:Aeroporto, rodovias de acesso e transportes
+44 | 1:Valores dos atrativos meios de hospedagens, alimentação e eventos
+45 | 1:Segurança da cidade e dos atrativos
+46 | 1:Atendimento ao turista e serviços em gerais
+47 | 1:Comércio, compras, alimentação, feiras e artesanatos
+48 | 1:Acessibilidade nos atrativos, meios de hospedagens, alimentações e na cidade
+49 | 1:Infraestrutura e arborização da cidade
+50 | 1:Divulgação dos atrativos, meios de hospedagens, alimentação, eventos e da cidade
+51 | 1:Limpeza e organização da cidade, rios, atrativos, meios de hospedagens e alimentação
+52 | 1:Meios de hospedagens (hotelaria)
+53 | 1:Sinalização de ruas e trânsito
+54 | 1:Saúde e atendimento médico hospitalar
+55 | 1:Novos atrativos, entretenimento, esporte, lazer, festas e eventos (parques, shopping, cinema, vida noturna)
