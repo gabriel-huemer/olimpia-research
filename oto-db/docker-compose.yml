@@ -1,0 +1,58 @@
+# Banco de dados central do OTO (PostgreSQL 16), compartilhado por Web e Mobile.
+# Uso:  cp .env.example .env  (edite as senhas)  &&  docker compose up -d
+name: oto-db
+
+services:
+  db:
+    image: postgres:16
+    container_name: oto-db
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: ${OTO_DB_NAME:-oto}
+      POSTGRES_USER: ${OTO_DB_ADMIN_USER:-oto_admin}
+      POSTGRES_PASSWORD: ${OTO_DB_ADMIN_PASSWORD:?defina OTO_DB_ADMIN_PASSWORD no .env}
+      POSTGRES_INITDB_ARGS: "--encoding=UTF8"
+      TZ: America/Sao_Paulo
+      # lidas por scripts/bootstrap.sh na primeira inicialização
+      OTO_WEB_PASSWORD: ${OTO_WEB_PASSWORD:?defina OTO_WEB_PASSWORD no .env}
+      OTO_MOBILE_PASSWORD: ${OTO_MOBILE_PASSWORD:?defina OTO_MOBILE_PASSWORD no .env}
+      OTO_READONLY_PASSWORD: ${OTO_READONLY_PASSWORD:?defina OTO_READONLY_PASSWORD no .env}
+      OTO_APP_ADMIN_EMAIL: ${OTO_APP_ADMIN_EMAIL:-}
+      OTO_APP_ADMIN_PASSWORD: ${OTO_APP_ADMIN_PASSWORD:-}
+      OTO_APP_ADMIN_NAME: ${OTO_APP_ADMIN_NAME:-Administrador OTO}
+    command: >
+      postgres
+      -c timezone=America/Sao_Paulo
+      -c log_min_duration_statement=500
+      -c log_statement=ddl
+      -c max_connections=150
+    ports:
+      # Somente local. Para a API em outro servidor, use rede privada/VPN ou túnel SSH.
+      - "127.0.0.1:${OTO_DB_PORT:-5432}:5432"
+    volumes:
+      - oto_pgdata:/var/lib/postgresql/data
+      - ./db:/oto/db:ro
+      - ./scripts:/oto/scripts:ro
+      - ./docker/initdb:/docker-entrypoint-initdb.d:ro
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U $${POSTGRES_USER} -d $${POSTGRES_DB}"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+
+  # Interface gráfica opcional:  docker compose --profile tools up -d
+  pgadmin:
+    image: dpage/pgadmin4:8
+    profiles: ["tools"]
+    restart: unless-stopped
+    environment:
+      PGADMIN_DEFAULT_EMAIL: ${PGADMIN_EMAIL:-admin@oto.local}
+      PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_PASSWORD:-troque-esta-senha}
+    ports:
+      - "127.0.0.1:5050:80"
+    depends_on:
+      db:
+        condition: service_healthy
+
+volumes:
+  oto_pgdata:

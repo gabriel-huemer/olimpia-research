@@ -1,0 +1,9 @@
+[
+ {"id":3535804,"nome":"Olímpia","microrregiao":{"mesorregiao":{"UF":{"sigla":"SP"}}}},
+ {"id":3543402,"nome":"Ribeirão Preto","microrregiao":{"mesorregiao":{"UF":{"sigla":"SP"}}}},
+ {"id":5300108,"nome":"Brasília","microrregiao":{"mesorregiao":{"UF":{"sigla":"DF"}}}},
+ {"id":4300001,"nome":"Município d'Oeste (teste aspas)","microrregiao":null,
+  "regiao-imediata":{"regiao-intermediaria":{"UF":{"sigla":"RS"}}}},
+ {"id":3535804,"nome":"Olímpia (duplicado)","microrregiao":{"mesorregiao":{"UF":{"sigla":"SP"}}}},
+ {"id":9999999,"nome":"Sem UF","microrregiao":null}
+]
