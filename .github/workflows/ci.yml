@@ -3,7 +3,13 @@ name: CI
 on:
   push:
     branches: [main]
+    paths:
+      - 'oto-db/**'
+      - '.github/workflows/ci.yml'
   pull_request:
+    paths:
+      - 'oto-db/**'
+      - '.github/workflows/ci.yml'
 
 jobs:
   banco:
