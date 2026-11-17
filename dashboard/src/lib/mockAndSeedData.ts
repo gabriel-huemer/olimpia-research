@@ -452,52 +452,35 @@ interface AppDataStore {
   auditoria: RegistroAuditoria[];
 }
 
+function buildFormularioSeed(
+  id: number,
+  nome: string,
+  numeroVersao: number,
+  status: FormularioItem["status"],
+  respostas: number,
+  vigencia: string,
+  atualizado: string,
+  qtdSecoes = SECOES_PADRAO.length
+): FormularioItem {
+  return {
+    id,
+    nome,
+    versao: `v${numeroVersao}`,
+    numeroVersao,
+    status,
+    respostas,
+    vigencia,
+    atualizado,
+    secoes: structuredClone(SECOES_PADRAO.slice(0, qtdSecoes)),
+  };
+}
+
 const initialStore: AppDataStore = {
   formularios: [
-    {
-      id: 1,
-      nome: "Pesquisa de Demanda Turística",
-      versao: "v3",
-      numeroVersao: 3,
-      status: "Ativo",
-      respostas: 5012,
-      vigencia: "01/01/2026 a 31/12/2026",
-      atualizado: "12/10/2026",
-      secoes: JSON.parse(JSON.stringify(SECOES_PADRAO)),
-    },
-    {
-      id: 2,
-      nome: "Pesquisa de Demanda Turística",
-      versao: "v2",
-      numeroVersao: 2,
-      status: "Encerrada",
-      respostas: 3870,
-      vigencia: "01/01/2025 a 31/12/2025",
-      atualizado: "20/12/2025",
-      secoes: JSON.parse(JSON.stringify(SECOES_PADRAO)),
-    },
-    {
-      id: 3,
-      nome: "Ocupação Hoteleira e Diária Média",
-      versao: "v1",
-      numeroVersao: 1,
-      status: "Rascunho",
-      respostas: 0,
-      vigencia: "não definida",
-      atualizado: "22/10/2026",
-      secoes: JSON.parse(JSON.stringify(SECOES_PADRAO.slice(0, 4))),
-    },
-    {
-      id: 4,
-      nome: "Expectativa de Feriados",
-      versao: "v1",
-      numeroVersao: 1,
-      status: "Agendado",
-      respostas: 0,
-      vigencia: "a partir de 06/11/2026",
-      atualizado: "18/10/2026",
-      secoes: JSON.parse(JSON.stringify(SECOES_PADRAO.slice(0, 5))),
-    },
+    buildFormularioSeed(1, "Pesquisa de Demanda Turística", 3, "Ativo", 5012, "01/01/2026 a 31/12/2026", "12/10/2026"),
+    buildFormularioSeed(2, "Pesquisa de Demanda Turística", 2, "Encerrada", 3870, "01/01/2025 a 31/12/2025", "20/12/2025"),
+    buildFormularioSeed(3, "Ocupação Hoteleira e Diária Média", 1, "Rascunho", 0, "não definida", "22/10/2026", 4),
+    buildFormularioSeed(4, "Expectativa de Feriados", 1, "Agendado", 0, "a partir de 06/11/2026", "18/10/2026", 5),
   ],
   pesquisas: [
     {
@@ -1014,7 +997,7 @@ export function getFilteredAnalytics(filters: AnalyticsFilters) {
       origensEstados: [
         { uf: "SP", percentual: isDefault ? 42 : Math.min(75, 42 + (offset % 8)) },
         { uf: "MG", percentual: isDefault ? 20 : Math.max(10, 20 - (offset % 5)) },
-        { uf: "PR", percentual: isDefault ? 12 : 12 },
+        { uf: "PR", percentual: isDefault ? 12 : Math.max(6, 12 - (offset % 4)) },
         { uf: "RJ · GO · SC", detalhe: "8% · 6% · 4%", percentual: 10 },
       ],
       visitanteRecorrente: {

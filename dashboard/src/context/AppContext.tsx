@@ -117,31 +117,39 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
     }, 3500);
   }, []);
 
+  const applyServerState = useCallback((data: Record<string, unknown>) => {
+    if ("dbConnected" in data) {
+      setDbConnected(Boolean(data.dbConnected));
+    }
+    setPendentesRevisao(typeof data.pendentesRevisao === "number" ? data.pendentesRevisao : 0);
+    setFormularios((data.formularios as FormularioItem[]) || []);
+    setPesquisas((data.pesquisas as PesquisaColetada[]) || []);
+    setOperadores((data.operadores as OperadorCampo[]) || []);
+    setRevisao((data.revisao as ItemRevisao[]) || []);
+    setPublicacaoItens((data.publicacaoItens as ItemPublicacao[]) || []);
+    setUltimaPublicacao((data.ultimaPublicacao as string) || "Nenhuma");
+    setMetodoPublicacao(
+      (data.metodoPublicacao as string) || "Incorporar no site (iframe/link)"
+    );
+    setProblemasImportacao((data.problemasImportacao as ProblemaImportacao[]) || []);
+    setImportacaoConcluida(Boolean(data.importacaoConcluida));
+    setUsuarios((data.usuarios as UsuarioSistema[]) || []);
+    setAuditoria((data.auditoria as RegistroAuditoria[]) || []);
+  }, []);
+
   const fetchState = useCallback(async () => {
     try {
       const res = await fetch("/api/state", { cache: "no-store" });
       if (!res.ok) return;
       const data = await res.json();
-      setDbConnected(Boolean(data.dbConnected));
-      setPendentesRevisao(data.pendentesRevisao ?? 7);
-      setFormularios(data.formularios || []);
-      setPesquisas(data.pesquisas || []);
-      setOperadores(data.operadores || []);
-      setRevisao(data.revisao || []);
-      setPublicacaoItens(data.publicacaoItens || []);
-      setUltimaPublicacao(data.ultimaPublicacao || "Nenhuma");
-      setMetodoPublicacao(data.metodoPublicacao || "Incorporar no site (iframe/link)");
-      setProblemasImportacao(data.problemasImportacao || []);
-      setImportacaoConcluida(Boolean(data.importacaoConcluida));
-      setUsuarios(data.usuarios || []);
-      setAuditoria(data.auditoria || []);
+      applyServerState(data);
     } catch {
       // ignore initial fetch error
     }
-  }, []);
+  }, [applyServerState]);
 
   useEffect(() => {
-    fetchState();
+    void fetchState();
   }, [fetchState]);
 
   const dispatchAction = useCallback(
@@ -157,21 +165,10 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
       });
       if (res.ok) {
         const data = await res.json();
-        setPendentesRevisao(data.pendentesRevisao ?? 0);
-        setFormularios(data.formularios || []);
-        setPesquisas(data.pesquisas || []);
-        setOperadores(data.operadores || []);
-        setRevisao(data.revisao || []);
-        setPublicacaoItens(data.publicacaoItens || []);
-        setUltimaPublicacao(data.ultimaPublicacao || "Nenhuma");
-        setMetodoPublicacao(data.metodoPublicacao || "Incorporar no site (iframe/link)");
-        setProblemasImportacao(data.problemasImportacao || []);
-        setImportacaoConcluida(Boolean(data.importacaoConcluida));
-        setUsuarios(data.usuarios || []);
-        setAuditoria(data.auditoria || []);
+        applyServerState(data);
       }
     },
-    [currentUser.nome]
+    [applyServerState, currentUser.nome]
   );
 
   const setFilter = useCallback((key: keyof AnalyticsFilters, value: string) => {

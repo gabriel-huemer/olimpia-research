@@ -170,10 +170,14 @@ export default function FormulariosListaPage() {
             </p>
             <form onSubmit={handleCreate} className="space-y-3 text-xs">
               <div>
-                <label className="block font-semibold text-slate-600 uppercase mb-1">
+                <label
+                  htmlFor="novo-form-nome"
+                  className="block font-semibold text-slate-600 uppercase mb-1"
+                >
                   Nome do formulário
                 </label>
                 <input
+                  id="novo-form-nome"
                   type="text"
                   required
                   value={novoNome}
@@ -183,10 +187,14 @@ export default function FormulariosListaPage() {
                 />
               </div>
               <div>
-                <label className="block font-semibold text-slate-600 uppercase mb-1">
+                <label
+                  htmlFor="novo-form-vigencia"
+                  className="block font-semibold text-slate-600 uppercase mb-1"
+                >
                   Vigência inicial
                 </label>
                 <input
+                  id="novo-form-vigencia"
                   type="text"
                   value={novaVigencia}
                   onChange={(e) => setNovaVigencia(e.target.value)}

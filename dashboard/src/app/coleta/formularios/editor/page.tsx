@@ -226,10 +226,11 @@ function EditorFormularioContent() {
           {secaoAtual?.perguntas.map((perg) => {
             const isSelected = perg.id === selectedPerguntaId;
             return (
-              <div
+              <button
+                type="button"
                 key={perg.id}
                 onClick={() => selectPergunta(perg)}
-                className={`bg-white rounded-xl p-4 cursor-pointer transition border ${
+                className={`w-full text-left bg-white rounded-xl p-4 cursor-pointer transition border block ${
                   isSelected
                     ? "border-2 border-[#008767] shadow-xs"
                     : "border-slate-200 hover:border-slate-300"
@@ -260,7 +261,7 @@ function EditorFormularioContent() {
                       </span>
                     </div>
                   )}
-              </div>
+              </button>
             );
           })}
 
@@ -283,32 +284,40 @@ function EditorFormularioContent() {
           </h2>
 
           <div>
-            <label className="block text-[10px] font-bold uppercase tracking-wider text-slate-500 mb-1">
+            <label
+              htmlFor="prop-texto"
+              className="block text-[10px] font-bold uppercase tracking-wider text-slate-500 mb-1"
+            >
               TEXTO
             </label>
             <textarea
+              id="prop-texto"
               rows={2}
               value={texto}
               disabled={!canEdit}
               onChange={(e) => {
                 setTexto(e.target.value);
-                handleSavePropertyChange({ enunciado: e.target.value });
+                void handleSavePropertyChange({ enunciado: e.target.value });
               }}
               className="w-full border border-slate-200 rounded-lg px-3 py-2 text-xs text-slate-800 focus:outline-none focus:border-[#008767]"
             />
           </div>
 
           <div>
-            <label className="block text-[10px] font-bold uppercase tracking-wider text-slate-500 mb-1.5">
+            <label
+              htmlFor="prop-obrigatoria"
+              className="block text-[10px] font-bold uppercase tracking-wider text-slate-500 mb-1.5"
+            >
               OBRIGATÓRIA
             </label>
             <button
+              id="prop-obrigatoria"
               type="button"
               disabled={!canEdit}
               onClick={() => {
                 const next = !obrigatoria;
                 setObrigatoria(next);
-                handleSavePropertyChange({ obrigatoria: next });
+                void handleSavePropertyChange({ obrigatoria: next });
               }}
               className={`w-10 h-5 rounded-full transition relative flex items-center px-0.5 ${
                 obrigatoria ? "bg-[#008767]" : "bg-slate-300"
@@ -323,32 +332,40 @@ function EditorFormularioContent() {
           </div>
 
           <div>
-            <label className="block text-[10px] font-bold uppercase tracking-wider text-slate-500 mb-1">
+            <label
+              htmlFor="prop-condicao"
+              className="block text-[10px] font-bold uppercase tracking-wider text-slate-500 mb-1"
+            >
               CONDIÇÃO DE EXIBIÇÃO
             </label>
             <input
+              id="prop-condicao"
               type="text"
               value={condicaoExibicao}
               disabled={!canEdit}
               onChange={(e) => {
                 setCondicaoExibicao(e.target.value);
-                handleSavePropertyChange({ condicaoExibicao: e.target.value });
+                void handleSavePropertyChange({ condicaoExibicao: e.target.value });
               }}
               className="w-full border border-slate-200 rounded-lg px-3 py-2 text-xs text-slate-800 focus:outline-none focus:border-[#008767]"
             />
           </div>
 
           <div>
-            <label className="block text-[10px] font-bold uppercase tracking-wider text-slate-500 mb-1">
+            <label
+              htmlFor="prop-regra"
+              className="block text-[10px] font-bold uppercase tracking-wider text-slate-500 mb-1"
+            >
               REGRA DE ALERTA
             </label>
             <input
+              id="prop-regra"
               type="text"
               value={regraAlerta}
               disabled={!canEdit}
               onChange={(e) => {
                 setRegraAlerta(e.target.value);
-                handleSavePropertyChange({ regraAlerta: e.target.value });
+                void handleSavePropertyChange({ regraAlerta: e.target.value });
               }}
               className="w-full border border-slate-200 rounded-lg px-3 py-2 text-xs text-slate-800 focus:outline-none focus:border-[#008767]"
             />
@@ -363,16 +380,20 @@ function EditorFormularioContent() {
           </div>
 
           <div>
-            <label className="block text-[10px] font-bold uppercase tracking-wider text-slate-500 mb-1">
+            <label
+              htmlFor="prop-rotulo"
+              className="block text-[10px] font-bold uppercase tracking-wider text-slate-500 mb-1"
+            >
               RÓTULO DO INDICADOR
             </label>
             <input
+              id="prop-rotulo"
               type="text"
               value={rotuloIndicador}
               disabled={!canEdit}
               onChange={(e) => {
                 setRotuloIndicador(e.target.value);
-                handleSavePropertyChange({ rotuloIndicador: e.target.value });
+                void handleSavePropertyChange({ rotuloIndicador: e.target.value });
               }}
               className="w-full border border-slate-200 rounded-lg px-3 py-2 text-xs text-slate-800 font-mono focus:outline-none focus:border-[#008767]"
             />
@@ -389,10 +410,14 @@ function EditorFormularioContent() {
             </h3>
             <form onSubmit={handleAddPergunta} className="space-y-3 text-xs mt-3">
               <div>
-                <label className="block font-semibold text-slate-600 uppercase mb-1">
+                <label
+                  htmlFor="novo-enunciado"
+                  className="block font-semibold text-slate-600 uppercase mb-1"
+                >
                   Texto da pergunta
                 </label>
                 <input
+                  id="novo-enunciado"
                   type="text"
                   required
                   value={novoEnunciado}
@@ -402,10 +427,14 @@ function EditorFormularioContent() {
                 />
               </div>
               <div>
-                <label className="block font-semibold text-slate-600 uppercase mb-1">
+                <label
+                  htmlFor="novo-tipo"
+                  className="block font-semibold text-slate-600 uppercase mb-1"
+                >
                   Tipo de pergunta
                 </label>
                 <select
+                  id="novo-tipo"
                   value={novoTipo}
                   onChange={(e) => setNovoTipo(e.target.value)}
                   className="w-full border border-slate-200 rounded-lg px-3 py-2 bg-white"
@@ -421,10 +450,14 @@ function EditorFormularioContent() {
                 </select>
               </div>
               <div>
-                <label className="block font-semibold text-slate-600 uppercase mb-1">
+                <label
+                  htmlFor="novas-opcoes"
+                  className="block font-semibold text-slate-600 uppercase mb-1"
+                >
                   Opções (separadas por ·)
                 </label>
                 <input
+                  id="novas-opcoes"
                   type="text"
                   value={novasOpcoes}
                   onChange={(e) => setNovasOpcoes(e.target.value)}

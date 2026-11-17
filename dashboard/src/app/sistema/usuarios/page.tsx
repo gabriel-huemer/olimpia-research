@@ -42,49 +42,13 @@ export default function UsuariosPage() {
     showToast(`Status de ${u.nome} alterado para ${novoStatus}.`);
   };
 
-  const permissoesMatriz = [
-    {
-      funcao: "Criar/editar formulários",
-      adm: "✓",
-      gestor: "✓",
-      editor: "—",
-      pesq: "—",
-    },
-    {
-      funcao: "Revisar respostas",
-      adm: "✓",
-      gestor: "✓",
-      editor: "—",
-      pesq: "—",
-    },
-    {
-      funcao: "Inserir resposta manual",
-      adm: "✓",
-      gestor: "✓",
-      editor: "✓",
-      pesq: "—",
-    },
-    {
-      funcao: "Publicar no site",
-      adm: "✓",
-      gestor: "✓",
-      editor: "—",
-      pesq: "—",
-    },
-    {
-      funcao: "Gerenciar usuários",
-      adm: "✓",
-      gestor: "—",
-      editor: "—",
-      pesq: "—",
-    },
-    {
-      funcao: "Coletar em campo",
-      adm: "—",
-      gestor: "—",
-      editor: "—",
-      pesq: "✓",
-    },
+  const permissoesMatriz: Array<[string, string, string, string, string]> = [
+    ["Criar/editar formulários", "✓", "✓", "—", "—"],
+    ["Revisar respostas", "✓", "✓", "—", "—"],
+    ["Inserir resposta manual", "✓", "✓", "✓", "—"],
+    ["Publicar no site", "✓", "✓", "—", "—"],
+    ["Gerenciar usuários", "✓", "—", "—", "—"],
+    ["Coletar em campo", "—", "—", "—", "✓"],
   ];
 
   return (
@@ -177,13 +141,13 @@ export default function UsuariosPage() {
                 </tr>
               </thead>
               <tbody className="divide-y divide-slate-200 text-sm">
-                {permissoesMatriz.map((row) => (
-                  <tr key={row.funcao} className="text-[#182657]">
-                    <td className="py-3 pr-2 font-medium">{row.funcao}</td>
-                    <td className="py-3 text-center">{row.adm}</td>
-                    <td className="py-3 text-center">{row.gestor}</td>
-                    <td className="py-3 text-center">{row.editor}</td>
-                    <td className="py-3 text-center">{row.pesq}</td>
+                {permissoesMatriz.map(([funcao, adm, gestor, editor, pesq]) => (
+                  <tr key={funcao} className="text-[#182657]">
+                    <td className="py-3 pr-2 font-medium">{funcao}</td>
+                    <td className="py-3 text-center">{adm}</td>
+                    <td className="py-3 text-center">{gestor}</td>
+                    <td className="py-3 text-center">{editor}</td>
+                    <td className="py-3 text-center">{pesq}</td>
                   </tr>
                 ))}
               </tbody>
@@ -204,10 +168,14 @@ export default function UsuariosPage() {
             </p>
             <form onSubmit={handleCreateUser} className="space-y-3 text-xs">
               <div>
-                <label className="block font-semibold text-slate-600 uppercase mb-1">
+                <label
+                  htmlFor="novo-usuario-nome"
+                  className="block font-semibold text-slate-600 uppercase mb-1"
+                >
                   Nome
                 </label>
                 <input
+                  id="novo-usuario-nome"
                   type="text"
                   required
                   value={novoNome}
@@ -217,10 +185,14 @@ export default function UsuariosPage() {
                 />
               </div>
               <div>
-                <label className="block font-semibold text-slate-600 uppercase mb-1">
+                <label
+                  htmlFor="novo-usuario-email"
+                  className="block font-semibold text-slate-600 uppercase mb-1"
+                >
                   E-mail
                 </label>
                 <input
+                  id="novo-usuario-email"
                   type="email"
                   value={novoEmail}
                   onChange={(e) => setNovoEmail(e.target.value)}
@@ -229,10 +201,14 @@ export default function UsuariosPage() {
                 />
               </div>
               <div>
-                <label className="block font-semibold text-slate-600 uppercase mb-1">
+                <label
+                  htmlFor="novo-usuario-perfil"
+                  className="block font-semibold text-slate-600 uppercase mb-1"
+                >
                   Perfil de acesso
                 </label>
                 <select
+                  id="novo-usuario-perfil"
                   value={novoPerfil}
                   onChange={(e) =>
                     setNovoPerfil(
