@@ -51,7 +51,7 @@ CREATE TYPE formato_exportacao  AS ENUM ('PDF', 'XLSX', 'CSV');
 -- 1. TABELAS DE REFERÊNCIA (geografia, locais, empresas, itens avaliáveis)
 -- ---------------------------------------------------------------------
 CREATE TABLE uf (
-    sigla  char(2)      PRIMARY KEY,
+    sigla  varchar(2)   PRIMARY KEY,
     nome   varchar(40)  NOT NULL UNIQUE
 );
 
@@ -59,12 +59,12 @@ CREATE TABLE uf (
 CREATE TABLE municipio (
     codigo_ibge  integer      PRIMARY KEY,              -- 7 dígitos
     nome         varchar(120) NOT NULL,
-    uf_sigla     char(2)      NOT NULL REFERENCES uf(sigla)
+    uf_sigla     varchar(2)   NOT NULL REFERENCES uf(sigla)
 );
 CREATE INDEX ix_municipio_uf_nome ON municipio (uf_sigla, nome);
 
 CREATE TABLE pais (
-    codigo_iso  char(2)      PRIMARY KEY,
+    codigo_iso  varchar(2)   PRIMARY KEY,
     nome        varchar(80)  NOT NULL UNIQUE
 );
 
@@ -78,7 +78,7 @@ CREATE TABLE local_coleta (
 -- Cadastro de empresas / estabelecimentos turísticos
 CREATE TABLE estabelecimento (
     id             bigint GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
-    cnpj           char(14) UNIQUE,
+    cnpj           varchar(14) UNIQUE,
     razao_social   varchar(200),
     nome_fantasia  varchar(200) NOT NULL,
     categoria      varchar(60)  NOT NULL,   -- HOTEL, POUSADA, RESORT, PARQUE, RESTAURANTE...
@@ -228,7 +228,7 @@ CREATE TABLE importacao (
     id            uuid PRIMARY KEY DEFAULT gen_random_uuid(),
     usuario_id    uuid NOT NULL REFERENCES usuario(id),
     arquivo_nome  varchar(255) NOT NULL,
-    arquivo_hash  char(64) NOT NULL UNIQUE,        -- SHA-256: impede reimportar o mesmo arquivo
+    arquivo_hash  varchar(64) NOT NULL UNIQUE,     -- SHA-256: impede reimportar o mesmo arquivo
     formulario_versao_id bigint NOT NULL REFERENCES formulario_versao(id),
     iniciada_em   timestamptz NOT NULL DEFAULT now(),
     finalizada_em timestamptz,
@@ -271,7 +271,7 @@ CREATE TABLE pesquisa (
     lote_sincronizacao_id uuid REFERENCES lote_sincronizacao(id),
     importacao_id        uuid REFERENCES importacao(id),
     id_externo           varchar(100),             -- id/linha na planilha histórica
-    hash_dedup           char(64),                 -- hash do conteúdo p/ detectar duplicatas importadas
+    hash_dedup           varchar(64),              -- hash do conteúdo p/ detectar duplicatas importadas
     status_curadoria     status_curadoria NOT NULL DEFAULT 'SEM_PENDENCIA',
     UNIQUE (pesquisador_id, numero_local),
     CONSTRAINT ck_pesquisa_origem CHECK (
@@ -301,7 +301,7 @@ CREATE TABLE resposta_valor (
     resposta_id   bigint NOT NULL REFERENCES resposta(id) ON DELETE CASCADE,
     opcao_id      bigint REFERENCES opcao(id),
     municipio_ibge integer REFERENCES municipio(codigo_ibge),
-    pais_iso      char(2) REFERENCES pais(codigo_iso),
+    pais_iso      varchar(2) REFERENCES pais(codigo_iso),
     valor_numero  numeric(14,2),
     valor_data    date,
     valor_booleano boolean,

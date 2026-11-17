@@ -77,9 +77,9 @@ SELECT pg_temp.permite('oto_mobile',
 
 SELECT pg_temp.nega('oto_mobile', 'SELECT senha_hash FROM usuario', 'ler senha_hash');
 SELECT pg_temp.nega('oto_mobile', 'SELECT email FROM usuario', 'ler e-mail de usuários');
-SELECT pg_temp.nega('oto_mobile', 'DELETE FROM pesquisa', 'apagar pesquisa');
-SELECT pg_temp.nega('oto_mobile', $q$UPDATE resposta_valor SET valor_numero = 1$q$, 'alterar resposta já enviada');
-SELECT pg_temp.nega('oto_mobile', $q$UPDATE sinalizacao SET status = 'APROVADA'$q$, 'aprovar a própria sinalização');
+SELECT pg_temp.nega('oto_mobile', 'DELETE FROM pesquisa WHERE id IS NOT NULL', 'apagar pesquisa');
+SELECT pg_temp.nega('oto_mobile', $q$UPDATE resposta_valor SET valor_numero = 1 WHERE id IS NOT NULL$q$, 'alterar resposta já enviada');
+SELECT pg_temp.nega('oto_mobile', $q$UPDATE sinalizacao SET status = 'APROVADA' WHERE id IS NOT NULL$q$, 'aprovar a própria sinalização');
 SELECT pg_temp.nega('oto_mobile', 'SELECT * FROM log_auditoria', 'ler log de auditoria');
 SELECT pg_temp.nega('oto_mobile', 'SELECT * FROM dashboard', 'ler dashboards');
 SELECT pg_temp.nega('oto_mobile', $q$INSERT INTO formulario (nome) VALUES ('x')$q$, 'criar formulário');
@@ -87,16 +87,16 @@ SELECT pg_temp.nega('oto_mobile', $q$INSERT INTO formulario (nome) VALUES ('x')$
 -- ===== 4. Perfil WEB: gestão, curadoria, auditoria
 SELECT pg_temp.permite('oto_web', 'SELECT * FROM vw_fila_curadoria', 'ver fila de curadoria');
 SELECT pg_temp.permite('oto_web', $q$SELECT set_config('app.usuario_id','99999999-9999-9999-9999-999999999999', true)$q$, 'informar usuário da sessão');
-SELECT pg_temp.permite('oto_web', $q$UPDATE resposta_valor SET valor_numero = 50$q$, 'corrigir valor na curadoria');
-SELECT pg_temp.permite('oto_web', $q$UPDATE resposta SET situacao = 'CORRIGIDA'$q$, 'marcar resposta corrigida');
-SELECT pg_temp.permite('oto_web', $q$UPDATE sinalizacao SET status='CORRIGIDA', curador_id='99999999-9999-9999-9999-999999999999', curada_em=now(), valor_corrigido='{"idade":50}'$q$, 'fechar sinalização');
+SELECT pg_temp.permite('oto_web', $q$UPDATE resposta_valor SET valor_numero = 50 WHERE id IS NOT NULL$q$, 'corrigir valor na curadoria');
+SELECT pg_temp.permite('oto_web', $q$UPDATE resposta SET situacao = 'CORRIGIDA' WHERE id IS NOT NULL$q$, 'marcar resposta corrigida');
+SELECT pg_temp.permite('oto_web', $q$UPDATE sinalizacao SET status='CORRIGIDA', curador_id='99999999-9999-9999-9999-999999999999', curada_em=now(), valor_corrigido='{"idade":50}' WHERE id IS NOT NULL$q$, 'fechar sinalização');
 SELECT pg_temp.permite('oto_web', $q$INSERT INTO dashboard (nome,dono_id) VALUES ('Painel T','99999999-9999-9999-9999-999999999999')$q$, 'criar dashboard');
 SELECT pg_temp.permite('oto_web', 'SELECT count(*) FROM log_auditoria', 'consultar auditoria');
 
-SELECT pg_temp.nega('oto_web', 'DELETE FROM pesquisa', 'apagar pesquisa');
-SELECT pg_temp.nega('oto_web', 'DELETE FROM resposta', 'apagar resposta');
-SELECT pg_temp.nega('oto_web', $q$UPDATE log_auditoria SET acao = 'X'$q$, 'alterar log de auditoria');
-SELECT pg_temp.nega('oto_web', 'DELETE FROM log_auditoria', 'apagar log de auditoria');
+SELECT pg_temp.nega('oto_web', 'DELETE FROM pesquisa WHERE id IS NOT NULL', 'apagar pesquisa');
+SELECT pg_temp.nega('oto_web', 'DELETE FROM resposta WHERE id IS NOT NULL', 'apagar resposta');
+SELECT pg_temp.nega('oto_web', $q$UPDATE log_auditoria SET acao = 'X' WHERE id IS NOT NULL$q$, 'alterar log de auditoria');
+SELECT pg_temp.nega('oto_web', 'DELETE FROM log_auditoria WHERE id IS NOT NULL', 'apagar log de auditoria');
 SELECT pg_temp.nega('oto_web', 'CREATE TABLE oto.hack (x int)', 'criar tabelas (DDL)');
 
 -- ===== 5. Perfil READONLY
@@ -118,7 +118,7 @@ SELECT pg_temp.afirma(NOT EXISTS (SELECT 1 FROM log_auditoria WHERE dados_antes 
 SELECT pg_temp.afirma(NOT EXISTS (SELECT 1 FROM log_auditoria WHERE entidade='resposta_valor' AND acao='INSERT'),
         'INSERT em tabela de alto volume não gera log (decisão de projeto)');
 DO $$ BEGIN
-  BEGIN UPDATE log_auditoria SET acao='X'; RAISE EXCEPTION 'FALHA: log editável';
+  BEGIN UPDATE log_auditoria SET acao='X' WHERE id IS NOT NULL; RAISE EXCEPTION 'FALHA: log editável';
   EXCEPTION WHEN raise_exception THEN
     IF SQLERRM LIKE 'FALHA%' THEN RAISE; END IF; RAISE NOTICE 'ok  - log de auditoria é imutável (até para o dono)'; END;
 END $$;
