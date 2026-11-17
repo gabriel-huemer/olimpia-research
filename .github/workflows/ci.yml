@@ -1,0 +1,56 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'oto-db/**'
+      - '.github/workflows/ci.yml'
+  pull_request:
+    paths:
+      - 'oto-db/**'
+      - '.github/workflows/ci.yml'
+
+jobs:
+  banco:
+    name: Banco de dados (migrações e testes)
+    runs-on: ubuntu-24.04
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_DB: oto
+          POSTGRES_USER: oto_admin
+          POSTGRES_PASSWORD: ci_admin
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U oto_admin -d oto"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 10
+    env:
+      PGHOST: localhost
+      PGPORT: 5432
+      PGUSER: oto_admin
+      PGPASSWORD: ci_admin
+      PGDATABASE: oto
+      OTO_WEB_PASSWORD: ci_web
+      OTO_MOBILE_PASSWORD: ci_mobile
+      OTO_READONLY_PASSWORD: ci_readonly
+      OTO_APP_ADMIN_EMAIL: admin@oto.test
+      OTO_APP_ADMIN_PASSWORD: ci_admin_app
+    defaults:
+      run:
+        working-directory: oto-db
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Criar o banco do zero
+        run: bash scripts/bootstrap.sh
+
+      - name: Rodar de novo (tem que ser idempotente)
+        run: bash scripts/bootstrap.sh
+
+      - name: Testes de estrutura e permissões
+        run: psql -X -q -o /dev/null -v ON_ERROR_STOP=1 -f tests/smoke_test.sql

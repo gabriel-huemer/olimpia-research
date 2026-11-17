@@ -1,0 +1,3 @@
+# scripts e SQL sempre com quebra de linha do Linux (o banco roda em container)
+*.sh  text eol=lf
+*.sql text eol=lf
