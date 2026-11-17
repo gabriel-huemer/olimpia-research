@@ -145,7 +145,7 @@ class SectionAppBar extends StatelessWidget {
         const SizedBox(height: 12),
         Row(
           children: [
-            Flexible(
+            Expanded(
               child: Text.rich(
                 TextSpan(
                   style: AppTextStyles.captionMedium,
@@ -166,7 +166,7 @@ class SectionAppBar extends StatelessWidget {
               ),
             ),
             const SizedBox(width: 8),
-            Flexible(
+            Expanded(
               child: Text(
                 AppStrings.savedOnDevice,
                 style: AppTextStyles.captionMedium,

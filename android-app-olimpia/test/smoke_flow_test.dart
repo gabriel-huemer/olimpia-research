@@ -1,6 +1,9 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:intl/date_symbol_data_local.dart';
+import 'package:path/path.dart' as p;
 import 'package:oto_pesquisador/core/di/injector.dart';
 import 'package:oto_pesquisador/core/routes/app_routes.dart';
 import 'package:oto_pesquisador/data/database/app_database.dart';
@@ -17,18 +20,32 @@ import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 
 void main() {
   late MockSyncApi api;
+  late AppDatabase database;
+  late Directory testDirectory;
 
   setUpAll(() async {
     sqfliteFfiInit();
     await initializeDateFormatting('pt_BR');
-    api = MockSyncApi(latency: Duration.zero);
-    await configureDependencies(
-      database: AppDatabase(
-        factory: databaseFactoryFfi,
-        path: inMemoryDatabasePath,
-      ),
-      syncApi: api,
+  });
+
+  setUp(() async {
+    await sl.reset();
+    testDirectory = await Directory.systemTemp.createTemp(
+      'oto_pesquisador_test_',
     );
+    api = MockSyncApi(latency: Duration.zero);
+    database = AppDatabase(
+      factory: databaseFactoryFfi,
+      path: p.join(testDirectory.path, 'test.db'),
+    );
+    await configureDependencies(database: database, syncApi: api);
+    await sl<QuestionnaireRepository>().ensureCached();
+  });
+
+  tearDown(() async {
+    await database.close();
+    await sl.reset();
+    await testDirectory.delete(recursive: true);
   });
 
   test('seed from xlsx is cached in SQLite', () async {
@@ -102,15 +119,6 @@ void main() {
       await sync.syncNow();
       expect(await surveys.queuedCount(), 0);
       expect(api.received, containsAll([s1.id, s2.id]));
-      connectivity.online.value = false;
-      await sl.reset();
-      await configureDependencies(
-        database: AppDatabase(
-          factory: databaseFactoryFfi,
-          path: inMemoryDatabasePath,
-        ),
-        syncApi: api,
-      );
     },
   );
 
@@ -122,10 +130,14 @@ void main() {
           () => Future<void>.delayed(const Duration(milliseconds: 60)),
         );
         await tester.pump(const Duration(milliseconds: 100));
+        expect(
+          tester.takeException(),
+          isNull,
+          reason: 'Unexpected Flutter exception after settle pump $i',
+        );
       }
     }
 
-    await tester.runAsync(() => sl<QuestionnaireRepository>().ensureCached());
     await tester.pumpWidget(const OtoApp(initialRoute: AppRoutes.access));
     await settle();
     expect(find.text('Entrar como pesquisador'), findsOneWidget);

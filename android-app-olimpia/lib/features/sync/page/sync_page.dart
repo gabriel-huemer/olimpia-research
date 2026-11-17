@@ -93,11 +93,18 @@ class _SyncBanner extends StatelessWidget {
             fillColor: offline ? AppColors.dangerDark : AppColors.success,
           ),
           const SizedBox(height: 6),
-          Row(
+          Wrap(
+            alignment: WrapAlignment.spaceBetween,
+            runSpacing: 6,
             children: [
-              Text(AppStrings.syncProgress(vm.sent, vm.total), style: AppTextStyles.syncBannerCaption.copyWith(color: fg)),
-              const Spacer(),
-              Text(AppStrings.batchesOf(vm.batchSize), style: AppTextStyles.syncBannerCaption.copyWith(color: fg)),
+              Text(
+                AppStrings.syncProgress(vm.sent, vm.total),
+                style: AppTextStyles.syncBannerCaption.copyWith(color: fg),
+              ),
+              Text(
+                AppStrings.batchesOf(vm.batchSize),
+                style: AppTextStyles.syncBannerCaption.copyWith(color: fg),
+              ),
             ],
           ),
         ],

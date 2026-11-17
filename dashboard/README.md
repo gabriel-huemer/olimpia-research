@@ -64,6 +64,8 @@ npm run dev
 ```
 
 Acesse **[http://localhost:3000](http://localhost:3000)** no navegador.
+Com o servidor ativo, execute `npm run test:integration` em outro terminal para
+validar a sincronização em lote, a idempotência e a consulta posterior do estado.
 
 ### Scripts disponíveis
 
@@ -73,6 +75,7 @@ Acesse **[http://localhost:3000](http://localhost:3000)** no navegador.
 | `npm run build` | Gera a build otimizada de produção e valida tipos TypeScript e rotas |
 | `npm run start` | Executa o servidor de produção após `npm run build` |
 | `npm run lint` | Executa a verificação estrita de tipos (`tsc --noEmit`) |
+| `npm run test:integration` | Testa o endpoint de sincronização e o estado persistido em memória; requer o servidor ativo |
 
 ---
 
