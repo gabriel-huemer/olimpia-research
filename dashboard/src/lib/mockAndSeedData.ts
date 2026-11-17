@@ -475,6 +475,26 @@ function buildFormularioSeed(
   };
 }
 
+function buildPesquisaSeed(
+  num: string,
+  origem: string,
+  operador: string,
+  local: string,
+  coletada: string,
+  situacao: PesquisaColetada["situacao"]
+): PesquisaColetada {
+  return {
+    id: `p-${num}`,
+    protocolo: `${num}/26`,
+    origem,
+    operador,
+    local,
+    coletada,
+    periodo: "Out/2026",
+    situacao,
+  };
+}
+
 const initialStore: AppDataStore = {
   formularios: [
     buildFormularioSeed(1, "Pesquisa de Demanda Turística", 3, "Ativo", 5012, "01/01/2026 a 31/12/2026", "12/10/2026"),
@@ -483,66 +503,12 @@ const initialStore: AppDataStore = {
     buildFormularioSeed(4, "Expectativa de Feriados", 1, "Agendado", 0, "a partir de 06/11/2026", "18/10/2026", 5),
   ],
   pesquisas: [
-    {
-      id: "p-0047",
-      protocolo: "0047/26",
-      origem: "Ribeirão Preto, SP",
-      operador: "Ana Souza",
-      local: "Thermas dos Laranjais",
-      coletada: "26/10 10:42",
-      periodo: "Out/2026",
-      situacao: "Na fila do app",
-    },
-    {
-      id: "p-0045",
-      protocolo: "0045/26",
-      origem: "Uberlândia, MG",
-      operador: "Ana Souza",
-      local: "Thermas dos Laranjais",
-      coletada: "26/10 10:12",
-      periodo: "Out/2026",
-      situacao: "Sinalizada",
-    },
-    {
-      id: "p-0044",
-      protocolo: "0044/26",
-      origem: "Campinas, SP",
-      operador: "Carlos Lima",
-      local: "Hot Beach",
-      coletada: "26/10 09:50",
-      periodo: "Out/2026",
-      situacao: "Sincronizada",
-    },
-    {
-      id: "p-0043",
-      protocolo: "0043/26",
-      origem: "Goiânia, GO",
-      operador: "Carlos Lima",
-      local: "Hot Beach",
-      coletada: "26/10 09:20",
-      periodo: "Out/2026",
-      situacao: "Aprovada",
-    },
-    {
-      id: "p-0042",
-      protocolo: "0042/26",
-      origem: "Barretos, SP",
-      operador: "Marina Alves",
-      local: "Praça da Matriz",
-      coletada: "25/10 16:05",
-      periodo: "Out/2026",
-      situacao: "Aprovada",
-    },
-    {
-      id: "p-0041",
-      protocolo: "0041/26",
-      origem: "— (telefone)",
-      operador: "Gestão (manual)",
-      local: "—",
-      coletada: "25/10 11:30",
-      periodo: "Out/2026",
-      situacao: "Inserida manualmente",
-    },
+    buildPesquisaSeed("0047", "Ribeirão Preto, SP", "Ana Souza", "Thermas dos Laranjais", "26/10 10:42", "Na fila do app"),
+    buildPesquisaSeed("0045", "Uberlândia, MG", "Ana Souza", "Thermas dos Laranjais", "26/10 10:12", "Sinalizada"),
+    buildPesquisaSeed("0044", "Campinas, SP", "Carlos Lima", "Hot Beach", "26/10 09:50", "Sincronizada"),
+    buildPesquisaSeed("0043", "Goiânia, GO", "Carlos Lima", "Hot Beach", "26/10 09:20", "Aprovada"),
+    buildPesquisaSeed("0042", "Barretos, SP", "Marina Alves", "Praça da Matriz", "25/10 16:05", "Aprovada"),
+    buildPesquisaSeed("0041", "— (telefone)", "Gestão (manual)", "—", "25/10 11:30", "Inserida manualmente"),
   ],
   operadores: [
     {

@@ -200,27 +200,74 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
         return;
       }
 
-      const rows = [
-        {
-          Painel: abaTitulo,
-          Periodo: filters.periodo,
-          Genero: filters.genero,
-          Faixa_Idade: filters.faixaIdade,
-          Cidade: filters.cidade,
-          Hospedagem: filters.hospedagem,
-          Transporte: filters.transporte,
-          Local_Pesquisa: filters.localPesquisa,
-          Pesquisas_Consideradas: analytics.panorama.pesquisasColetadas,
+      const baseMeta = {
+        Painel: abaTitulo,
+        Periodo: filters.periodo,
+        Genero: filters.genero,
+        Faixa_Idade: filters.faixaIdade,
+        Cidade: filters.cidade,
+        Hospedagem: filters.hospedagem,
+        Transporte: filters.transporte,
+        Local_Pesquisa: filters.localPesquisa,
+      };
+
+      let rows: Record<string, unknown>[] = [];
+      const lower = abaTitulo.toLowerCase();
+
+      if (lower.includes("infraestrutura")) {
+        rows = analytics.infraestrutura.servicos.map((s) => ({
+          ...baseMeta,
+          Servico_Avaliado: s.nome,
+          Nota_Media_1_a_5: s.nota,
+          Meta: 3.0,
+          Expectativa_Superou_Pct: analytics.infraestrutura.expectativa.superou,
+          Expectativa_Atendeu_Pct: analytics.infraestrutura.expectativa.atendeu,
+          Grupos_PcD_Pct: analytics.infraestrutura.gruposPcd,
+        }));
+      } else if (lower.includes("impacto")) {
+        rows = analytics.impactoEconomico.gastoPorRenda.map((g) => ({
+          ...baseMeta,
+          Faixa_Renda: g.faixa,
+          Gasto_Diario_Medio_BRL: g.valor,
+          Gasto_Geral_Ponderado_BRL: analytics.impactoEconomico.gastoDiarioMedio,
+          Renda_Mais_Comum: analytics.impactoEconomico.rendaMaisComum,
+          Antecedencia_Media_Dias: analytics.impactoEconomico.antecedenciaMediaDias,
+        }));
+      } else if (lower.includes("perfil")) {
+        rows = analytics.perfilTurista.origensCidades.map((c) => ({
+          ...baseMeta,
+          Cidade_UF: c.cidadeUf,
+          Respostas: c.respostas,
+          Participacao_Total: c.percentual,
+          Diaria_Media: c.diariaMedia,
+        }));
+      } else if (lower.includes("atra")) {
+        rows = analytics.atracoes.pontosQuadrante.map((a) => ({
+          ...baseMeta,
+          Atracao: a.nome,
+          Visitas_Declaradas: a.visitas,
+          Nota_Media_0_a_5: a.nota,
+        }));
+      } else {
+        rows = analytics.panorama.sazonalidade.map((m) => ({
+          ...baseMeta,
+          Mes: m.mes,
+          Indice_Sazonalidade: m.valor,
+          Pesquisas_Coletadas_Total: analytics.panorama.pesquisasColetadas,
           Permanencia_Media_Noites: analytics.panorama.permanenciaMedia,
-          NPS: analytics.panorama.nps,
-          Gasto_Diario_Medio_BRL: analytics.impactoEconomico.gastoDiarioMedio,
-        },
-      ];
-      exportToExcel(
-        "Consolidado OTO",
-        rows,
-        `OTO_Relatorio_${abaTitulo.toLowerCase().replace(/\s+/g, "_")}.xlsx`
-      );
+          NPS_Destino: analytics.panorama.nps,
+          Intencao_Retorno_Pct: analytics.panorama.intencaoRetorno,
+        }));
+      }
+
+      const safeSlug = abaTitulo
+        .normalize("NFD")
+        .replaceAll(/[\u0300-\u036f]/g, "")
+        .toLowerCase()
+        .replaceAll(/[^a-z0-9]+/g, "_")
+        .replaceAll(/^_|_$/g, "");
+
+      exportToExcel(abaTitulo, rows, `OTO_Relatorio_${safeSlug}.xlsx`);
     },
     [analytics, exportToExcel, filters, showToast]
   );
