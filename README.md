@@ -2,6 +2,8 @@
 
 [![CI](https://github.com/gabriel-huemer/olimpia-research/actions/workflows/ci.yml/badge.svg)](https://github.com/gabriel-huemer/olimpia-research/actions/workflows/ci.yml)
 
+[![Quality gate status](https://sonarcloud.io/api/project_badges/measure?project=gabriel-huemer_olimpia-research&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=gabriel-huemer_olimpia-research)
+
 Sistema para a Secretaria de Turismo de Olímpia (SP) coletar e analisar pesquisas com turistas. O pesquisador aplica o
 questionário pelo app, mesmo sem internet, e os gestores acompanham os resultados no painel web.
 
