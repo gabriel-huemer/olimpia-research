@@ -31,12 +31,12 @@ export default function ImpactoEconomicoPage() {
 
         <AnalyticsHeaderActions
           abaTitulo="Impacto econômico e hospitalidade"
-          defaultPeriodo="Outubro de 2026"
+          defaultPeriodo="Mês atual"
         />
       </div>
 
       {/* Filtros */}
-      <FilterBar defaultPeriodo="Outubro de 2026" />
+      <FilterBar defaultPeriodo="Mês atual" />
 
       {/* Aviso de Dependência de dados (UC15 / PDF pág. 3) */}
       <div className="bg-[#fefce8] border border-[#fde047] rounded-xl px-4 py-3 mb-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3">

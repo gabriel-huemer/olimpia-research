@@ -25,7 +25,7 @@ dashboard/
         ├── api/
         │   ├── analytics/route.ts   Consulta de indicadores analíticos (vw_resposta_valida + filtros)
         │   ├── state/route.ts       Operações de escrita auditadas (curadoria, formulários, operadores, usuários)
-        │   └── sync/lote/route.ts   Endpoint REST de sincronização em lote do app mobile (UC05 / RF08)
+        │   └── v1/pesquisas/lote/   Endpoint REST de sincronização em lote do app mobile (UC05 / RF08)
         ├── analises/
         │   ├── panorama/            1. Visão geral executiva
         │   ├── infraestrutura/      2. Infraestrutura urbana e serviços
@@ -67,6 +67,26 @@ Acesse **[http://localhost:3000](http://localhost:3000)** no navegador.
 Com o servidor ativo, execute `npm run test:integration` em outro terminal para
 validar a sincronização em lote, a idempotência e a consulta posterior do estado.
 
+### Qual banco usar (real ou demonstração)
+
+| | `oto` (real) | `oto_demo` (demonstração) |
+|---|---|---|
+| **Dados** | Pesquisas de verdade, feitas pelo app | 700 pesquisas **fictícias** (jan a nov/2026), geradas por script |
+| **Quando usar** | Desenvolvimento do dia a dia, testes com o emulador, coleta de campo, homologação | Gravar vídeo, apresentar o projeto, mostrar gráficos "cheios" |
+| **Arquivo de ambiente** | ``.env.real.local` | ``.env.demo.local` |
+| **Painel inicia vazio?** | Sim (só o que você coletou) | Não: Panorama e lista de Pesquisas já vêm preenchidos |
+
+Os dois bancos ficam no **mesmo container** PostgreSQL, com o mesmo schema e seeds. Quem escolhe o banco é o painel
+(``.env.local`); o app Android sempre fala com o painel, então grava no banco que o painel estiver usando.
+
+```bash
+cp .env.demo.local `.env.local    # modo demonstração
+cp .env.real.local `.env.local    # modo desenvolvimento (banco real)
+# depois de trocar, reinicie o painel (npm run dev): as conexões ficam em memória
+```
+
+Como criar/recriar o banco demo: [../oto-db/demo/README.md](../oto-db/demo/README.md).
+
 ### Scripts disponíveis
 
 | Comando | Descrição |
@@ -87,7 +107,27 @@ O painel segue rigorosamente as regras de arquitetura definidas em `../oto-db/RE
 2. **Auditoria automática (`RF15`):** toda transação que altera dados executa `SELECT set_config('app.usuario_id', $1, true)` via `withAuditTransaction()` em `src/lib/db.ts`, garantindo que a trigger `fn_auditar()` grave o autor em `oto.log_auditoria`.
 3. **Exclusão lógica (`RN18` / `RF19`):** pesquisas e respostas nunca sofrem `DELETE` físico; quando excluídas na curadoria, recebem situação `EXCLUIDA` com justificativa obrigatória.
 4. **Dashboards sobre respostas válidas (`RF12` / `RF14`):** consulta `oto.vw_resposta_valida` (que considera apenas respostas `NORMAL`, `APROVADA` ou `CORRIGIDA`).
-5. **Sincronização idempotente (`RF08` / `UC05`):** o endpoint `POST /api/sync/lote` recebe lotes do aplicativo mobile e ignora duplicatas pelo identificador único da pesquisa.
+5. **Sincronização idempotente (`RF08` / `UC05`):** `POST /api/v1/pesquisas/lote` recebe os lotes do app, grava `pesquisa`, `resposta`, `resposta_valor`, `avaliacao_item` e `sinalizacao` com o papel **`oto_mobile`** (somente inserção) e ignora duplicatas pelo UUID da pesquisa. Reenviar um lote não duplica nada.
+
+### Ligando o app Android ao painel
+
+O app só envia ao painel se for compilado com a URL da API; **sem ela usa um servidor simulado e mostra "sincronizada" sem enviar nada**:
+
+```bash
+flutter run --dart-define=SYNC_API_URL=http://10.0.2.2:3000        # emulador Android (10.0.2.2 = o seu PC)
+flutter run --dart-define=SYNC_API_URL=http://192.168.x.x:3000     # celular físico (mesma rede; libere a porta 3000 no firewall)
+```
+
+Requisitos no banco (`../oto-db`): seeds `S04` (formulário) e `S05` (pesquisadores `OTO482`, `OTO117`, `OTO305`) aplicados e `OTO_MOBILE_PASSWORD` no `.env.local`.
+
+### Testes
+
+```bash
+npm test                    # conversão dos valores do app (sem banco)
+npm run test:integration    # exige o painel rodando + banco; grava pesquisas de teste (use um banco de desenvolvimento)
+```
+
+> **Em migração:** o Panorama e a lista de Pesquisas já leem do banco. As demais abas de Análises, Operadores, Curadoria, Formulários, Usuários e Auditoria ainda usam dados de exemplo (`mockAndSeedData.ts`) e serão ligadas ao banco nas próximas etapas.
 
 ---
 

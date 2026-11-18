@@ -14,6 +14,7 @@ import type {
 } from "@/lib/mockAndSeedData";
 import { getFilteredAnalytics } from "@/lib/mockAndSeedData";
 import { downloadExcelXml } from "@/lib/excel";
+import { panoramaVazio, type PanoramaDados } from "@/lib/panorama-types";
 
 export type UserRole = "Administradora" | "Gestor" | "Editor" | "Visualizador";
 
@@ -59,7 +60,7 @@ interface AppContextValue {
   filters: Required<AnalyticsFilters>;
   setFilter: (key: keyof AnalyticsFilters, value: string) => void;
   resetFilters: (defaultPeriodo?: string) => void;
-  analytics: ReturnType<typeof getFilteredAnalytics>;
+  analytics: Omit<ReturnType<typeof getFilteredAnalytics>, "panorama"> & { panorama: PanoramaDados };
   dbConnected: boolean;
   pendentesRevisao: number;
   formularios: FormularioItem[];
@@ -81,7 +82,7 @@ interface AppContextValue {
 }
 
 const defaultFilters: Required<AnalyticsFilters> = {
-  periodo: "Outubro de 2026",
+  periodo: "Mês atual",
   genero: "Todos",
   faixaIdade: "Todas",
   cidade: "Todas",
@@ -142,6 +143,9 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
 
   useEffect(() => {
     fetchState();
+    // Atualiza sozinho: pesquisas novas enviadas pelo app aparecem sem recarregar a página
+    const timer = setInterval(fetchState, 15000);
+    return () => clearInterval(timer);
   }, [fetchState]);
 
   const dispatchAction = useCallback(
@@ -178,14 +182,28 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
     setFilters((prev) => ({ ...prev, [key]: value }));
   }, []);
 
-  const resetFilters = useCallback((defaultPeriodo = "Outubro de 2026") => {
+  const resetFilters = useCallback((defaultPeriodo = "Mês atual") => {
     setFilters({
       ...defaultFilters,
       periodo: defaultPeriodo,
     });
   }, []);
 
-  const analytics = getFilteredAnalytics(filters);
+  // Panorama: vem do banco. As demais abas ainda usam dados de exemplo até serem migradas.
+  const [panorama, setPanorama] = useState<PanoramaDados>(panoramaVazio);
+  useEffect(() => {
+    const controller = new AbortController();
+    const qs = new URLSearchParams(filters as Record<string, string>).toString();
+    fetch(`/api/analytics?${qs}`, { cache: "no-store", signal: controller.signal })
+      .then((r) => r.json())
+      .then((d) => {
+        if (d?.panorama) setPanorama(d.panorama);
+        if (typeof d?.dbConnected === "boolean") setDbConnected(d.dbConnected);
+      })
+      .catch(() => {});
+    return () => controller.abort();
+  }, [filters, pesquisas.length]);
+  const analytics = { ...getFilteredAnalytics(filters), panorama };
 
   const exportToExcel = useCallback(
     (sheetName: string, rows: Record<string, unknown>[], fileName: string) => {

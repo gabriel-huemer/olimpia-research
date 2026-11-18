@@ -3,15 +3,55 @@ name: CI
 on:
   push:
     branches: [main]
-    paths:
-      - 'oto-db/**'
-      - '.github/workflows/ci.yml'
   pull_request:
-    paths:
-      - 'oto-db/**'
-      - '.github/workflows/ci.yml'
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
 
 jobs:
+  painel:
+    name: Painel web (tipos, testes e build)
+    runs-on: ubuntu-24.04
+    defaults:
+      run:
+        working-directory: dashboard
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: dashboard/package-lock.json
+      - run: npm ci
+      - name: Checagem de tipos
+        run: npm run lint
+      - name: Testes unitários
+        run: npm test
+      - name: Build de produção
+        run: npm run build
+
+  app:
+    name: App do pesquisador (análise e testes)
+    runs-on: ubuntu-24.04
+    defaults:
+      run:
+        working-directory: android-app-olimpia
+    steps:
+      - uses: actions/checkout@v4
+      - name: SQLite para os testes
+        run: sudo apt-get update -qq && sudo apt-get install -y -qq libsqlite3-dev
+      - uses: subosito/flutter-action@v2
+        with:
+          flutter-version: 3.41.9
+          channel: stable
+          cache: true
+      - run: flutter pub get
+      - name: Análise estática
+        run: flutter analyze
+      - name: Testes
+        run: flutter test
+
   banco:
     name: Banco de dados (migrações e testes)
     runs-on: ubuntu-24.04

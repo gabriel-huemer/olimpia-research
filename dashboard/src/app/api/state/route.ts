@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getStore } from "@/lib/mockAndSeedData";
 import { isDatabaseAvailable, withAuditTransaction } from "@/lib/db";
+import { listarPesquisas } from "@/lib/pesquisas";
 
 function formatNowShort(): string {
   const now = new Date();
@@ -20,6 +21,7 @@ export async function GET() {
     dbConnected,
     pendentesRevisao,
     ...store,
+    pesquisas: await listarPesquisas(),
   });
 }
 
@@ -396,5 +398,6 @@ export async function POST(request: NextRequest) {
     ok: true,
     pendentesRevisao,
     ...store,
+    pesquisas: await listarPesquisas(),
   });
 }

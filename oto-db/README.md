@@ -10,10 +10,11 @@ oto-db/
 ├── db/
 │   ├── roles.sql             papéis de acesso, fuso horário, limites
 │   ├── migrations/           V001 schema · V002 índices · V003 permissões  (versionadas)
-│   └── seeds/                S01 UFs · S02 países · S03 municípios (gerado pelo script)
+│   └── seeds/                S01 UFs · S02 países · S03 municípios (gerado) · S04 formulário (gerado) · S05 pesquisadores de teste
 ├── scripts/
 │   ├── bootstrap.sh          cria/atualiza tudo (idempotente)
 │   ├── carregar_municipios_ibge.py
+│   ├── gerar_seed_formulario.py   gera S04 a partir do questionário do app
 │   ├── backup.sh · restore.sh
 ├── tests/smoke_test.sql      47 verificações de estrutura, integridade e permissões
 └── Makefile                  atalhos (up, psql, migrate, backup, test…)
@@ -31,6 +32,10 @@ make test                       # deve terminar em "TODOS OS TESTES PASSARAM"
 
 > O init do Docker só roda quando o volume é criado. Para aplicar migrações/seeds novos depois: `make migrate`.
 > Se rodar o script dos municípios depois do banco já criado: `make migrate`.
+
+## 1.1 Banco real x banco de demonstração
+
+O mesmo container hospeda dois bancos: `oto` (real) e `oto_demo` (700 pesquisas fictícias para vídeos e apresentações). Veja [demo/README.md](demo/README.md) para criar o demo e quando usar cada um.
 
 ### Sem Docker (PostgreSQL já instalado ou serviço gerenciado)
 
@@ -112,5 +117,6 @@ Agende no cron (diário, 02:30) e guarde uma cópia **fora do servidor**. Reten�
 ## 7. Pendente / a combinar com o grupo
 
 - **Municípios IBGE:** não foi possível baixá-los no ambiente em que montei o projeto; rode `python3 scripts/carregar_municipios_ibge.py` uma vez (o script valida se vieram ≥ 5.500).
-- **Cadastro do formulário de pesquisa** (seções, perguntas, opções) e dos **locais de coleta, serviços e atrativos**: ainda não estão no seed; entram pelo painel Web ou por um `S04_formulario.sql`.
+- **Formulário:** `S04_formulario.sql` é gerado de `android-app-olimpia/assets/seed/questionnaire.json` (`python3 scripts/gerar_seed_formulario.py`). As regras de exibição condicional (`regra_exibicao`) ainda não foram migradas; hoje só o app as aplica. Contadores por faixa etária ficaram como perguntas `NUMERO` (uma por faixa).
+- **Pesquisadores e locais:** `S05_pesquisadores.sql` traz 3 pesquisadores de teste (mesmos códigos do app). Em produção, cadastre os reais pelo painel.
 - **Indicadores** (`indicador`): definir com o OTO a lista oficial (NPS, gasto médio, permanência…).
