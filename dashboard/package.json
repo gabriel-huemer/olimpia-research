@@ -9,7 +9,7 @@
     "start": "next start",
     "lint": "tsc --noEmit",
     "test": "node --test test/conversao.test.mjs",
-    "test:integration": "node --test test/sync-lote.integration.test.mjs"
+    "test:integration": "node --test --test-concurrency=1 test/sync-lote.integration.test.mjs test/panorama.integration.test.mjs"
   },
   "dependencies": {
     "bcryptjs": "^2.4.3",

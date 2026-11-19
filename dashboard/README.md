@@ -65,7 +65,7 @@ npm run dev
 
 Acesse **[http://localhost:3000](http://localhost:3000)** no navegador.
 Com o servidor ativo, execute `npm run test:integration` em outro terminal para
-validar a sincronização em lote, a idempotência e a consulta posterior do estado.
+validar a sincronização em lote, a idempotência, os filtros do Panorama e a lista de Pesquisas.
 
 ### Qual banco usar (real ou demonstração)
 
@@ -95,7 +95,8 @@ Como criar/recriar o banco demo: [../oto-db/demo/README.md](../oto-db/demo/READM
 | `npm run build` | Gera a build otimizada de produção e valida tipos TypeScript e rotas |
 | `npm run start` | Executa o servidor de produção após `npm run build` |
 | `npm run lint` | Executa a verificação estrita de tipos (`tsc --noEmit`) |
-| `npm run test:integration` | Testa o endpoint de sincronização e o estado persistido em memória; requer o servidor ativo |
+| `npm test` | Testes unitários da conversão dos valores do app (sem banco) |
+| `npm run test:integration` | Testa o endpoint de sincronização, o Panorama com filtros e a lista de Pesquisas; requer o painel e o banco ativos |
 
 ---
 
@@ -124,7 +125,8 @@ Requisitos no banco (`../oto-db`): seeds `S04` (formulário) e `S05` (pesquisado
 
 ```bash
 npm test                    # conversão dos valores do app (sem banco)
-npm run test:integration    # exige o painel rodando + banco; grava pesquisas de teste (use um banco de desenvolvimento)
+npm run test:integration    # exige o painel rodando + banco; grava pesquisas de teste. NÃO use no banco de demonstração (oto_demo);
+                            # aponte o painel para um banco descartável (ex.: create database oto_test) e use DASHBOARD_URL=http://localhost:3100
 ```
 
 > **Em migração:** o Panorama e a lista de Pesquisas já leem do banco. As demais abas de Análises, Operadores, Curadoria, Formulários, Usuários e Auditoria ainda usam dados de exemplo (`mockAndSeedData.ts`) e serão ligadas ao banco nas próximas etapas.
