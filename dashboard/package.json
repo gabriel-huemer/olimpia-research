@@ -8,7 +8,8 @@
     "build": "next build",
     "start": "next start",
     "lint": "tsc --noEmit",
-    "test": "node --test test/conversao.test.mjs test/excel.test.mjs",
+    "test": "node --test test/conversao.test.mjs test/excel.test.mjs test/auth-permissoes.test.mjs test/auth-token.test.mjs test/auth-senha.test.mjs test/auth-limitador.test.mjs test/auth-origem.test.mjs",
+    "test:auth": "node --test --test-concurrency=1 test/auth.integration.test.mjs",
     "test:integration": "node --test --test-concurrency=1 test/sync-lote.integration.test.mjs test/panorama.integration.test.mjs test/state.integration.test.mjs"
   },
   "dependencies": {
