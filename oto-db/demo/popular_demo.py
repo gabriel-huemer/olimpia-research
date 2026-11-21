@@ -7,7 +7,7 @@ Pré-requisitos: o painel rodando e apontado para o banco de demonstração (ver
 Os dados são 100% inventados (nenhum turista real) e seguem o questionário do app, então passam pela
 mesma validação, conversão e auditoria de uma coleta de verdade. Datas retroativas: jan a nov/2026.
 """
-import argparse, json, random, urllib.request, uuid
+import argparse, json, random, urllib.parse, urllib.request, uuid
 from datetime import datetime, timedelta, timezone
 from pathlib import Path
 
@@ -40,12 +40,24 @@ def escolha(rng, opcoes, pesos=None):
     return rng.choices(opcoes, weights=pesos, k=1)[0]
 
 
+# Script de demonstração: só envia para um painel rodando na própria máquina.
+HOSTS_LOCAIS = {"localhost", "127.0.0.1", "::1"}
+
+
+def url_local(url):
+    u = urllib.parse.urlsplit(url)
+    if u.scheme not in ("http", "https") or u.hostname not in HOSTS_LOCAIS:
+        raise SystemExit(f"--url deve apontar para o painel local (localhost/127.0.0.1), recebido: {url}")
+    return f"{u.scheme}://{u.netloc}"
+
+
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--url", default="http://localhost:3000")
     ap.add_argument("--total", type=int, default=700)
     ap.add_argument("--semente", type=int, default=42)
     a = ap.parse_args()
+    a.url = url_local(a.url)
     rng = random.Random(a.semente)
     q = json.loads(QUESTIONARIO.read_text(encoding="utf-8"))
     perguntas = {x["key"]: x for x in q["questions"]}

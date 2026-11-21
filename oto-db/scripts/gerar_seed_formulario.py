@@ -15,7 +15,10 @@ import json, re, sys, unicodedata
 from pathlib import Path
 
 RAIZ = Path(__file__).resolve().parents[1]
-FONTE = Path(sys.argv[1]) if len(sys.argv) > 1 else RAIZ.parent / "android-app-olimpia/assets/seed/questionnaire.json"
+FONTE_PADRAO = RAIZ.parent / "android-app-olimpia/assets/seed/questionnaire.json"
+FONTE = (Path(sys.argv[1]) if len(sys.argv) > 1 else FONTE_PADRAO).resolve()
+if not FONTE.is_relative_to(RAIZ.parent.resolve()) or FONTE.suffix != ".json":
+    sys.exit(f"o questionário precisa ser um .json dentro do repositório: {FONTE}")
 SAIDA = RAIZ / "db/seeds/S04_formulario.sql"
 
 TIPO = {"state": "UNICA_ESCOLHA", "single": "UNICA_ESCOLHA", "multi": "MULTIPLA_ESCOLHA", "city": "MUNICIPIO",
