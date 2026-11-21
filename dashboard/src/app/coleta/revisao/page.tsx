@@ -237,10 +237,14 @@ export default function RevisaoPage() {
                 <h2 className="text-sm font-bold text-slate-900">Correção</h2>
 
                 <div>
-                  <label className="block text-[10px] font-bold uppercase tracking-wider text-slate-500 mb-1">
+                  <label
+                    htmlFor="revisao-novo-valor"
+                    className="block text-[10px] font-bold uppercase tracking-wider text-slate-500 mb-1"
+                  >
                     NOVO VALOR DA {itemAtual.campoSuspeito.toUpperCase()}
                   </label>
                   <input
+                    id="revisao-novo-valor"
                     type="text"
                     value={novoValor}
                     disabled={!canEdit}
@@ -250,10 +254,14 @@ export default function RevisaoPage() {
                 </div>
 
                 <div>
-                  <label className="block text-[10px] font-bold uppercase tracking-wider text-slate-500 mb-1">
+                  <label
+                    htmlFor="revisao-motivo"
+                    className="block text-[10px] font-bold uppercase tracking-wider text-slate-500 mb-1"
+                  >
                     MOTIVO (FICA NA AUDITORIA)
                   </label>
                   <input
+                    id="revisao-motivo"
                     type="text"
                     value={motivo}
                     disabled={!canEdit}

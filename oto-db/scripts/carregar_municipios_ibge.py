@@ -10,11 +10,23 @@ Fonte: API de Localidades do IBGE (servicodados.ibge.gov.br).
 Para uso offline, baixe o JSON de
 https://servicodados.ibge.gov.br/api/v1/localidades/municipios e passe com --arquivo-json.
 """
-import argparse, json, sys, urllib.request
+import argparse
+import json
+import sys
+import urllib.request
 from pathlib import Path
 
 URL = "https://servicodados.ibge.gov.br/api/v1/localidades/municipios"
 UFS = set("AC AL AP AM BA CE DF ES GO MA MT MS MG PA PB PR PE PI RJ RN RS RO RR SC SP SE TO".split())
+ROOT_DIR = Path(__file__).resolve().parent.parent
+
+
+def resolve_safe_path(user_path: str, base_dir: Path = ROOT_DIR) -> Path:
+    """Garante que o caminho fornecido permaneça dentro do diretório base do projeto."""
+    candidate = Path(user_path).resolve()
+    if not candidate.is_relative_to(base_dir):
+        raise ValueError(f"Caminho fora do diretório permitido ({base_dir}): {candidate}")
+    return candidate
 
 
 def uf_do_registro(m: dict):
@@ -32,13 +44,14 @@ def uf_do_registro(m: dict):
 
 def main():
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawTextHelpFormatter)
-    ap.add_argument("--saida", default=str(Path(__file__).resolve().parent.parent / "db/seeds/S03_municipios.sql"))
+    ap.add_argument("--saida", default=str(ROOT_DIR / "db/seeds/S03_municipios.sql"))
     ap.add_argument("--arquivo-json", help="usa um JSON local em vez de chamar a API")
     ap.add_argument("--minimo", type=int, default=5500, help="falha se vier menos municípios que isso")
     a = ap.parse_args()
 
     if a.arquivo_json:
-        dados = json.loads(Path(a.arquivo_json).read_text(encoding="utf-8"))
+        caminho_entrada = resolve_safe_path(a.arquivo_json)
+        dados = json.loads(caminho_entrada.read_text(encoding="utf-8"))
     else:
         req = urllib.request.Request(URL, headers={"Accept": "application/json"})
         with urllib.request.urlopen(req, timeout=60) as r:
@@ -62,13 +75,14 @@ def main():
 
     linhas.sort()
     corpo = ",\n".join(f"    ({c}, '{n}', '{u}')" for c, n, u in linhas)
-    Path(a.saida).write_text(
+    caminho_saida = resolve_safe_path(a.saida)
+    caminho_saida.write_text(
         "-- S03 - Municípios (IBGE). Gerado por scripts/carregar_municipios_ibge.py. Idempotente.\n"
         "SET search_path = oto, public;\n"
         f"INSERT INTO municipio (codigo_ibge, nome, uf_sigla) VALUES\n{corpo}\n"
         "ON CONFLICT (codigo_ibge) DO UPDATE SET nome = EXCLUDED.nome, uf_sigla = EXCLUDED.uf_sigla;\n",
         encoding="utf-8")
-    print(f"{len(linhas)} municípios gravados em {a.saida}")
+    print(f"{len(linhas)} municípios gravados em {caminho_saida}")
 
 
 if __name__ == "__main__":

@@ -269,10 +269,14 @@ export default function OperadoresPage() {
             </p>
             <form onSubmit={handleCreateOp} className="space-y-3 text-xs">
               <div>
-                <label className="block font-semibold text-slate-600 uppercase mb-1">
+                <label
+                  htmlFor="novo-op-nome"
+                  className="block font-semibold text-slate-600 uppercase mb-1"
+                >
                   Nome completo do pesquisador
                 </label>
                 <input
+                  id="novo-op-nome"
                   type="text"
                   required
                   value={novoNome}
@@ -282,10 +286,14 @@ export default function OperadoresPage() {
                 />
               </div>
               <div>
-                <label className="block font-semibold text-slate-600 uppercase mb-1">
+                <label
+                  htmlFor="novo-op-local"
+                  className="block font-semibold text-slate-600 uppercase mb-1"
+                >
                   Local habitual de coleta
                 </label>
                 <select
+                  id="novo-op-local"
                   value={novoLocal}
                   onChange={(e) => setNovoLocal(e.target.value)}
                   className="w-full border border-slate-200 rounded-lg px-3 py-2 bg-white"
