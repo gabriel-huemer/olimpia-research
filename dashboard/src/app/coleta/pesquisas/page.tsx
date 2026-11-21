@@ -266,10 +266,14 @@ export default function PesquisasPage() {
 
             <form onSubmit={handleInsertManual} className="space-y-3 text-xs">
               <div>
-                <label className="block font-semibold text-slate-600 uppercase mb-1">
+                <label
+                  htmlFor="manual-origem"
+                  className="block font-semibold text-slate-600 uppercase mb-1"
+                >
                   Origem / Canal
                 </label>
                 <input
+                  id="manual-origem"
                   type="text"
                   value={origemManual}
                   onChange={(e) => setOrigemManual(e.target.value)}
@@ -279,10 +283,14 @@ export default function PesquisasPage() {
 
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label className="block font-semibold text-slate-600 uppercase mb-1">
+                  <label
+                    htmlFor="manual-idade"
+                    className="block font-semibold text-slate-600 uppercase mb-1"
+                  >
                     Idade
                   </label>
                   <input
+                    id="manual-idade"
                     type="number"
                     value={idadeManual}
                     onChange={(e) => setIdadeManual(e.target.value)}
@@ -290,10 +298,14 @@ export default function PesquisasPage() {
                   />
                 </div>
                 <div>
-                  <label className="block font-semibold text-slate-600 uppercase mb-1">
+                  <label
+                    htmlFor="manual-genero"
+                    className="block font-semibold text-slate-600 uppercase mb-1"
+                  >
                     Gênero
                   </label>
                   <select
+                    id="manual-genero"
                     value={generoManual}
                     onChange={(e) => setGeneroManual(e.target.value)}
                     className="w-full border border-slate-200 rounded-lg px-3 py-2 bg-white"
@@ -307,10 +319,14 @@ export default function PesquisasPage() {
 
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label className="block font-semibold text-slate-600 uppercase mb-1">
+                  <label
+                    htmlFor="manual-gasto"
+                    className="block font-semibold text-slate-600 uppercase mb-1"
+                  >
                     Gasto diário (R$)
                   </label>
                   <input
+                    id="manual-gasto"
                     type="number"
                     value={gastoManual}
                     onChange={(e) => setGastoManual(e.target.value)}
@@ -318,10 +334,14 @@ export default function PesquisasPage() {
                   />
                 </div>
                 <div>
-                  <label className="block font-semibold text-slate-600 uppercase mb-1">
+                  <label
+                    htmlFor="manual-local"
+                    className="block font-semibold text-slate-600 uppercase mb-1"
+                  >
                     Local de referência
                   </label>
                   <input
+                    id="manual-local"
                     type="text"
                     value={localManual}
                     onChange={(e) => setLocalManual(e.target.value)}

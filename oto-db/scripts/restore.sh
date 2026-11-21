@@ -4,7 +4,7 @@
 set -euo pipefail
 ARQ="${1:?uso: restore.sh <arquivo.dump> <nome_do_novo_banco>}"; NOVO="${2:?informe o nome do novo banco}"
 ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
-[ -f "$ROOT/.env" ] && { set -a; . "$ROOT/.env"; set +a; }
+[[ -f "$ROOT/.env" ]] && { set -a; . "$ROOT/.env"; set +a; }
 USR="${OTO_DB_ADMIN_USER:-oto_admin}"
 if docker ps --format '{{.Names}}' 2>/dev/null | grep -qx oto-db; then
   docker exec oto-db createdb -U "$USR" "$NOVO"

@@ -6,7 +6,7 @@
 #   30 2 * * * cd /caminho/oto-db && ./scripts/backup.sh >> backups/backup.log 2>&1
 set -euo pipefail
 ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
-[ -f "$ROOT/.env" ] && { set -a; . "$ROOT/.env"; set +a; }
+[[ -f "$ROOT/.env" ]] && { set -a; . "$ROOT/.env"; set +a; }
 DB="${OTO_DB_NAME:-oto}"; USR="${OTO_DB_ADMIN_USER:-oto_admin}"
 DIR="${BACKUP_DIR:-$ROOT/backups}"; DIAS="${RETENCAO_DIAS:-14}"
 mkdir -p "$DIR"

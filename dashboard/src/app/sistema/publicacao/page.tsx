@@ -175,10 +175,14 @@ export default function PublicacaoPage() {
           </div>
 
           <div className="pt-1">
-            <label className="block text-[10px] font-bold uppercase tracking-wider text-slate-500 mb-1">
+            <label
+              htmlFor="publicacao-atualizacao"
+              className="block text-[10px] font-bold uppercase tracking-wider text-slate-500 mb-1"
+            >
               ATUALIZAÇÃO
             </label>
             <input
+              id="publicacao-atualizacao"
               type="text"
               value={atualizacaoModo}
               disabled={!canEdit}

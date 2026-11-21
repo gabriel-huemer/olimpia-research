@@ -82,23 +82,25 @@ export default function ImportacaoPage() {
       </div>
 
       {/* Área de Drag & Drop (.xlsx) */}
-      <div
-        onClick={() => fileInputRef.current?.click()}
-        className="bg-white border-2 border-dashed border-slate-300 hover:border-[#008767] rounded-xl p-8 text-center cursor-pointer transition mb-5"
-      >
+      <div className="bg-white border-2 border-dashed border-slate-300 hover:border-[#008767] rounded-xl p-8 text-center transition mb-5">
         <input
+          id="upload-planilha-input"
           ref={fileInputRef}
           type="file"
           accept=".xlsx,.xls,.csv"
           onChange={handleFileChange}
           className="hidden"
         />
-        <div className="text-xs text-slate-600">
+        <button
+          type="button"
+          onClick={() => fileInputRef.current?.click()}
+          className="text-xs text-slate-600 cursor-pointer hover:text-[#008767]"
+        >
           <span className="font-bold text-slate-800">
             Arraste a planilha aqui
           </span>{" "}
           ou escolha o arquivo
-        </div>
+        </button>
         <div className="text-xs text-slate-500 mt-1">
           .xlsx ·{" "}
           <button
