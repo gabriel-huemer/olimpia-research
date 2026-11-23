@@ -1,0 +1,33 @@
+# Plano geral: deixar o OTO pronto
+
+Pedido do Hugo (2026-11-23): executar todas as frentes, **um PR por vez na `stage`**, e no fim relatar o que deu certo,
+o que depende dele e um resumo. Hugo está offline: na dúvida, o caminho mais seguro, anotado aqui.
+
+## O que é "pronto"
+- Nenhuma tela mostra número inventado como se fosse real.
+- Todo botão grava no banco ou não existe.
+- Toda rota exige a área certa, com teste de permissão.
+
+## Regras
+Testes primeiro; integração só no `oto_teste`; `git add` com caminhos explícitos; merge só com CI verde; nada na `main`, sem
+force-push, sem carregar `oto_demo`, sem criar contas em serviços externos. Migrações novas a partir da V006.
+Frente que falhar 3 vezes pela mesma causa fica em PR aberto e o plano segue.
+
+## Frentes
+- [x] 1. Análises: as quatro abas e os filtros lidos do banco
+- [ ] 2. Auditoria lida de `log_auditoria`
+- [ ] 3. Operadores e Visão geral no banco
+- [ ] 4. App: login do pesquisador validado e token por pesquisador
+- [ ] 5. Pesquisas: lista com filtros, inserção manual (RF17)
+- [ ] 6. Importação de planilhas históricas (RF09)
+- [ ] 7. Publicação de resultados (RF21)
+- [ ] 8. Formulários e versões no banco (RF05); app baixa o publicado
+- [ ] 9. Conta (trocar a própria senha), limpeza dos dados de exemplo, SonarCloud
+- [ ] 10. Hospedagem: contêineres, HTTPS, backup; guia de Tailscale
+- [ ] 11. Relatório final
+
+## Status
+### Frente 1 — Análises
+- Feito: as 5 abas e os filtros vêm do banco; exportação usa os números da tela.
+- Decisões padrão: nota Ótimo=5, Regular=3, Ruim=1; cidade com menos de 5 respostas vira "Outras cidades" e não é filtro;
+  texto livre só para quem tem login. O aviso de que "renda não é coletada" saiu: o formulário coleta.

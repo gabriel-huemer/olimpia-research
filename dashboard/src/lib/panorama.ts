@@ -1,11 +1,11 @@
 import { getDbPool } from "@/lib/db";
-import type { AnalyticsFilters } from "@/lib/mockAndSeedData";
+import type { AnalyticsFilters } from "@/lib/paineis-types";
 import { panoramaVazio, type PanoramaDados } from "@/lib/panorama-types";
 
 // Indicadores do Panorama calculados direto do PostgreSQL (oto.pesquisa / resposta / resposta_valor).
 // Respostas SUSPEITA ou EXCLUIDA ficam de fora dos indicadores (mesma regra da vw_resposta_valida, RF12/RF14).
 
-const VALIDA = "r.situacao IN ('NORMAL', 'APROVADA', 'CORRIGIDA')";
+export const VALIDA = "r.situacao IN ('NORMAL', 'APROVADA', 'CORRIGIDA')";
 const MESES = ["Jan", "Fev", "Mar", "Abr", "Mai", "Jun", "Jul", "Ago", "Set", "Out", "Nov", "Dez"];
 
 // Rótulos dos filtros da tela -> trechos dos rótulos das opções no formulário
@@ -20,7 +20,7 @@ const TRANSPORTE: Record<string, string[]> = {
   Ônibus: ["Ônibus%"],
   Avião: ["Aéreo"],
 };
-const FAIXAS_IDADE: Record<string, [number, number]> = {
+export const FAIXAS_IDADE: Record<string, [number, number]> = {
   "0 a 12": [0, 12],
   "13 a 17": [13, 17],
   "18 a 29": [18, 29],
@@ -31,7 +31,7 @@ const FAIXAS_IDADE: Record<string, [number, number]> = {
 type Params = unknown[];
 
 /** Monta o WHERE (alias `p` = pesquisa) a partir dos filtros da tela. */
-function montarFiltro(f: AnalyticsFilters): { where: string; params: Params; ano: number } {
+export function montarFiltro(f: AnalyticsFilters): { where: string; params: Params; ano: number } {
   const cond: string[] = ["TRUE"];
   const params: Params = [];
   const add = (v: unknown) => {
@@ -51,12 +51,11 @@ function montarFiltro(f: AnalyticsFilters): { where: string; params: Params; ano
     case "Últimos 30 dias":
       cond.push("p.iniciada_em >= now() - interval '30 days'");
       break;
-    case "Ano 2025":
-      ano = 2025;
-      cond.push("p.iniciada_em >= timestamptz '2025-01-01 00:00-03' AND p.iniciada_em < timestamptz '2026-01-01 00:00-03'");
-      break;
-    default: // "Ano 2026": do começo do ano até hoje
-      cond.push("p.iniciada_em >= timestamptz '2026-01-01 00:00-03'");
+    default: {
+      const m = /^Ano (20\d{2})$/.exec(f.periodo ?? "");
+      if (m) ano = Number(m[1]);
+      cond.push(`p.iniciada_em >= timestamptz '${ano}-01-01 00:00-03' AND p.iniciada_em < timestamptz '${ano + 1}-01-01 00:00-03'`);
+    }
   }
 
   if (f.genero && f.genero !== "Todos") cond.push(respostaOpcao("genero", `o.rotulo = ${add(f.genero)}`));
@@ -89,7 +88,7 @@ function montarFiltro(f: AnalyticsFilters): { where: string; params: Params; ano
   }
   if (f.localPesquisa && f.localPesquisa !== "Todos") {
     cond.push(
-      `EXISTS (SELECT 1 FROM oto.local_coleta lc WHERE lc.id = p.local_coleta_id AND lc.nome ILIKE ${add(f.localPesquisa + "%")})`
+      `EXISTS (SELECT 1 FROM oto.local_coleta lc WHERE lc.id = p.local_coleta_id AND starts_with(lc.nome, ${add(f.localPesquisa)}))`
     );
   }
   return { where: cond.join(" AND "), params, ano };

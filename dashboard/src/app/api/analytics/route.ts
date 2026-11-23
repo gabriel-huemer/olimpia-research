@@ -1,29 +1,35 @@
 import { NextRequest, NextResponse } from "next/server";
 import { isDatabaseAvailable } from "@/lib/db";
-import { calcularPanorama } from "@/lib/panorama";
-import { panoramaVazio } from "@/lib/panorama-types";
+import { calcularPainel, opcoesDeFiltro } from "@/lib/paineis";
+import { ABAS, paineisVazios, type Aba } from "@/lib/paineis-types";
+import { sessaoAtual } from "@/lib/auth/servidor";
 
 export const dynamic = "force-dynamic";
 
+// Pública (dados abertos). `aba` escolhe o painel; sem `aba`, devolve o Panorama.
 export async function GET(request: NextRequest) {
-  const { searchParams } = new URL(request.url);
+  const q = request.nextUrl.searchParams;
+  const aba = (q.get("aba") ?? "panorama") as Aba;
+  if (!ABAS.includes(aba)) return NextResponse.json({ erro: "Aba desconhecida." }, { status: 400 });
   const filters = {
-    periodo: searchParams.get("periodo") || "Ano 2026",
-    genero: searchParams.get("genero") || "Todos",
-    faixaIdade: searchParams.get("faixaIdade") || "Todas",
-    cidade: searchParams.get("cidade") || "Todas",
-    hospedagem: searchParams.get("hospedagem") || "Todas",
-    transporte: searchParams.get("transporte") || "Todos",
-    localPesquisa: searchParams.get("localPesquisa") || "Todos",
+    periodo: q.get("periodo") || `Ano ${new Date().getFullYear()}`,
+    genero: q.get("genero") || "Todos",
+    faixaIdade: q.get("faixaIdade") || "Todas",
+    cidade: q.get("cidade") || "Todas",
+    hospedagem: q.get("hospedagem") || "Todas",
+    transporte: q.get("transporte") || "Todos",
+    localPesquisa: q.get("localPesquisa") || "Todos",
   };
-
+  const headers = { "cache-control": "no-store" };
   if (!(await isDatabaseAvailable())) {
-    return NextResponse.json({ dbConnected: false, filters, panorama: panoramaVazio });
+    return NextResponse.json({ dbConnected: false, filters, [aba]: paineisVazios[aba] }, { headers });
   }
   try {
-    return NextResponse.json({ dbConnected: true, filters, panorama: await calcularPanorama(filters) });
+    const comTexto = aba === "infraestrutura" && (await sessaoAtual(request)) !== null;
+    const [painel, opcoes] = await Promise.all([calcularPainel(aba, filters, comTexto), opcoesDeFiltro()]);
+    return NextResponse.json({ dbConnected: true, filters, opcoes, [aba]: painel }, { headers });
   } catch (e) {
-    console.error("[analytics] falha ao calcular o panorama:", e);
-    return NextResponse.json({ dbConnected: false, filters, panorama: panoramaVazio, error: (e as Error).message }, { status: 500 });
+    console.error("[analytics] falha ao calcular", aba, e);
+    return NextResponse.json({ dbConnected: false, filters, [aba]: paineisVazios[aba], erro: "Erro interno." }, { status: 500, headers });
   }
 }
