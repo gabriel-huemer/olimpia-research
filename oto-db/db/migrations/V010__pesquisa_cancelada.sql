@@ -4,7 +4,7 @@ SET search_path = oto, public;
 CREATE TABLE pesquisa_cancelada (
     id              uuid         PRIMARY KEY,
     pesquisador_id  uuid         NOT NULL REFERENCES usuario(id),
-    motivo          varchar(100) NOT NULL CHECK (btrim(motivo) <> ''),
+    motivo          varchar(100) NOT NULL CHECK (length(btrim(motivo)) > 0),
     iniciada_em     timestamptz  NOT NULL,
     cancelada_em    timestamptz  NOT NULL,
     recebida_em     timestamptz  NOT NULL DEFAULT now(),
