@@ -9,57 +9,32 @@ import type {
   ItemRevisao,
   ItemPublicacao,
   ProblemaImportacao,
-  UsuarioSistema,
   RegistroAuditoria,
 } from "@/lib/mockAndSeedData";
 import { getFilteredAnalytics } from "@/lib/mockAndSeedData";
+import { ROTA_LOGIN } from "@/lib/auth/origem";
 import { downloadExcelXml } from "@/lib/excel";
+import { panoramaVazio, type PanoramaDados } from "@/lib/panorama-types";
 
-export type UserRole = "Administradora" | "Gestor" | "Editor" | "Visualizador";
-
-export interface CurrentUser {
+export interface UsuarioLogado {
+  id: string;
   nome: string;
   email: string;
-  papel: UserRole;
-  iniciais: string;
+  perfil: { id: number; nome: string };
+  areas: { analises: boolean; coleta: boolean; sistema: boolean };
 }
 
-export const PERFIS_DISPONIVEIS: CurrentUser[] = [
-  {
-    nome: "Maria Oliveira",
-    email: "maria.oliveira@exemplo.com",
-    papel: "Administradora",
-    iniciais: "M",
-  },
-  {
-    nome: "Coordenação OTO",
-    email: "coordenacao@oto.olimpia.sp.gov.br",
-    papel: "Gestor",
-    iniciais: "C",
-  },
-  {
-    nome: "Estagiária OTO",
-    email: "estagio@oto.olimpia.sp.gov.br",
-    papel: "Editor",
-    iniciais: "E",
-  },
-  {
-    nome: "Secretaria / Prefeito",
-    email: "visualizador@olimpia.sp.gov.br",
-    papel: "Visualizador",
-    iniciais: "V",
-  },
-];
-
 interface AppContextValue {
-  currentUser: CurrentUser;
-  setCurrentUser: (u: CurrentUser) => void;
+  /** null = visitante (só Análises). */
+  currentUser: UsuarioLogado | null;
+  sessaoCarregada: boolean;
+  sair: () => Promise<void>;
   canEdit: boolean;
   canManageUsers: boolean;
   filters: Required<AnalyticsFilters>;
   setFilter: (key: keyof AnalyticsFilters, value: string) => void;
   resetFilters: (defaultPeriodo?: string) => void;
-  analytics: ReturnType<typeof getFilteredAnalytics>;
+  analytics: Omit<ReturnType<typeof getFilteredAnalytics>, "panorama"> & { panorama: PanoramaDados };
   dbConnected: boolean;
   pendentesRevisao: number;
   formularios: FormularioItem[];
@@ -71,7 +46,6 @@ interface AppContextValue {
   metodoPublicacao: string;
   problemasImportacao: ProblemaImportacao[];
   importacaoConcluida: boolean;
-  usuarios: UsuarioSistema[];
   auditoria: RegistroAuditoria[];
   dispatchAction: (action: string, payload?: Record<string, unknown>) => Promise<void>;
   exportToExcel: (sheetName: string, rows: Record<string, unknown>[], fileName: string) => void;
@@ -81,7 +55,7 @@ interface AppContextValue {
 }
 
 const defaultFilters: Required<AnalyticsFilters> = {
-  periodo: "Outubro de 2026",
+  periodo: "Mês atual",
   genero: "Todos",
   faixaIdade: "Todas",
   cidade: "Todas",
@@ -93,7 +67,8 @@ const defaultFilters: Required<AnalyticsFilters> = {
 const AppContext = createContext<AppContextValue | null>(null);
 
 export function AppProvider({ children }: { children: React.ReactNode }) {
-  const [currentUser, setCurrentUser] = useState<CurrentUser>(PERFIS_DISPONIVEIS[0]);
+  const [currentUser, setCurrentUser] = useState<UsuarioLogado | null>(null);
+  const [sessaoCarregada, setSessaoCarregada] = useState(false);
   const [filters, setFilters] = useState<Required<AnalyticsFilters>>(defaultFilters);
   const [dbConnected, setDbConnected] = useState(false);
   const [pendentesRevisao, setPendentesRevisao] = useState(7);
@@ -106,7 +81,6 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
   const [metodoPublicacao, setMetodoPublicacao] = useState("Incorporar no site (iframe/link)");
   const [problemasImportacao, setProblemasImportacao] = useState<ProblemaImportacao[]>([]);
   const [importacaoConcluida, setImportacaoConcluida] = useState(false);
-  const [usuarios, setUsuarios] = useState<UsuarioSistema[]>([]);
   const [auditoria, setAuditoria] = useState<RegistroAuditoria[]>([]);
   const [toastMessage, setToastMessage] = useState<string | null>(null);
 
@@ -133,7 +107,6 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
     );
     setProblemasImportacao((data.problemasImportacao as ProblemaImportacao[]) || []);
     setImportacaoConcluida(Boolean(data.importacaoConcluida));
-    setUsuarios((data.usuarios as UsuarioSistema[]) || []);
     setAuditoria((data.auditoria as RegistroAuditoria[]) || []);
   }, []);
 
@@ -149,40 +122,83 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
   }, [applyServerState]);
 
   useEffect(() => {
+    fetch("/api/auth/sessao", { cache: "no-store" })
+      .then((r) => r.json())
+      .then((d) => setCurrentUser(d?.usuario ?? null))
+      .catch(() => setCurrentUser(null))
+      .finally(() => setSessaoCarregada(true));
+  }, []);
+
+  // Coleta e Sistema só existem para quem tem acesso; visitante não consulta /api/state.
+  const usaEstado = Boolean(currentUser?.areas.coleta || currentUser?.areas.sistema);
+  useEffect(() => {
+    if (!usaEstado) return;
     void fetchState();
-  }, [fetchState]);
+    // Atualiza sozinho: pesquisas novas enviadas pelo app aparecem sem recarregar a página
+    const timer = setInterval(() => void fetchState(), 15000);
+    return () => clearInterval(timer);
+  }, [fetchState, usaEstado]);
+
+  const sair = useCallback(async () => {
+    await fetch("/api/auth/logout", { method: "POST" }).catch(() => {});
+    setCurrentUser(null);
+    window.location.href = "/analises/panorama";
+  }, []);
 
   const dispatchAction = useCallback(
     async (action: string, payload: Record<string, unknown> = {}) => {
       const res = await fetch("/api/state", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          action,
-          payload,
-          usuario: currentUser.nome,
-        }),
+        body: JSON.stringify({ action, payload }),
       });
+      if (res.status === 401) {
+        window.location.href = `${ROTA_LOGIN}?proximo=${encodeURIComponent(window.location.pathname)}`;
+        return;
+      }
       if (res.ok) {
         const data = await res.json();
         applyServerState(data);
+      } else {
+        const d = await res.json().catch(() => null);
+        showToast(d?.erro ?? "Não foi possível concluir a ação.");
       }
     },
-    [applyServerState, currentUser.nome]
+    [applyServerState, showToast]
   );
 
   const setFilter = useCallback((key: keyof AnalyticsFilters, value: string) => {
     setFilters((prev) => ({ ...prev, [key]: value }));
   }, []);
 
-  const resetFilters = useCallback((defaultPeriodo = "Outubro de 2026") => {
+  const resetFilters = useCallback((defaultPeriodo = "Mês atual") => {
     setFilters({
       ...defaultFilters,
       periodo: defaultPeriodo,
     });
   }, []);
 
-  const analytics = getFilteredAnalytics(filters);
+  // Panorama: vem do banco. As demais abas ainda usam dados de exemplo até serem migradas.
+  const [panorama, setPanorama] = useState<PanoramaDados>(panoramaVazio);
+  // Relê o Panorama a cada 15s também para visitantes (que não consultam /api/state).
+  const [atualizacao, setAtualizacao] = useState(0);
+  useEffect(() => {
+    const timer = setInterval(() => setAtualizacao((n) => n + 1), 15000);
+    return () => clearInterval(timer);
+  }, []);
+  useEffect(() => {
+    const controller = new AbortController();
+    const qs = new URLSearchParams(filters as Record<string, string>).toString();
+    fetch(`/api/analytics?${qs}`, { cache: "no-store", signal: controller.signal })
+      .then((r) => r.json())
+      .then((d) => {
+        if (d?.panorama) setPanorama(d.panorama);
+        if (typeof d?.dbConnected === "boolean") setDbConnected(d.dbConnected);
+      })
+      .catch(() => {});
+    return () => controller.abort();
+  }, [filters, pesquisas.length, atualizacao]);
+  const analytics = { ...getFilteredAnalytics(filters), panorama };
 
   const exportToExcel = useCallback(
     (sheetName: string, rows: Record<string, unknown>[], fileName: string) => {
@@ -272,14 +288,16 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
     [analytics, exportToExcel, filters, showToast]
   );
 
-  const canEdit = currentUser.papel !== "Visualizador";
-  const canManageUsers = currentUser.papel === "Administradora";
+  // As páginas de Coleta/Sistema já são barradas pelo proxy; aqui só ajustamos os botões.
+  const canEdit = usaEstado;
+  const canManageUsers = Boolean(currentUser?.areas.sistema);
 
   return (
     <AppContext.Provider
       value={{
         currentUser,
-        setCurrentUser,
+        sessaoCarregada,
+        sair,
         canEdit,
         canManageUsers,
         filters,
@@ -297,7 +315,6 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
         metodoPublicacao,
         problemasImportacao,
         importacaoConcluida,
-        usuarios,
         auditoria,
         dispatchAction,
         exportToExcel,

@@ -3,15 +3,125 @@ name: CI
 on:
   push:
     branches: [main]
-    paths:
-      - 'oto-db/**'
-      - '.github/workflows/ci.yml'
   pull_request:
-    paths:
-      - 'oto-db/**'
-      - '.github/workflows/ci.yml'
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
 
 jobs:
+  painel:
+    name: Painel web (tipos, testes e build)
+    runs-on: ubuntu-24.04
+    defaults:
+      run:
+        working-directory: dashboard
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+          cache-dependency-path: dashboard/package-lock.json
+      - run: npm ci
+      - name: Checagem de tipos
+        run: npm run lint
+      - name: Testes unitários
+        run: npm test
+      - name: Build de produção
+        run: npm run build
+
+  app:
+    name: App do pesquisador (análise e testes)
+    runs-on: ubuntu-24.04
+    defaults:
+      run:
+        working-directory: android-app-olimpia
+    steps:
+      - uses: actions/checkout@v4
+      - name: SQLite para os testes
+        run: sudo apt-get update -qq && sudo apt-get install -y -qq libsqlite3-dev
+      - uses: subosito/flutter-action@v2
+        with:
+          flutter-version: 3.41.9
+          channel: stable
+          cache: true
+      - run: flutter pub get
+      - name: Análise estática
+        run: flutter analyze
+      - name: Testes
+        run: flutter test
+
+  integracao:
+    name: Integração (app -> painel -> PostgreSQL)
+    runs-on: ubuntu-24.04
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_DB: oto
+          POSTGRES_USER: oto_admin
+          POSTGRES_PASSWORD: ci_admin
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U oto_admin -d oto"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 10
+    env:
+      PGHOST: localhost
+      PGPORT: 5432
+      PGUSER: oto_admin
+      PGPASSWORD: ci_admin
+      PGDATABASE: oto
+      OTO_WEB_PASSWORD: ci_web
+      OTO_MOBILE_PASSWORD: ci_mobile
+      OTO_READONLY_PASSWORD: ci_readonly
+      OTO_APP_ADMIN_EMAIL: admin@oto.test
+      OTO_APP_ADMIN_PASSWORD: ci_admin_app
+      # Só para o CI (banco descartável). Em produção, gere valores próprios.
+      AUTH_SECRET: ci-auth-secret-de-teste-com-mais-de-32-caracteres
+      SYNC_API_TOKEN: ci-sync-token-de-teste-com-24-caracteres
+    steps:
+      - uses: actions/checkout@v4
+      - name: Banco com municípios, formulário e pesquisadores
+        working-directory: oto-db
+        run: |
+          python3 scripts/carregar_municipios_ibge.py
+          bash scripts/bootstrap.sh
+          bash scripts/criar_usuarios_teste.sh >> "$GITHUB_ENV"
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+          cache-dependency-path: dashboard/package-lock.json
+      - name: Instalar e compilar o painel
+        working-directory: dashboard
+        run: |
+          npm ci
+          npm run build
+      - name: Subir o painel
+        working-directory: dashboard
+        env:
+          DATABASE_URL: postgresql://oto_web:ci_web@localhost:5432/oto
+          OTO_DB_HOST: localhost
+          OTO_DB_PORT: 5432
+          OTO_DB_NAME: oto
+          OTO_MOBILE_PASSWORD: ci_mobile
+        run: |
+          nohup npm start -- -p 3000 > ../painel.log 2>&1 &
+          for i in $(seq 1 30); do curl -sf http://localhost:3000/api/analytics >/dev/null && exit 0; sleep 2; done
+          cat ../painel.log; exit 1
+      - name: Testes de integração
+        working-directory: dashboard
+        run: |
+          npm run test:integration
+          npm run test:auth
+      - name: Log do painel (em caso de falha)
+        if: failure()
+        run: cat painel.log
+
   banco:
     name: Banco de dados (migrações e testes)
     runs-on: ubuntu-24.04

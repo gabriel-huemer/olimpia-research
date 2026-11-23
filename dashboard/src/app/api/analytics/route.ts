@@ -1,11 +1,14 @@
 import { NextRequest, NextResponse } from "next/server";
-import { getFilteredAnalytics } from "@/lib/mockAndSeedData";
-import { isDatabaseAvailable, getDbPool } from "@/lib/db";
+import { isDatabaseAvailable } from "@/lib/db";
+import { calcularPanorama } from "@/lib/panorama";
+import { panoramaVazio } from "@/lib/panorama-types";
+
+export const dynamic = "force-dynamic";
 
 export async function GET(request: NextRequest) {
   const { searchParams } = new URL(request.url);
   const filters = {
-    periodo: searchParams.get("periodo") || "Jan a out 2026",
+    periodo: searchParams.get("periodo") || "Ano 2026",
     genero: searchParams.get("genero") || "Todos",
     faixaIdade: searchParams.get("faixaIdade") || "Todas",
     cidade: searchParams.get("cidade") || "Todas",
@@ -14,32 +17,13 @@ export async function GET(request: NextRequest) {
     localPesquisa: searchParams.get("localPesquisa") || "Todos",
   };
 
-  let dbConnected = false;
-  let dbValidResponsesCount: number | null = null;
-
-  if (await isDatabaseAvailable()) {
-    try {
-      const pool = getDbPool();
-      const res = await pool.query(
-        "SELECT COUNT(DISTINCT pesquisa_id)::int AS total FROM oto.vw_resposta_valida"
-      );
-      dbConnected = true;
-      if (res.rows[0]?.total > 0) {
-        dbValidResponsesCount = res.rows[0].total;
-      }
-    } catch {
-      dbConnected = false;
-    }
+  if (!(await isDatabaseAvailable())) {
+    return NextResponse.json({ dbConnected: false, filters, panorama: panoramaVazio });
   }
-
-  const analytics = getFilteredAnalytics(filters);
-  if (dbValidResponsesCount && analytics.isDefault) {
-    analytics.panorama.pesquisasColetadas = dbValidResponsesCount;
+  try {
+    return NextResponse.json({ dbConnected: true, filters, panorama: await calcularPanorama(filters) });
+  } catch (e) {
+    console.error("[analytics] falha ao calcular o panorama:", e);
+    return NextResponse.json({ dbConnected: false, filters, panorama: panoramaVazio, error: (e as Error).message }, { status: 500 });
   }
-
-  return NextResponse.json({
-    dbConnected,
-    filters,
-    ...analytics,
-  });
 }

@@ -30,12 +30,12 @@ export default function InfraestruturaPage() {
 
         <AnalyticsHeaderActions
           abaTitulo="Infraestrutura urbana e serviços"
-          defaultPeriodo="Outubro de 2026"
+          defaultPeriodo="Mês atual"
         />
       </div>
 
       {/* Filtros */}
-      <FilterBar defaultPeriodo="Outubro de 2026" />
+      <FilterBar defaultPeriodo="Mês atual" />
 
       {/* Card principal: Avaliação detalhada dos serviços da cidade */}
       <div className="bg-white border border-slate-200 rounded-xl p-5 shadow-2xs mb-4">

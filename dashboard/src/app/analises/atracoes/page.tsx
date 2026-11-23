@@ -30,12 +30,12 @@ export default function AtracoesPage() {
 
         <AnalyticsHeaderActions
           abaTitulo="Atrações e mobilidade em Olímpia"
-          defaultPeriodo="Outubro de 2026"
+          defaultPeriodo="Mês atual"
         />
       </div>
 
       {/* Filtros */}
-      <FilterBar defaultPeriodo="Outubro de 2026" />
+      <FilterBar defaultPeriodo="Mês atual" />
 
       {/* Linha superior: Popularidade × avaliação + Atrações mais bem avaliadas */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-4 mb-4">
