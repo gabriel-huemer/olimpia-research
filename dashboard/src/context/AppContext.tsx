@@ -32,7 +32,8 @@ interface AppContextValue {
   /** Relê /api/state agora, sem esperar os 15 s. */
   recarregarEstado: () => Promise<void>;
   exportToExcel: (sheetName: string, rows: Record<string, unknown>[], fileName: string) => void;
-  exportReportPdfOrExcel: (abaTitulo: string, formato?: "PDF" | "XLSX") => void;
+  /** Planilha com os números da aba aberta. */
+  exportarAba: (abaTitulo: string) => void;
   toastMessage: string | null;
   showToast: (msg: string) => void;
 }
@@ -155,14 +156,8 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
     [showToast]
   );
 
-  const exportReportPdfOrExcel = useCallback(
-    (abaTitulo: string, formato: "PDF" | "XLSX" = "XLSX") => {
-      if (formato === "PDF") {
-        showToast(`Preparando impressão/PDF de "${abaTitulo}" com os filtros atuais...`);
-        setTimeout(() => window.print(), 250);
-        return;
-      }
-
+  const exportarAba = useCallback(
+    (abaTitulo: string) => {
       if (!aba) return;
       const rows = linhasDaAba(aba, paineis, filters);
 
@@ -175,7 +170,7 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
 
       exportToExcel(abaTitulo, rows, `OTO_Relatorio_${safeSlug}.xlsx`);
     },
-    [aba, paineis, exportToExcel, filters, showToast]
+    [aba, paineis, exportToExcel, filters]
   );
 
   // As páginas de Coleta/Sistema já são barradas pelo proxy; aqui só ajustamos os botões.
@@ -200,7 +195,7 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
         pendentesRevisao,
         recarregarEstado: fetchState,
         exportToExcel,
-        exportReportPdfOrExcel,
+        exportarAba,
         toastMessage,
         showToast,
       }}

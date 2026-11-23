@@ -23,6 +23,15 @@ Testes na máquina: painel 72 unitários, 96 de integração e 22 de acesso; app
 **Falha minha:** o PR #13 entrou na `stage` sem o CI ter rodado (só o SonarCloud e os testes locais), porque o script de merge
 aceitava a lista vazia como verde. Corrigi o script (exige os 5 checks) e o PR #14 rodou o CI completo sobre a `stage` com o #13: passou.
 
+## Exportação em três versões
+
+Botão **Exportar relatório** nas 5 abas: resumo de 1 página (padrão), relatório (8) e apresentação (12), com prévia antes de baixar.
+Decidido pelo Hugo: PDF nas três, só números, qualquer visitante exporta. Com isso saíram do modelo original as leituras e decisões
+sugeridas. Também ficaram fora o texto livre "o que falta" (pode identificar pessoas) e o gasto por viagem (fórmula não validada).
+Atrações usam nota de 1 a 5 e "% que avaliou", como na tela. A opção "PDF (imprimir)" saiu; a planilha Excel da aba continua.
+Conferido com `oto_demo` em 1366 e 390 px (mês, ano, recorte vazio) e com listas cheias: 1, 8 e 12 páginas, sem corte.
+Testes: 95 unitários, 108 de integração, 22 de acesso.
+
 ## O que precisa do Hugo
 
 1. **Feito em 23/11:** `oto` e `oto_demo` migrados para a V010, com backup antes. Outras máquinas e o servidor ainda precisam de `make migrate` (em `oto-db/`).

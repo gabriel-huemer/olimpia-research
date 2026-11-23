@@ -16,7 +16,7 @@ dashboard/
     │   └── AppContext.tsx           Estado global, RBAC (perfis), filtros analíticos e exportação
     ├── components/
     │   ├── SidebarLayout.tsx        Menu lateral recolhível, busca rápida e contador de revisão
-    │   └── FilterBar.tsx            Barra de filtros unificada das 5 abas de Análises + exportação PDF/Excel
+    │   └── FilterBar.tsx            Barra de filtros unificada das 5 abas de Análises + botão Exportar relatório
     ├── lib/
     │   ├── db.ts                    Pool PostgreSQL (oto_web) + transação auditada (set_config app.usuario_id)
     │   ├── excel.ts                 Gerador de planilhas compatíveis com Excel (.xlsx/.xls) sem dependências vulneráveis
@@ -118,6 +118,7 @@ O painel segue rigorosamente as regras de arquitetura definidas em `../oto-db/RE
   Em **Sistema → Usuários**, quem tem a área Sistema cria perfis novos, marca as áreas de cada um, cria usuários e ativa/desativa contas. Vale na hora: a sessão é revalidada no banco a cada requisição.
 - Sessão: cookie `oto_sessao` HttpOnly, SameSite=Lax (Secure em HTTPS), JWT HS256 assinado com `AUTH_SECRET`, 8 h. Senhas em bcrypt (custo 12); login com bloqueio por força bruta; escrita só com `Origin` do próprio site (CSRF).
 - Onde está: `src/lib/auth/` (regras e sessão), `src/proxy.ts` (redireciona páginas), `src/app/api/auth/*` e `src/app/api/admin/*`. No banco: `V005__perfis_acesso.sql`.
+- Exportação (RF24/UC16): nas Análises, **Exportar relatório** gera PDF de 1 página (padrão), relatório de 8 páginas ou apresentação de 12 slides, com prévia do próprio arquivo. Só números, sem login. Código em `src/lib/relatorio` e `src/components/relatorio`. `OTO_DADOS_FICTICIOS=1` marca o rodapé em bancos de demonstração.
 - Variáveis obrigatórias no `.env.local`: `AUTH_SECRET` (`openssl rand -hex 32`) e `SYNC_API_TOKEN` (`openssl rand -hex 24`). Sem elas, ninguém entra e o app não sincroniza (falha fechada).
 - Contas de teste (uma por perfil): `../oto-db/scripts/criar_usuarios_teste.sh` (instruções no topo do script). As senhas saem num arquivo `.usuarios-teste*.env`, fora do Git.
 

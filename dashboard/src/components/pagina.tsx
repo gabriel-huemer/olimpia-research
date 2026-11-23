@@ -147,7 +147,17 @@ export function Selo({ cor, children }: { cor: Cor; children: React.ReactNode })
   );
 }
 
-export function Janela({ titulo, aoFechar, children }: { titulo: string; aoFechar: () => void; children: React.ReactNode }) {
+export function Janela({
+  titulo,
+  aoFechar,
+  larga = false,
+  children,
+}: {
+  titulo: string;
+  aoFechar: () => void;
+  larga?: boolean;
+  children: React.ReactNode;
+}) {
   React.useEffect(() => {
     const tecla = (e: KeyboardEvent) => e.key === "Escape" && aoFechar();
     window.addEventListener("keydown", tecla);
@@ -159,7 +169,7 @@ export function Janela({ titulo, aoFechar, children }: { titulo: string; aoFecha
         role="dialog"
         aria-modal="true"
         aria-label={titulo}
-        className="bg-white rounded-2xl border border-slate-200 shadow-xl max-w-xl w-full p-6 max-h-[90vh] overflow-y-auto"
+        className={`bg-white rounded-2xl border border-slate-200 shadow-xl w-full max-h-[90vh] overflow-y-auto ${larga ? "max-w-6xl p-4 sm:p-6" : "max-w-xl p-6"}`}
       >
         <h2 className="text-base font-bold text-slate-900 mb-3">{titulo}</h2>
         {children}
