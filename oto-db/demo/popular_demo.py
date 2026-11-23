@@ -1,13 +1,13 @@
 #!/usr/bin/env python3
 """Popula um banco de DEMONSTRAÇÃO com pesquisas fictícias, enviando-as pelo mesmo endpoint do app.
 
-    python3 demo/popular_demo.py [--url http://localhost:3000] [--total 700] [--semente 42]
+    python3 demo/popular_demo.py [--porta 3000] [--total 700] [--semente 42]
 
 Pré-requisitos: o painel rodando e apontado para o banco de demonstração (ver demo/README.md).
 Os dados são 100% inventados (nenhum turista real) e seguem o questionário do app, então passam pela
 mesma validação, conversão e auditoria de uma coleta de verdade. Datas retroativas: jan a nov/2026.
 """
-import argparse, json, random, urllib.parse, urllib.request, uuid
+import argparse, json, random, urllib.request, uuid
 from datetime import datetime, timedelta, timezone
 from pathlib import Path
 
@@ -40,24 +40,19 @@ def escolha(rng, opcoes, pesos=None):
     return rng.choices(opcoes, weights=pesos, k=1)[0]
 
 
-# Script de demonstração: só envia para um painel rodando na própria máquina.
-HOSTS_LOCAIS = {"localhost", "127.0.0.1", "::1"}
-
-
-def url_local(url):
-    u = urllib.parse.urlsplit(url)
-    if u.scheme not in ("http", "https") or u.hostname not in HOSTS_LOCAIS:
-        raise SystemExit(f"--url deve apontar para o painel local (localhost/127.0.0.1), recebido: {url}")
-    return f"{u.scheme}://{u.netloc}"
+# Script de demonstração: só envia para o painel rodando nesta máquina (escolhe-se apenas a porta).
+PAINEL_LOCAL = "http://127.0.0.1:{porta}"
 
 
 def main():
     ap = argparse.ArgumentParser()
-    ap.add_argument("--url", default="http://localhost:3000")
+    ap.add_argument("--porta", type=int, default=3000, help="porta do painel local (padrão 3000)")
     ap.add_argument("--total", type=int, default=700)
     ap.add_argument("--semente", type=int, default=42)
     a = ap.parse_args()
-    a.url = url_local(a.url)
+    if not 1 <= a.porta <= 65535:
+        raise SystemExit("--porta deve estar entre 1 e 65535")
+    base = PAINEL_LOCAL.format(porta=a.porta)
     rng = random.Random(a.semente)
     q = json.loads(QUESTIONARIO.read_text(encoding="utf-8"))
     perguntas = {x["key"]: x for x in q["questions"]}
@@ -140,7 +135,7 @@ def main():
     aceitas = rejeitadas = 0
     for i in range(0, len(pesquisas), 25):
         lote = pesquisas[i:i + 25]
-        req = urllib.request.Request(f"{a.url}/api/v1/pesquisas/lote", data=json.dumps({"pesquisas": lote}).encode(),
+        req = urllib.request.Request(f"{base}/api/v1/pesquisas/lote", data=json.dumps({"pesquisas": lote}).encode(),
                                      headers={"Content-Type": "application/json; charset=utf-8"}, method="POST")
         with urllib.request.urlopen(req, timeout=300) as resp:
             out = json.load(resp)

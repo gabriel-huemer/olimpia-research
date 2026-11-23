@@ -34,7 +34,7 @@ cd oto-db
 docker exec oto-db psql -U oto_admin -d postgres -c "create database oto_demo"
 MSYS_NO_PATHCONV=1 docker exec -e PGUSER=oto_admin -e PGDATABASE=oto_demo oto-db bash /oto/scripts/bootstrap.sh
 # painel rodando apontado para o demo (abaixo), depois:
-python3 demo/popular_demo.py --url http://localhost:3000 --total 700   # --semente muda os dados
+python3 demo/popular_demo.py --porta 3000 --total 700   # --semente muda os dados
 ```
 
 Para recomeçar do zero: pare o painel, `drop database oto_demo`, e repita. (O `MSYS_NO_PATHCONV` só é
