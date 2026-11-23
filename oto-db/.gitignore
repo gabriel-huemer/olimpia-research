@@ -1,3 +1,6 @@
 .env
 backups/*.dump
 backups/*.log
+
+# Senhas das contas de teste (scripts/criar_usuarios_teste.sh)
+.usuarios-teste*.env

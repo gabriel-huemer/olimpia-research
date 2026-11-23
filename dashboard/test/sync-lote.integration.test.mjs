@@ -9,7 +9,7 @@ const dispositivo = randomUUID();
 const post = (pesquisas) =>
   fetch(`${baseUrl}/api/v1/pesquisas/lote`, {
     method: "POST",
-    headers: { "content-type": "application/json" },
+    headers: { "content-type": "application/json", authorization: `Bearer ${process.env.SYNC_API_TOKEN}` },
     body: JSON.stringify({ pesquisas }),
   });
 
@@ -68,6 +68,15 @@ test("resposta sinalizada vai para a fila de curadoria", async () => {
 });
 
 test("corpo invalido devolve 400", async () => {
-  const r = await fetch(`${baseUrl}/api/v1/pesquisas/lote`, { method: "POST", headers: { "content-type": "application/json" }, body: "{}" });
+  const r = await fetch(`${baseUrl}/api/v1/pesquisas/lote`, { method: "POST", headers: { "content-type": "application/json", authorization: `Bearer ${process.env.SYNC_API_TOKEN}` }, body: "{}" });
   assert.equal(r.status, 400);
+});
+
+test("token de sincronização errado é recusado (401) e nada é gravado", async () => {
+  const r = await fetch(`${baseUrl}/api/v1/pesquisas/lote`, {
+    method: "POST",
+    headers: { "content-type": "application/json", authorization: "Bearer token-errado-com-tamanho-suficiente" },
+    body: JSON.stringify({ pesquisas: [] }),
+  });
+  assert.equal(r.status, 401);
 });

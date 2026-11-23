@@ -30,12 +30,12 @@ END $$;
 
 -- ===== 1. Estrutura
 SELECT pg_temp.afirma((SELECT count(*) FROM information_schema.tables
-        WHERE table_schema='oto' AND table_type='BASE TABLE' AND table_name <> 'schema_migrations') = 30,
-        '30 tabelas do modelo');
+        WHERE table_schema='oto' AND table_type='BASE TABLE' AND table_name <> 'schema_migrations') = 31,
+        '31 tabelas do modelo');
 SELECT pg_temp.afirma((SELECT count(*) FROM uf) = 27, '27 UFs carregadas');
 SELECT pg_temp.afirma((SELECT count(*) FROM pais) >= 249, 'países carregados');
-SELECT pg_temp.afirma((SELECT count(*) FROM pg_trigger WHERE tgname = 'trg_auditoria') = 20,
-        '20 tabelas com trigger de auditoria');
+SELECT pg_temp.afirma((SELECT count(*) FROM pg_trigger WHERE tgname = 'trg_auditoria') = 21,
+        '21 tabelas com trigger de auditoria');
 
 -- ===== 2. Fixtures mínimas (como dono do banco)
 INSERT INTO municipio VALUES (3543402,'Ribeirão Preto','SP') ON CONFLICT DO NOTHING;
@@ -126,6 +126,37 @@ DO $$ BEGIN
   BEGIN INSERT INTO usuario (nome,perfil) VALUES ('Sem credencial','PESQUISADOR'); RAISE EXCEPTION 'FALHA: aceitou pesquisador sem código';
   EXCEPTION WHEN check_violation THEN RAISE NOTICE 'ok  - pesquisador exige código de acesso (CHECK)'; END;
 END $$;
+
+-- ===== 7. Perfis de acesso do painel web (V005)
+SELECT pg_temp.afirma((SELECT string_agg(format('%s:%s%s%s', nome, acesso_analises::int, acesso_coleta::int, acesso_sistema::int), ',' ORDER BY nome)
+                         FROM perfil_acesso WHERE padrao) = 'ADMINISTRADOR:111,PESQUISADOR:000,VISUALIZADOR:100',
+        '3 perfis padrão com as áreas combinadas');
+SELECT pg_temp.afirma((SELECT p.nome FROM usuario u JOIN perfil_acesso p ON p.id = u.perfil_acesso_id
+                        WHERE u.id = '99999999-9999-9999-9999-999999999999') = 'ADMINISTRADOR',
+        'usuário inserido sem perfil_acesso_id recebe o perfil do enum');
+SELECT pg_temp.afirma((SELECT p.nome FROM usuario u JOIN perfil_acesso p ON p.id = u.perfil_acesso_id
+                        WHERE u.id = '11111111-1111-1111-1111-111111111111') = 'PESQUISADOR',
+        'pesquisador recebe o perfil PESQUISADOR');
+SELECT pg_temp.permite('oto_web',
+  $q$INSERT INTO perfil_acesso (nome, acesso_coleta) VALUES ('Estagiário Teste', true)$q$, 'criar perfil personalizado');
+SELECT pg_temp.permite('oto_web',
+  $q$UPDATE perfil_acesso SET acesso_sistema = true WHERE nome = 'Estagiário Teste'$q$, 'editar perfil personalizado');
+SELECT pg_temp.permite('oto_web',
+  $q$UPDATE usuario SET perfil_acesso_id = (SELECT id FROM perfil_acesso WHERE nome = 'Estagiário Teste') WHERE id = '99999999-9999-9999-9999-999999999999'$q$,
+  'atribuir perfil a usuário');
+SELECT pg_temp.afirma(EXISTS (SELECT 1 FROM log_auditoria WHERE entidade = 'perfil_acesso' AND acao = 'UPDATE'),
+        'alteração de perfil fica na auditoria');
+DO $$ BEGIN
+  BEGIN UPDATE perfil_acesso SET acesso_sistema = true WHERE nome = 'VISUALIZADOR'; RAISE EXCEPTION 'FALHA: perfil padrão editável';
+  EXCEPTION WHEN raise_exception THEN
+    IF SQLERRM LIKE 'FALHA%' THEN RAISE; END IF; RAISE NOTICE 'ok  - perfis padrão não podem ser alterados'; END;
+END $$;
+DO $$ BEGIN
+  BEGIN INSERT INTO perfil_acesso (nome) VALUES ('administrador'); RAISE EXCEPTION 'FALHA: nome de perfil duplicado';
+  EXCEPTION WHEN unique_violation THEN RAISE NOTICE 'ok  - nome de perfil é único (sem diferenciar maiúsculas)'; END;
+END $$;
+SELECT pg_temp.nega('oto_readonly', $q$INSERT INTO perfil_acesso (nome) VALUES ('x')$q$, 'criar perfil');
+SELECT pg_temp.nega('oto_mobile', 'SELECT * FROM perfil_acesso', 'ler perfis do painel');
 
 ROLLBACK;
 \echo '== TODOS OS TESTES PASSARAM (transação revertida, nada foi gravado) =='

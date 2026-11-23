@@ -108,15 +108,26 @@ O painel segue rigorosamente as regras de arquitetura definidas em `../oto-db/RE
 2. **Auditoria automática (`RF15`):** toda transação que altera dados executa `SELECT set_config('app.usuario_id', $1, true)` via `withAuditTransaction()` em `src/lib/db.ts`, garantindo que a trigger `fn_auditar()` grave o autor em `oto.log_auditoria`.
 3. **Exclusão lógica (`RN18` / `RF19`):** pesquisas e respostas nunca sofrem `DELETE` físico; quando excluídas na curadoria, recebem situação `EXCLUIDA` com justificativa obrigatória.
 4. **Dashboards sobre respostas válidas (`RF12` / `RF14`):** consulta `oto.vw_resposta_valida` (que considera apenas respostas `NORMAL`, `APROVADA` ou `CORRIGIDA`).
-5. **Sincronização idempotente (`RF08` / `UC05`):** `POST /api/v1/pesquisas/lote` recebe os lotes do app, grava `pesquisa`, `resposta`, `resposta_valor`, `avaliacao_item` e `sinalizacao` com o papel **`oto_mobile`** (somente inserção) e ignora duplicatas pelo UUID da pesquisa. Reenviar um lote não duplica nada.
+5. **Login e perfis (`RF01`):** ver "Acesso e permissões" abaixo.
+6. **Sincronização idempotente (`RF08` / `UC05`):** `POST /api/v1/pesquisas/lote` recebe os lotes do app, grava `pesquisa`, `resposta`, `resposta_valor`, `avaliacao_item` e `sinalizacao` com o papel **`oto_mobile`** (somente inserção) e ignora duplicatas pelo UUID da pesquisa. Reenviar um lote não duplica nada.
+
+### Acesso e permissões
+
+- **Análises** é pública (dados abertos): não precisa de login. **Coleta** e **Sistema** exigem login (`/login`).
+- Perfis padrão (fixos): `ADMINISTRADOR` (tudo), `VISUALIZADOR` (só Análises, logado) e `PESQUISADOR` (não entra no painel; usa o app).
+  Em **Sistema → Usuários**, quem tem a área Sistema cria perfis novos, marca as áreas de cada um, cria usuários e ativa/desativa contas. Vale na hora: a sessão é revalidada no banco a cada requisição.
+- Sessão: cookie `oto_sessao` HttpOnly, SameSite=Lax (Secure em HTTPS), JWT HS256 assinado com `AUTH_SECRET`, 8 h. Senhas em bcrypt (custo 12); login com bloqueio por força bruta; escrita só com `Origin` do próprio site (CSRF).
+- Onde está: `src/lib/auth/` (regras e sessão), `src/proxy.ts` (redireciona páginas), `src/app/api/auth/*` e `src/app/api/admin/*`. No banco: `V005__perfis_acesso.sql`.
+- Variáveis obrigatórias no `.env.local`: `AUTH_SECRET` (`openssl rand -hex 32`) e `SYNC_API_TOKEN` (`openssl rand -hex 24`). Sem elas, ninguém entra e o app não sincroniza (falha fechada).
+- Contas de teste (uma por perfil): `../oto-db/scripts/criar_usuarios_teste.sh` (instruções no topo do script). As senhas saem num arquivo `.usuarios-teste*.env`, fora do Git.
 
 ### Ligando o app Android ao painel
 
-O app só envia ao painel se for compilado com a URL da API; **sem ela usa um servidor simulado e mostra "sincronizada" sem enviar nada**:
+O app só envia ao painel se for compilado com a URL da API; **sem ela usa um servidor simulado e mostra "sincronizada" sem enviar nada**. O painel exige o mesmo `SYNC_API_TOKEN` do `.env.local`:
 
 ```bash
-flutter run --dart-define=SYNC_API_URL=http://10.0.2.2:3000        # emulador Android (10.0.2.2 = o seu PC)
-flutter run --dart-define=SYNC_API_URL=http://192.168.x.x:3000     # celular físico (mesma rede; libere a porta 3000 no firewall)
+flutter run --dart-define=SYNC_API_URL=http://10.0.2.2:3000 --dart-define=SYNC_API_TOKEN=<token>     # emulador (10.0.2.2 = o seu PC)
+flutter run --dart-define=SYNC_API_URL=http://192.168.x.x:3000 --dart-define=SYNC_API_TOKEN=<token>  # celular físico (mesma rede; libere a porta 3000)
 ```
 
 Requisitos no banco (`../oto-db`): seeds `S04` (formulário) e `S05` (pesquisadores `OTO482`, `OTO117`, `OTO305`) aplicados e `OTO_MOBILE_PASSWORD` no `.env.local`.

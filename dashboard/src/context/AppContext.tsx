@@ -9,52 +9,25 @@ import type {
   ItemRevisao,
   ItemPublicacao,
   ProblemaImportacao,
-  UsuarioSistema,
   RegistroAuditoria,
 } from "@/lib/mockAndSeedData";
 import { getFilteredAnalytics } from "@/lib/mockAndSeedData";
 import { downloadExcelXml } from "@/lib/excel";
 import { panoramaVazio, type PanoramaDados } from "@/lib/panorama-types";
 
-export type UserRole = "Administradora" | "Gestor" | "Editor" | "Visualizador";
-
-export interface CurrentUser {
+export interface UsuarioLogado {
+  id: string;
   nome: string;
   email: string;
-  papel: UserRole;
-  iniciais: string;
+  perfil: { id: number; nome: string };
+  areas: { analises: boolean; coleta: boolean; sistema: boolean };
 }
 
-export const PERFIS_DISPONIVEIS: CurrentUser[] = [
-  {
-    nome: "Maria Oliveira",
-    email: "maria.oliveira@exemplo.com",
-    papel: "Administradora",
-    iniciais: "M",
-  },
-  {
-    nome: "Coordenação OTO",
-    email: "coordenacao@oto.olimpia.sp.gov.br",
-    papel: "Gestor",
-    iniciais: "C",
-  },
-  {
-    nome: "Estagiária OTO",
-    email: "estagio@oto.olimpia.sp.gov.br",
-    papel: "Editor",
-    iniciais: "E",
-  },
-  {
-    nome: "Secretaria / Prefeito",
-    email: "visualizador@olimpia.sp.gov.br",
-    papel: "Visualizador",
-    iniciais: "V",
-  },
-];
-
 interface AppContextValue {
-  currentUser: CurrentUser;
-  setCurrentUser: (u: CurrentUser) => void;
+  /** null = visitante (só Análises). */
+  currentUser: UsuarioLogado | null;
+  sessaoCarregada: boolean;
+  sair: () => Promise<void>;
   canEdit: boolean;
   canManageUsers: boolean;
   filters: Required<AnalyticsFilters>;
@@ -72,7 +45,6 @@ interface AppContextValue {
   metodoPublicacao: string;
   problemasImportacao: ProblemaImportacao[];
   importacaoConcluida: boolean;
-  usuarios: UsuarioSistema[];
   auditoria: RegistroAuditoria[];
   dispatchAction: (action: string, payload?: Record<string, unknown>) => Promise<void>;
   exportToExcel: (sheetName: string, rows: Record<string, unknown>[], fileName: string) => void;
@@ -94,7 +66,8 @@ const defaultFilters: Required<AnalyticsFilters> = {
 const AppContext = createContext<AppContextValue | null>(null);
 
 export function AppProvider({ children }: { children: React.ReactNode }) {
-  const [currentUser, setCurrentUser] = useState<CurrentUser>(PERFIS_DISPONIVEIS[0]);
+  const [currentUser, setCurrentUser] = useState<UsuarioLogado | null>(null);
+  const [sessaoCarregada, setSessaoCarregada] = useState(false);
   const [filters, setFilters] = useState<Required<AnalyticsFilters>>(defaultFilters);
   const [dbConnected, setDbConnected] = useState(false);
   const [pendentesRevisao, setPendentesRevisao] = useState(7);
@@ -107,7 +80,6 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
   const [metodoPublicacao, setMetodoPublicacao] = useState("Incorporar no site (iframe/link)");
   const [problemasImportacao, setProblemasImportacao] = useState<ProblemaImportacao[]>([]);
   const [importacaoConcluida, setImportacaoConcluida] = useState(false);
-  const [usuarios, setUsuarios] = useState<UsuarioSistema[]>([]);
   const [auditoria, setAuditoria] = useState<RegistroAuditoria[]>([]);
   const [toastMessage, setToastMessage] = useState<string | null>(null);
 
@@ -134,7 +106,6 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
     );
     setProblemasImportacao((data.problemasImportacao as ProblemaImportacao[]) || []);
     setImportacaoConcluida(Boolean(data.importacaoConcluida));
-    setUsuarios((data.usuarios as UsuarioSistema[]) || []);
     setAuditoria((data.auditoria as RegistroAuditoria[]) || []);
   }, []);
 
@@ -150,29 +121,49 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
   }, [applyServerState]);
 
   useEffect(() => {
+    fetch("/api/auth/sessao", { cache: "no-store" })
+      .then((r) => r.json())
+      .then((d) => setCurrentUser(d?.usuario ?? null))
+      .catch(() => setCurrentUser(null))
+      .finally(() => setSessaoCarregada(true));
+  }, []);
+
+  // Coleta e Sistema só existem para quem tem acesso; visitante não consulta /api/state.
+  const usaEstado = Boolean(currentUser?.areas.coleta || currentUser?.areas.sistema);
+  useEffect(() => {
+    if (!usaEstado) return;
     void fetchState();
     // Atualiza sozinho: pesquisas novas enviadas pelo app aparecem sem recarregar a página
     const timer = setInterval(() => void fetchState(), 15000);
     return () => clearInterval(timer);
-  }, [fetchState]);
+  }, [fetchState, usaEstado]);
+
+  const sair = useCallback(async () => {
+    await fetch("/api/auth/logout", { method: "POST" }).catch(() => {});
+    setCurrentUser(null);
+    window.location.href = "/analises/panorama";
+  }, []);
 
   const dispatchAction = useCallback(
     async (action: string, payload: Record<string, unknown> = {}) => {
       const res = await fetch("/api/state", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          action,
-          payload,
-          usuario: currentUser.nome,
-        }),
+        body: JSON.stringify({ action, payload }),
       });
+      if (res.status === 401) {
+        window.location.href = `/login?proximo=${encodeURIComponent(window.location.pathname)}`;
+        return;
+      }
       if (res.ok) {
         const data = await res.json();
         applyServerState(data);
+      } else {
+        const d = await res.json().catch(() => null);
+        showToast(d?.erro ?? "Não foi possível concluir a ação.");
       }
     },
-    [applyServerState, currentUser.nome]
+    [applyServerState, showToast]
   );
 
   const setFilter = useCallback((key: keyof AnalyticsFilters, value: string) => {
@@ -290,14 +281,16 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
     [analytics, exportToExcel, filters, showToast]
   );
 
-  const canEdit = currentUser.papel !== "Visualizador";
-  const canManageUsers = currentUser.papel === "Administradora";
+  // As páginas de Coleta/Sistema já são barradas pelo proxy; aqui só ajustamos os botões.
+  const canEdit = usaEstado;
+  const canManageUsers = Boolean(currentUser?.areas.sistema);
 
   return (
     <AppContext.Provider
       value={{
         currentUser,
-        setCurrentUser,
+        sessaoCarregada,
+        sair,
         canEdit,
         canManageUsers,
         filters,
@@ -315,7 +308,6 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
         metodoPublicacao,
         problemasImportacao,
         importacaoConcluida,
-        usuarios,
         auditoria,
         dispatchAction,
         exportToExcel,

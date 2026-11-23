@@ -1,16 +1,17 @@
 import assert from "node:assert/strict";
 import test from "node:test";
 
-// Requer o painel rodando (DASHBOARD_URL). Estas ações (curadoria, operadores, usuários) ainda
+// Requer o painel rodando (DASHBOARD_URL) e as contas de teste (TEST_ADMIN_*). Estas ações (curadoria, operadores, usuários) ainda
 // funcionam sobre o estado em memória do servidor: os testes documentam o comportamento atual
 // e devem ser revisados quando essas telas passarem a gravar no PostgreSQL.
-const baseUrl = process.env.DASHBOARD_URL ?? "http://localhost:3000";
+import { baseUrl, origin, entrarComoAdmin } from "./support/sessao.mjs";
 
-const estado = async () => (await fetch(`${baseUrl}/api/state`)).json();
+const cookie = await entrarComoAdmin();
+const estado = async () => (await fetch(`${baseUrl}/api/state`, { headers: { cookie } })).json();
 const acao = async (action, payload) => {
   const r = await fetch(`${baseUrl}/api/state`, {
     method: "POST",
-    headers: { "content-type": "application/json" },
+    headers: { "content-type": "application/json", origin, cookie },
     body: JSON.stringify({ action, payload, usuario: "Teste Automatizado" }),
   });
   return { status: r.status, corpo: await r.json() };
@@ -18,7 +19,7 @@ const acao = async (action, payload) => {
 
 test("GET /api/state devolve as coleções que as telas usam", async () => {
   const s = await estado();
-  for (const k of ["dbConnected", "pendentesRevisao", "pesquisas", "operadores", "usuarios", "auditoria", "revisao", "formularios"]) {
+  for (const k of ["dbConnected", "pendentesRevisao", "pesquisas", "operadores", "auditoria", "revisao", "formularios"]) {
     assert.ok(k in s, `falta ${k}`);
   }
   assert.equal(typeof s.dbConnected, "boolean");
@@ -51,7 +52,7 @@ test("curadoria: aprovar, corrigir e excluir reduzem os pendentes e geram audito
 
   assert.equal(r.corpo.pendentesRevisao, antes.pendentesRevisao - 3);
   assert.equal(r.corpo.auditoria.length, auditoriaAntes + 3);
-  assert.equal(r.corpo.auditoria[0].usuario, "Teste Automatizado");
+  assert.equal(r.corpo.auditoria[0].usuario, "Admin de Teste"); // autor vem da sessão, não do corpo
 });
 
 test("operadores: criar gera código OTO-NNN ativo; alternar e redefinir registram auditoria", async () => {
@@ -71,24 +72,9 @@ test("operadores: criar gera código OTO-NNN ativo; alternar e redefinir registr
   assert.match(r.corpo.auditoria[0].alteracao, /código redefinido/);
 });
 
-test("usuários: criar com perfil, atualizar perfil e status", async () => {
-  const nome = `Usuario Teste ${Date.now()}`;
-  let r = await acao("CRIAR_USUARIO", { nome, perfil: "Analista" });
-  const u = r.corpo.usuarios.find((x) => x.nome === nome);
-  assert.ok(u);
-  assert.equal(u.perfil, "Analista");
-  assert.equal(u.status, "Ativo");
-  assert.match(u.email, /@/);
-
-  r = await acao("ATUALIZAR_USUARIO", { id: u.id, perfil: "Visualizador", status: "Inativo" });
-  const atualizado = r.corpo.usuarios.find((x) => x.id === u.id);
-  assert.equal(atualizado.perfil, "Visualizador");
-  assert.equal(atualizado.status, "Inativo");
-});
-
-test("ação desconhecida não altera nada e responde ok", async () => {
+test("ação desconhecida é recusada (400) e não altera nada", async () => {
   const antes = await estado();
-  const { status, corpo } = await acao("ACAO_QUE_NAO_EXISTE", {});
-  assert.equal(status, 200);
-  assert.equal(corpo.auditoria.length, antes.auditoria.length);
+  const { status } = await acao("ACAO_QUE_NAO_EXISTE", {});
+  assert.equal(status, 400);
+  assert.equal((await estado()).auditoria.length, antes.auditoria.length);
 });

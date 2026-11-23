@@ -7,7 +7,7 @@ Pré-requisitos: o painel rodando e apontado para o banco de demonstração (ver
 Os dados são 100% inventados (nenhum turista real) e seguem o questionário do app, então passam pela
 mesma validação, conversão e auditoria de uma coleta de verdade. Datas retroativas: jan a nov/2026.
 """
-import argparse, json, random, urllib.parse, urllib.request, uuid
+import argparse, json, os, random, urllib.parse, urllib.request, uuid
 from datetime import datetime, timedelta, timezone
 from pathlib import Path
 
@@ -56,6 +56,8 @@ def main():
     ap.add_argument("--url", default="http://localhost:3000")
     ap.add_argument("--total", type=int, default=700)
     ap.add_argument("--semente", type=int, default=42)
+    ap.add_argument("--token", default=os.environ.get("SYNC_API_TOKEN", ""),
+                    help="SYNC_API_TOKEN do painel (padrão: variável de ambiente SYNC_API_TOKEN)")
     a = ap.parse_args()
     a.url = url_local(a.url)
     rng = random.Random(a.semente)
@@ -141,7 +143,8 @@ def main():
     for i in range(0, len(pesquisas), 25):
         lote = pesquisas[i:i + 25]
         req = urllib.request.Request(f"{a.url}/api/v1/pesquisas/lote", data=json.dumps({"pesquisas": lote}).encode(),
-                                     headers={"Content-Type": "application/json; charset=utf-8"}, method="POST")
+                                     headers={"Content-Type": "application/json; charset=utf-8",
+                                              "Authorization": f"Bearer {a.token}"}, method="POST")
         with urllib.request.urlopen(req, timeout=300) as resp:
             out = json.load(resp)
         aceitas += len(out["aceitas"])

@@ -1,6 +1,7 @@
 import assert from "node:assert/strict";
 import { randomUUID } from "node:crypto";
 import test from "node:test";
+import { entrarComoAdmin } from "./support/sessao.mjs";
 
 // Requer: dashboard rodando (DASHBOARD_URL) com banco e seeds S04/S05.
 // Os testes comparam o Panorama ANTES e DEPOIS de enviar pesquisas conhecidas (diferença),
@@ -11,7 +12,7 @@ const dispositivo = randomUUID();
 const post = (pesquisas) =>
   fetch(`${baseUrl}/api/v1/pesquisas/lote`, {
     method: "POST",
-    headers: { "content-type": "application/json" },
+    headers: { "content-type": "application/json", authorization: `Bearer ${process.env.SYNC_API_TOKEN}` },
     body: JSON.stringify({ pesquisas }),
   }).then((r) => r.json());
 
@@ -130,7 +131,7 @@ test("filtro sem nenhum resultado devolve Panorama vazio, não erro", async () =
 });
 
 test("lista de pesquisas (/api/state) traz as pesquisas novas, com a sinalizada marcada", async () => {
-  const r = await fetch(`${baseUrl}/api/state`);
+  const r = await fetch(`${baseUrl}/api/state`, { headers: { cookie: await entrarComoAdmin() } });
   assert.equal(r.status, 200);
   const { pesquisas } = await r.json();
   assert.ok(Array.isArray(pesquisas));
