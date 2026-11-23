@@ -116,6 +116,18 @@ test("NPS usa só as respostas válidas e a permanência tem formato numérico",
   assert.match(p.permanenciaMedia, /^\d+,\d$/);
 });
 
+test("day use conta como 0 noite na permanência média (tela e relatório)", async () => {
+  // 1º de janeiro só recebe o par abaixo, então a média é sempre (0 + 3) / 2, mesmo repetindo o teste.
+  const dia = `${hoje.slice(0, 4)}-01-01`;
+  const em = { iniciadaEm: `${dia}T12:00:00-03:00`, finalizadaEm: `${dia}T12:05:00-03:00` };
+  const r = await post([0, 3].map((valor) => pesquisa([{ chave: "pernoites", valor }], em)));
+  assert.equal(r.aceitas.length, 2);
+  const periodo = `${dia}..${dia}`;
+  assert.equal((await panorama({ periodo })).permanenciaMedia, "1,5");
+  const rel = await (await fetch(`${baseUrl}/api/relatorio?${new URLSearchParams({ periodo })}`)).json();
+  assert.equal(rel.total.permanencia, 1.5);
+});
+
 test("sazonalidade tem 12 meses e origens somam no máximo 100%", async () => {
   const p = await panorama();
   assert.equal(p.sazonalidade.length, 12);

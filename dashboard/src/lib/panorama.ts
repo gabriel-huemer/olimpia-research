@@ -110,7 +110,8 @@ export async function calcularPanorama(filtros: AnalyticsFilters): Promise<Panor
          FROM oto.pesquisa p WHERE ${rAno.where} GROUP BY 1`,
       rAno.params
     ),
-    db.query(`SELECT avg(rv.valor_numero) AS media ${respostasDe("pernoites")} AND rv.valor_numero > 0`, params),
+    // Day use conta como 0 noite.
+    db.query(`SELECT avg(rv.valor_numero) AS media ${respostasDe("pernoites")} AND rv.valor_numero >= 0`, params),
     db.query(
       `SELECT count(*) FILTER (WHERE rv.valor_numero >= 9)::int AS promotores,
               count(*) FILTER (WHERE rv.valor_numero BETWEEN 7 AND 8.99)::int AS neutros,

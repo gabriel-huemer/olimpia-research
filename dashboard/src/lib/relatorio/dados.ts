@@ -27,7 +27,7 @@ async function medir(r: Recorte, intervalos: Intervalo[]): Promise<Medidas[]> {
             count(*) FILTER (WHERE codigo = 'nps' AND num >= 9)::int AS prom,
             count(*) FILTER (WHERE codigo = 'nps' AND num BETWEEN 7 AND 8.99)::int AS neut,
             count(*) FILTER (WHERE codigo = 'nps' AND num < 7)::int AS detr,
-            avg(num) FILTER (WHERE codigo = 'pernoites' AND num > 0)::float8 AS permanencia,
+            avg(num) FILTER (WHERE codigo = 'pernoites' AND num >= 0)::float8 AS permanencia,
             avg(num) FILTER (WHERE codigo = 'gasto_diario')::float8 AS gasto,
             count(DISTINCT id) FILTER (WHERE codigo = 'voltaria' AND rotulo = 'Sim')::int AS volta,
             count(DISTINCT id) FILTER (WHERE codigo = 'voltaria' AND rotulo IS NOT NULL)::int AS volta_total,
