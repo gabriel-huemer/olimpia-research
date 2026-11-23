@@ -57,8 +57,3 @@ cp dashboard/.env.real.local dashboard/.env.local    # desenvolvimento
 
 **Reinicie o `npm run dev` depois de trocar** (as conexões ficam em memória). O app Android não precisa de
 mudança: ele fala com o painel (`--dart-define=SYNC_API_URL=...`), então grava no banco que o painel estiver usando.
-
-## Limitações
-
-Só o Panorama e a lista de Pesquisas leem do banco. As outras abas de Análises, Operadores, Curadoria, Formulários,
-Usuários e Auditoria ainda mostram dados de exemplo do código, independentemente do banco escolhido.

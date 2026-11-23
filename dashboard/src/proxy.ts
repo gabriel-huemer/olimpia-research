@@ -6,6 +6,10 @@ import { DESTINO_PADRAO } from "@/lib/auth/origem";
 import { sessaoAtual } from "@/lib/auth/servidor";
 
 export async function proxy(req: NextRequest) {
+  // "Minha conta" não é de nenhuma área, mas só existe para quem está logado.
+  if (/^\/conta\/?$/i.test(req.nextUrl.pathname)) {
+    return (await sessaoAtual(req)) ? NextResponse.next() : NextResponse.redirect(new URL(DESTINO_PADRAO, req.url));
+  }
   const area = areaDaRota(req.nextUrl.pathname);
   if (!area || podeAcessar(null, area)) return NextResponse.next();
 

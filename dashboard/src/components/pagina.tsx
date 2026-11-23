@@ -74,12 +74,12 @@ export function Seletor({
   aoMudar: (v: string) => void;
 }) {
   return (
-    <label className="flex items-center bg-white border border-slate-200 rounded-lg px-3 py-1.5 text-xs shadow-2xs">
+    <label className="flex max-w-full items-center bg-white border border-slate-200 rounded-lg px-3 py-1.5 text-xs shadow-2xs">
       <span className="text-slate-500 mr-1">{rotulo}:</span>
       <select
         value={valor}
         onChange={(e) => aoMudar(e.target.value)}
-        className="font-semibold text-slate-900 bg-transparent focus:outline-none cursor-pointer"
+        className="min-w-0 font-semibold text-slate-900 bg-transparent focus:outline-none cursor-pointer"
       >
         {opcoes.map((o) => {
           const op = typeof o === "string" ? { valor: o, rotulo: o } : o;
@@ -102,7 +102,7 @@ export function Busca({ valor, aoMudar, texto }: { valor: string; aoMudar: (v: s
       placeholder={texto}
       value={valor}
       onChange={(e) => aoMudar(e.target.value)}
-      className="bg-white border border-slate-200 rounded-lg px-3 py-2 text-xs shadow-2xs w-52 focus:outline-none focus:border-[#008767]"
+      className="bg-white border border-slate-200 rounded-lg px-3 py-2 text-xs shadow-2xs w-full sm:w-52 focus:outline-none focus:border-[#008767]"
     />
   );
 }

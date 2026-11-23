@@ -6,11 +6,14 @@
 #   30 2 * * * cd /caminho/oto-db && ./scripts/backup.sh >> backups/backup.log 2>&1
 set -euo pipefail
 ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
-[[ -f "$ROOT/.env" ]] && { set -a; . "$ROOT/.env"; set +a; }
+# Lê só o que precisa do .env (não executa o arquivo: valores com espaço quebrariam); o ambiente tem prioridade.
+do_env() { [[ -f "$ROOT/.env" ]] && sed -n "s/^$1=//p" "$ROOT/.env" | tail -1 || true; }
+OTO_DB_NAME="${OTO_DB_NAME:-$(do_env OTO_DB_NAME)}"
+OTO_DB_ADMIN_USER="${OTO_DB_ADMIN_USER:-$(do_env OTO_DB_ADMIN_USER)}"
 DB="${OTO_DB_NAME:-oto}"; USR="${OTO_DB_ADMIN_USER:-oto_admin}"
 DIR="${BACKUP_DIR:-$ROOT/backups}"; DIAS="${RETENCAO_DIAS:-14}"
 mkdir -p "$DIR"
-ARQ="$DIR/oto_$(date +%Y%m%d_%H%M%S).dump"
+ARQ="$DIR/oto_${DB}_$(date +%Y%m%d_%H%M%S).dump"
 
 if docker ps --format '{{.Names}}' 2>/dev/null | grep -qx oto-db; then
   docker exec oto-db pg_dump -U "$USR" -d "$DB" -Fc --no-owner > "$ARQ"

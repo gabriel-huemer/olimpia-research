@@ -1,3 +1,4 @@
+import { agruparEstados } from "@/lib/estados";
 import { getDbPool } from "@/lib/db";
 import type { AnalyticsFilters } from "@/lib/paineis-types";
 import { panoramaVazio, type PanoramaDados } from "@/lib/panorama-types";
@@ -168,22 +169,10 @@ export async function calcularPanorama(filtros: AnalyticsFilters): Promise<Panor
   const pProm = pct(promotores, baseNps);
   const pDet = pct(detratores, baseNps);
 
-  // Origens: UF extraída de "São Paulo (SP)"; maiores 3 isoladas e o restante agrupado
-  const totalEstados = estados.rows.reduce((s, r) => s + r.n, 0);
-  const lista = estados.rows
-    .map((r) => ({ uf: /\(([A-Z]{2})\)\s*$/.exec(r.rotulo)?.[1] ?? "Exterior", n: r.n as number }))
-    .sort((a, b) => b.n - a.n);
-  const origensEstados: PanoramaDados["origensEstados"] = lista
-    .slice(0, 3)
-    .map((e) => ({ uf: e.uf, percentual: pct(e.n, totalEstados) }));
-  const resto = lista.slice(3);
-  if (resto.length) {
-    origensEstados.push({
-      uf: resto.slice(0, 3).map((e) => e.uf).join(" · "),
-      detalhe: resto.slice(0, 3).map((e) => `${pct(e.n, totalEstados)}%`).join(" · "),
-      percentual: pct(resto.reduce((s, e) => s + e.n, 0), totalEstados),
-    });
-  }
+  // UF extraída de "São Paulo (SP)"
+  const origensEstados = agruparEstados(
+    estados.rows.map((r) => ({ uf: /\(([A-Z]{2})\)\s*$/.exec(r.rotulo)?.[1] ?? "Exterior", n: r.n as number }))
+  );
 
   const { sim = 0, nao = 0 } = recorrente.rows[0] ?? {};
   const baseRec = sim + nao;
