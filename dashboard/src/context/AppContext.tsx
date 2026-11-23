@@ -1,13 +1,9 @@
 "use client";
 
 import React, { createContext, useContext, useState, useEffect, useCallback } from "react";
-import type {
-  FormularioItem,
-} from "@/lib/mockAndSeedData";
 import { usePathname } from "next/navigation";
 import { abaDaRota, paineisVazios, type AnalyticsFilters, type OpcoesFiltro, type Paineis } from "@/lib/paineis-types";
 import { linhasDaAba } from "@/lib/exportacao";
-import { ROTA_LOGIN } from "@/lib/auth/origem";
 import { downloadExcelXml } from "@/lib/excel";
 
 export interface UsuarioLogado {
@@ -33,10 +29,8 @@ interface AppContextValue {
   erroAnalises: string | null;
   dbConnected: boolean;
   pendentesRevisao: number;
-  formularios: FormularioItem[];
   /** Relê /api/state agora, sem esperar os 15 s. */
   recarregarEstado: () => Promise<void>;
-  dispatchAction: (action: string, payload?: Record<string, unknown>) => Promise<void>;
   exportToExcel: (sheetName: string, rows: Record<string, unknown>[], fileName: string) => void;
   exportReportPdfOrExcel: (abaTitulo: string, formato?: "PDF" | "XLSX") => void;
   toastMessage: string | null;
@@ -61,7 +55,6 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
   const [filters, setFilters] = useState<Required<AnalyticsFilters>>(defaultFilters);
   const [dbConnected, setDbConnected] = useState(false);
   const [pendentesRevisao, setPendentesRevisao] = useState(0);
-  const [formularios, setFormularios] = useState<FormularioItem[]>([]);
   const [toastMessage, setToastMessage] = useState<string | null>(null);
 
   const showToast = useCallback((msg: string) => {
@@ -76,7 +69,6 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
       setDbConnected(Boolean(data.dbConnected));
     }
     setPendentesRevisao(typeof data.pendentesRevisao === "number" ? data.pendentesRevisao : 0);
-    setFormularios((data.formularios as FormularioItem[]) || []);
   }, []);
 
   const fetchState = useCallback(async () => {
@@ -113,28 +105,6 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
     setCurrentUser(null);
     window.location.href = "/analises/panorama";
   }, []);
-
-  const dispatchAction = useCallback(
-    async (action: string, payload: Record<string, unknown> = {}) => {
-      const res = await fetch("/api/state", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ action, payload }),
-      });
-      if (res.status === 401) {
-        window.location.href = `${ROTA_LOGIN}?proximo=${encodeURIComponent(window.location.pathname)}`;
-        return;
-      }
-      if (res.ok) {
-        const data = await res.json();
-        applyServerState(data);
-      } else {
-        const d = await res.json().catch(() => null);
-        showToast(d?.erro ?? "Não foi possível concluir a ação.");
-      }
-    },
-    [applyServerState, showToast]
-  );
 
   const setFilter = useCallback((key: keyof AnalyticsFilters, value: string) => {
     setFilters((prev) => ({ ...prev, [key]: value }));
@@ -228,9 +198,7 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
         erroAnalises,
         dbConnected,
         pendentesRevisao,
-        formularios,
         recarregarEstado: fetchState,
-        dispatchAction,
         exportToExcel,
         exportReportPdfOrExcel,
         toastMessage,

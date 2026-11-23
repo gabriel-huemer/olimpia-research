@@ -4,6 +4,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:oto_pesquisador/core/di/injector.dart';
 import 'package:oto_pesquisador/data/database/app_database.dart';
+import 'package:oto_pesquisador/data/datasources/remote/questionnaire_api.dart';
 import 'package:oto_pesquisador/data/datasources/remote/researcher_api.dart';
 import 'package:oto_pesquisador/data/datasources/remote/sync_api.dart';
 import 'package:oto_pesquisador/domain/entities/researcher.dart';
@@ -21,14 +22,14 @@ class Harness {
   final AppDatabase database;
   final Directory directory;
 
-  static Future<Harness> open({required SyncApi api, ResearcherApi? researcherApi}) async {
+  static Future<Harness> open({required SyncApi api, ResearcherApi? researcherApi, QuestionnaireApi? questionnaireApi}) async {
     TestWidgetsFlutterBinding.ensureInitialized();
     sqfliteFfiInit();
     await initializeDateFormatting('pt_BR');
     await sl.reset();
     final dir = await Directory.systemTemp.createTemp('oto_pesquisador_test_');
     final db = AppDatabase(factory: databaseFactoryFfi, path: p.join(dir.path, 'test.db'));
-    await configureDependencies(database: db, syncApi: api, researcherApi: researcherApi);
+    await configureDependencies(database: db, syncApi: api, researcherApi: researcherApi, questionnaireApi: questionnaireApi);
     await sl<QuestionnaireRepository>().ensureCached();
     return Harness._(db, dir);
   }

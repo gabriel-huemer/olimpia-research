@@ -21,7 +21,7 @@ Frente que falhar 3 vezes pela mesma causa fica em PR aberto e o plano segue.
 - [x] 5. Pesquisas: lista com filtros, inserção manual (RF17)
 - [x] 6. Importação de planilhas históricas (RF09)
 - [x] 7. Publicação de resultados (RF21)
-- [ ] 8. Formulários e versões no banco (RF05); app baixa o publicado
+- [x] 8. Formulários e versões no banco (RF05); app baixa o publicado
 - [ ] 9. Conta (trocar a própria senha), limpeza dos dados de exemplo, SonarCloud
 - [ ] 10. Hospedagem: contêineres, HTTPS, backup; guia de Tailscale
 - [ ] 11. Relatório final
@@ -65,3 +65,13 @@ Frente que falhar 3 vezes pela mesma causa fica em PR aberto e o plano segue.
   Análises passam a exigir login, ou o RF21 vale só para `/publico`. Nada foi escondido.
 - **Desvio:** o PR #13 foi mergeado sem o CI ter rodado (só SonarCloud e os testes locais). O script de merge aceitava a lista de
   checks vazia como verde; agora exige os 5 verdes. O CI completo da `stage` com o #13 foi conferido no PR seguinte, que traz este registro.
+
+### Frente 8 — Formulários
+- Feito: versões reais (copiar a ativa, editar o rascunho, publicar), condição de exibição, alerta de faixa, e o app baixa a versão
+  publicada. Pesquisas enviadas com versão antiga continuam aceitas e ligadas a ela.
+- O app só troca de formulário sem pesquisa aberta nem na fila.
+- Decisões padrão: perguntas originais não podem ser removidas (as análises dependem delas); o texto e as opções podem mudar.
+  Um rascunho por vez; a vigência começa no dia da publicação.
+- Cortado: marcar pergunta como obrigatória (o app ainda não bloqueia respostas em branco), agendar vigência futura, reordenar ou
+  renomear seções, editar ou remover opções existentes, editar a condição depois de criada, várias pesquisas com formulários diferentes.
+- A condição fica em `pergunta.config` (o formato do app); `regra_exibicao` segue sem uso.
