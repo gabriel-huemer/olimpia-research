@@ -27,7 +27,24 @@ cp dashboard/.env.real.local dashboard/.env.local    # modo desenvolvimento (ban
 
 Como criar/recriar o banco demo: [README.md](README.md).
 
-## Criar / recriar
+## Começar rápido (um comando)
+
+Precisa de Docker, Node 20+ e Python 3.9+:
+
+```bash
+cd oto-db
+make demo                        # ou: python3 demo/iniciar_demo.py   (no Windows: py demo\iniciar_demo.py)
+```
+
+Cria as senhas (em arquivos fora do Git), o banco `oto_demo`, as 700 pesquisas e abre o painel em <http://localhost:3000>
+(outra porta: `make demo PORTA=3001`). Pode rodar de novo: só faz o que falta, não apaga nada e não usa o banco `oto`.
+Precisa de internet na primeira vez. E-mail e senha da equipe: `oto-db/.usuarios-teste.oto_demo.env`.
+Cada pessoa tem o seu banco: o que uma coleta não aparece para as outras.
+
+**App no emulador:** em `android-app-olimpia/`, rode
+`flutter run --dart-define=SYNC_API_URL=http://10.0.2.2:3000 --dart-define=SYNC_API_TOKEN=<o de dashboard/.env.demo.local>`.
+
+## Criar / recriar à mão
 
 ```bash
 cd oto-db
