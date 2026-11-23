@@ -109,6 +109,6 @@ test("admin não pode desativar a si mesmo nem tirar o próprio acesso a Sistema
 });
 
 test("página de login abre para anônimo", async () => {
-  const r = await fetch(`${baseUrl}/acesso-oto`);
+  const r = await fetch(`${baseUrl}/administracao`);
   assert.equal(r.status, 200);
 });

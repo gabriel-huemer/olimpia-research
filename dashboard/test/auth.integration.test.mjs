@@ -84,11 +84,11 @@ test("visualizador nao faz login: mesma resposta de senha errada e nenhum cookie
   assert.equal(s.cookie, "");
 });
 
-test("a pagina publica nao aponta para o login e /login nao existe", async () => {
+test("a pagina publica nao aponta para o login e os enderecos antigos nao existem", async () => {
   const html = await (await get("/analises/panorama")).text();
-  assert.doesNotMatch(html, /href="[^"]*(login|acesso)/i);
+  assert.doesNotMatch(html, /href="[^"]*(login|acesso|administracao)/i);
   assert.doesNotMatch(html, /Entrar/);
-  assert.equal((await get("/login")).status, 404);
+  for (const p of ["/login", "/acesso-oto"]) assert.equal((await get(p)).status, 404, p);
 });
 
 test("pesquisador nao tem acesso ao painel web", async () => {

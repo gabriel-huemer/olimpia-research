@@ -3,10 +3,10 @@
 export const DESTINO_PADRAO = "/analises/panorama";
 
 /**
- * Entrada da equipe: nenhum link público aponta para cá (a equipe digita o endereço ou clica 5x no logo).
+ * Entrada da equipe: nenhum link público aponta para cá (a equipe digita o endereço).
  * É só discrição; quem protege o painel são a senha, o bloqueio por tentativas e as permissões.
  */
-export const ROTA_LOGIN = "/acesso-oto";
+export const ROTA_LOGIN = "/administracao";
 
 function hostDe(url: string | null | undefined): string | null {
   if (!url || url === "null") return null;

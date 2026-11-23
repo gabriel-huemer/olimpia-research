@@ -2,7 +2,7 @@
 
 import React, { useState } from "react";
 import Link from "next/link";
-import { usePathname, useRouter } from "next/navigation";
+import { usePathname } from "next/navigation";
 import {
   Search,
   BarChart2,
@@ -12,12 +12,7 @@ import {
   LogOut,
 } from "lucide-react";
 import { useApp } from "@/context/AppContext";
-import { ROTA_LOGIN } from "@/lib/auth/origem";
 import { podeAcessar } from "@/lib/auth/permissoes";
-
-// Entrada discreta da equipe: 5 cliques no logo em até 3s. Fora do componente porque o
-// primeiro clique pode trocar de página e remontar a barra.
-let cliquesNoLogo: number[] = [];
 
 interface NavChild {
   label: string;
@@ -40,7 +35,6 @@ export function SidebarLayout({
   children: React.ReactNode;
 }) {
   const pathname = usePathname();
-  const router = useRouter();
   const {
     currentUser,
     sessaoCarregada,
@@ -109,17 +103,6 @@ export function SidebarLayout({
     ? "sistema"
     : "analises";
 
-  const aoClicarNoLogo = (e: React.MouseEvent) => {
-    if (currentUser) return;
-    const agora = Date.now();
-    cliquesNoLogo = [...cliquesNoLogo.filter((t) => agora - t < 3000), agora];
-    if (cliquesNoLogo.length >= 5) {
-      cliquesNoLogo = [];
-      e.preventDefault();
-      router.push(ROTA_LOGIN);
-    }
-  };
-
   const toggleGroup = (id: string) => {
     setOpenGroups((prev) => ({ ...prev, [id]: !prev[id] }));
   };
@@ -130,7 +113,7 @@ export function SidebarLayout({
       <aside className="w-[244px] shrink-0 bg-[#182657] text-white flex flex-col justify-between select-none print:hidden">
         <div className="p-3.5 space-y-4">
           {/* Logo OTO no topo */}
-          <Link href="/analises/panorama" className="block" onClick={aoClicarNoLogo}>
+          <Link href="/analises/panorama" className="block">
             <div className="bg-white rounded-xl px-3.5 py-2.5 inline-flex items-center w-full shadow-sm">
               <span className="text-[20px] font-extrabold tracking-tight text-[#182657] leading-none">
                 OT
