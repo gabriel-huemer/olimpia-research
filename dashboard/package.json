@@ -8,7 +8,8 @@
     "build": "next build",
     "start": "next start",
     "lint": "tsc --noEmit",
-    "test:integration": "node --test test/sync-lote.integration.test.mjs"
+    "test": "node --test test/conversao.test.mjs test/excel.test.mjs",
+    "test:integration": "node --test --test-concurrency=1 test/sync-lote.integration.test.mjs test/panorama.integration.test.mjs test/state.integration.test.mjs"
   },
   "dependencies": {
     "bcryptjs": "^2.4.3",

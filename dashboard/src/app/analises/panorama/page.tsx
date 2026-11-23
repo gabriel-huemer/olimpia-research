@@ -30,12 +30,12 @@ export default function PanoramaPage() {
 
         <AnalyticsHeaderActions
           abaTitulo="Visão geral executiva"
-          defaultPeriodo="Jan a out 2026"
+          defaultPeriodo="Ano 2026"
         />
       </div>
 
       {/* Barra de filtros compartilhada */}
-      <FilterBar defaultPeriodo="Jan a out 2026" />
+      <FilterBar defaultPeriodo="Ano 2026" />
 
       {/* 3 KPI Cards principais */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
@@ -79,7 +79,15 @@ export default function PanoramaPage() {
               {p.nps}
             </span>
             <span className="px-2.5 py-0.5 rounded-full bg-emerald-50 text-emerald-800 text-xs font-semibold">
-              Excelente
+              {p.respostasNps === 0
+                ? "Sem dados"
+                : p.nps >= 75
+                  ? "Excelente"
+                  : p.nps >= 50
+                    ? "Muito bom"
+                    : p.nps >= 0
+                      ? "Razoável"
+                      : "Crítico"}
             </span>
           </div>
           <div className="text-xs text-slate-500 mt-1.5">
@@ -105,7 +113,7 @@ export default function PanoramaPage() {
                 >
                   <div
                     style={{ height: `${Math.min(100, item.valor)}%` }}
-                    title={`${item.mes}: índice ${item.valor}`}
+                    title={`${item.mes}: ${item.pesquisas} pesquisa(s)`}
                     className="w-full rounded-t-md bg-[#008767] group-hover:bg-[#006e54] transition-all"
                   />
                 </div>
@@ -185,6 +193,9 @@ export default function PanoramaPage() {
           </h2>
 
           <div className="space-y-3 text-xs">
+            {p.origensEstados.length === 0 && (
+              <p className="text-slate-400">Ainda não há pesquisas no recorte selecionado.</p>
+            )}
             {p.origensEstados.map((item) => (
               <div key={item.uf} className="grid grid-cols-12 items-center gap-2">
                 <div className="col-span-3 text-slate-600 font-medium">

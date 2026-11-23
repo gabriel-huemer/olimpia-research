@@ -31,6 +31,26 @@ Painel web:
 
 Como rodar cada parte: [oto-db/README.md](oto-db/README.md) e [dashboard/README.md](dashboard/README.md).
 
+## Bancos de dados: real e demonstração
+
+| | `oto` (real) | `oto_demo` (demonstração) |
+|---|---|---|
+| **Dados** | Pesquisas de verdade, feitas pelo app | 700 pesquisas **fictícias** (jan a nov/2026), geradas por script |
+| **Quando usar** | Desenvolvimento do dia a dia, testes com o emulador, coleta de campo, homologação | Gravar vídeo, apresentar o projeto, mostrar gráficos "cheios" |
+| **Arquivo de ambiente** | `dashboard/.env.real.local` | `dashboard/.env.demo.local` |
+| **Painel inicia vazio?** | Sim (só o que você coletou) | Não: Panorama e lista de Pesquisas já vêm preenchidos |
+
+Os dois bancos ficam no **mesmo container** PostgreSQL, com o mesmo schema e seeds. Quem escolhe o banco é o painel
+(`dashboard/.env.local`); o app Android sempre fala com o painel, então grava no banco que o painel estiver usando.
+
+```bash
+cp dashboard/.env.demo.local dashboard/.env.local    # modo demonstração
+cp dashboard/.env.real.local dashboard/.env.local    # modo desenvolvimento (banco real)
+# depois de trocar, reinicie o painel (npm run dev): as conexões ficam em memória
+```
+
+Como criar/recriar o banco demo: [oto-db/demo/README.md](oto-db/demo/README.md).
+
 ## Equipe
 
 Hugo Rubira Zanni, Gabriel Huemer, João Pedro Baratella Mattos, Mark Seiji Takakura, Gabriel de Oliveira Merenciano e

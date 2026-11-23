@@ -31,12 +31,12 @@ export default function PerfilTuristaPage() {
 
         <AnalyticsHeaderActions
           abaTitulo="Perfil do visitante e dinâmica dos grupos"
-          defaultPeriodo="Outubro de 2026"
+          defaultPeriodo="Mês atual"
         />
       </div>
 
       {/* Filtros */}
-      <FilterBar defaultPeriodo="Outubro de 2026" />
+      <FilterBar defaultPeriodo="Mês atual" />
 
       {/* Composição etária + Origens detalhadas (cidades) */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-4 mb-4">

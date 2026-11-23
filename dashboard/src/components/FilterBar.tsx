@@ -7,7 +7,7 @@ import { useApp } from "@/context/AppContext";
 
 export function AnalyticsHeaderActions({
   abaTitulo,
-  defaultPeriodo = "Outubro de 2026",
+  defaultPeriodo = "Mês atual",
 }: {
   abaTitulo: string;
   defaultPeriodo?: string;
@@ -16,8 +16,8 @@ export function AnalyticsHeaderActions({
   const [showExportMenu, setShowExportMenu] = useState(false);
 
   const periodos = [
-    "Jan a out 2026",
-    "Outubro de 2026",
+    "Ano 2026",
+    "Mês atual",
     "Últimos 30 dias",
     "Ano 2025",
   ];
@@ -93,7 +93,7 @@ export function AnalyticsHeaderActions({
 }
 
 export function FilterBar({
-  defaultPeriodo = "Outubro de 2026",
+  defaultPeriodo = "Mês atual",
 }: {
   defaultPeriodo?: string;
 }) {

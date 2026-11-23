@@ -919,7 +919,7 @@ export function getFilteredAnalytics(filters: AnalyticsFilters) {
     factor *= map[filters.localPesquisa] || 0.35;
     offset += 1;
   }
-  if (filters.periodo && filters.periodo !== "Jan a out 2026" && filters.periodo !== "Outubro de 2026") {
+  if (filters.periodo && filters.periodo !== "Ano 2026" && filters.periodo !== "Mês atual") {
     if (filters.periodo === "Últimos 30 dias") factor *= 0.18;
     if (filters.periodo === "Ano 2025") factor *= 1.58;
   }

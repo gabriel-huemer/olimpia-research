@@ -2,82 +2,72 @@ import assert from "node:assert/strict";
 import { randomUUID } from "node:crypto";
 import test from "node:test";
 
+// Requer: dashboard rodando (DASHBOARD_URL), banco com os seeds S04/S05 e OTO_MOBILE_PASSWORD no .env.local.
 const baseUrl = process.env.DASHBOARD_URL ?? "http://localhost:3000";
+const dispositivo = randomUUID();
 
-test("batch sync accepts, deduplicates, and exposes a survey", async () => {
-  const id = randomUUID();
-  const payload = {
-    operadorCodigo: "OTO-482",
-    pesquisas: [
-      {
-        id,
-        protocolo: `IT-${id}`,
-        origem: "Campinas, SP",
-        sinalizada: true,
-        campoSuspeito: "Idade",
-        valorSuspeito: "900",
-        idade: "900",
-      },
-    ],
-  };
-  const postBatch = () =>
-    fetch(`${baseUrl}/api/sync/lote`, {
-      method: "POST",
-      headers: { "content-type": "application/json" },
-      body: JSON.stringify(payload),
-    });
+const post = (pesquisas) =>
+  fetch(`${baseUrl}/api/v1/pesquisas/lote`, {
+    method: "POST",
+    headers: { "content-type": "application/json" },
+    body: JSON.stringify({ pesquisas }),
+  });
 
-  const firstResponse = await postBatch();
-  assert.equal(firstResponse.status, 200);
-  const firstResult = await firstResponse.json();
-  assert.equal(firstResult.aceitas, 1);
-  assert.equal(firstResult.duplicadas, 0);
-  assert.equal(firstResult.sinalizadas, 1);
-
-  const duplicateResponse = await postBatch();
-  assert.equal(duplicateResponse.status, 200);
-  const duplicateResult = await duplicateResponse.json();
-  assert.equal(duplicateResult.aceitas, 0);
-  assert.equal(duplicateResult.duplicadas, 1);
-
-  const stateResponse = await fetch(`${baseUrl}/api/state`);
-  assert.equal(stateResponse.status, 200);
-  const state = await stateResponse.json();
-  assert.ok(state.pesquisas.some((survey) => survey.id === id));
-  assert.ok(
-    state.revisao.some(
-      (item) => item.protocolo === `IT-${id}` && item.status === "PENDENTE",
-    ),
-  );
+const pesquisa = (extra = {}) => ({
+  id: randomUUID(),
+  protocolo: 100000 + Math.floor(Math.random() * 800000),
+  pesquisador: "OTO482",
+  local: "Thermas dos Laranjais",
+  dispositivo,
+  versaoQuestionario: 1,
+  iniciadaEm: "2026-11-18T13:00:00Z",
+  finalizadaEm: "2026-11-18T13:08:00Z",
+  respostas: [
+    { chave: "estado", valor: "São Paulo (SP)" },
+    { chave: "cidade", valor: "Marília" },
+    { chave: "idade", valor: 31 },
+    { chave: "nps", valor: 9 },
+    { chave: "servico_27", valor: "Ótimo" },
+  ],
+  sinalizacoes: [],
+  ...extra,
 });
 
-test("mobile sync route returns the contract expected by the app", async () => {
-  const id = randomUUID();
-  const payload = {
-    operadorCodigo: "OTO-482",
-    pesquisas: [{ id, protocolo: `MOB-${id}`, origem: "Olímpia, SP" }],
-  };
-  const postBatch = () =>
-    fetch(`${baseUrl}/api/v1/pesquisas/lote`, {
-      method: "POST",
-      headers: { "content-type": "application/json" },
-      body: JSON.stringify(payload),
-    });
+const total = async () => (await (await fetch(`${baseUrl}/api/analytics`)).json()).panorama.pesquisasColetadas;
 
-  const firstResponse = await postBatch();
-  assert.equal(firstResponse.status, 200);
-  const firstResult = await firstResponse.json();
-  assert.deepEqual(firstResult.aceitas, [id]);
-  assert.deepEqual(firstResult.rejeitadas, {});
+test("lote novo e gravado, reenvio nao duplica e o Panorama sobe uma vez", async () => {
+  const antes = await total();
+  const p = pesquisa();
 
-  const duplicateResponse = await postBatch();
-  assert.equal(duplicateResponse.status, 200);
-  const duplicateResult = await duplicateResponse.json();
-  assert.deepEqual(duplicateResult.aceitas, [id]);
-  assert.deepEqual(duplicateResult.rejeitadas, {});
+  const r1 = await (await post([p])).json();
+  assert.deepEqual(r1.aceitas, [p.id]);
+  assert.equal(r1.duplicadas, 0);
+  assert.deepEqual(r1.rejeitadas, {});
 
-  const stateResponse = await fetch(`${baseUrl}/api/state`);
-  assert.equal(stateResponse.status, 200);
-  const state = await stateResponse.json();
-  assert.ok(state.pesquisas.some((survey) => survey.id === id));
+  const r2 = await (await post([p])).json();
+  assert.deepEqual(r2.aceitas, [p.id]); // o app precisa marcar como enviada
+  assert.equal(r2.duplicadas, 1);
+
+  assert.equal(await total(), antes + 1);
+});
+
+test("pesquisador desconhecido e rejeitado com motivo", async () => {
+  const p = pesquisa({ pesquisador: "ZZZ999" });
+  const r = await (await post([p])).json();
+  assert.deepEqual(r.aceitas, []);
+  assert.match(r.rejeitadas[p.id], /não cadastrado/);
+});
+
+test("resposta sinalizada vai para a fila de curadoria", async () => {
+  const p = pesquisa({
+    respostas: [{ chave: "idade", valor: 500 }],
+    sinalizacoes: [{ regra: "idade", chave: "idade", titulo: "Idade fora do esperado", mensagem: "500 anos parece incorreto", status: "confirmed" }],
+  });
+  const r = await (await post([p])).json();
+  assert.deepEqual(r.aceitas, [p.id]);
+});
+
+test("corpo invalido devolve 400", async () => {
+  const r = await fetch(`${baseUrl}/api/v1/pesquisas/lote`, { method: "POST", headers: { "content-type": "application/json" }, body: "{}" });
+  assert.equal(r.status, 400);
 });
