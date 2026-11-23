@@ -7,7 +7,6 @@ import type {
   OperadorCampo,
   ItemPublicacao,
   ProblemaImportacao,
-  RegistroAuditoria,
 } from "@/lib/mockAndSeedData";
 import { usePathname } from "next/navigation";
 import { abaDaRota, paineisVazios, type AnalyticsFilters, type OpcoesFiltro, type Paineis } from "@/lib/paineis-types";
@@ -46,7 +45,6 @@ interface AppContextValue {
   metodoPublicacao: string;
   problemasImportacao: ProblemaImportacao[];
   importacaoConcluida: boolean;
-  auditoria: RegistroAuditoria[];
   /** Relê /api/state agora, sem esperar os 15 s. */
   recarregarEstado: () => Promise<void>;
   dispatchAction: (action: string, payload?: Record<string, unknown>) => Promise<void>;
@@ -82,7 +80,6 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
   const [metodoPublicacao, setMetodoPublicacao] = useState("Incorporar no site (iframe/link)");
   const [problemasImportacao, setProblemasImportacao] = useState<ProblemaImportacao[]>([]);
   const [importacaoConcluida, setImportacaoConcluida] = useState(false);
-  const [auditoria, setAuditoria] = useState<RegistroAuditoria[]>([]);
   const [toastMessage, setToastMessage] = useState<string | null>(null);
 
   const showToast = useCallback((msg: string) => {
@@ -107,7 +104,6 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
     );
     setProblemasImportacao((data.problemasImportacao as ProblemaImportacao[]) || []);
     setImportacaoConcluida(Boolean(data.importacaoConcluida));
-    setAuditoria((data.auditoria as RegistroAuditoria[]) || []);
   }, []);
 
   const fetchState = useCallback(async () => {
@@ -267,7 +263,6 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
         metodoPublicacao,
         problemasImportacao,
         importacaoConcluida,
-        auditoria,
         recarregarEstado: fetchState,
         dispatchAction,
         exportToExcel,

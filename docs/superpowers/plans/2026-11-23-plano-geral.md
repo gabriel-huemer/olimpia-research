@@ -15,7 +15,7 @@ Frente que falhar 3 vezes pela mesma causa fica em PR aberto e o plano segue.
 
 ## Frentes
 - [x] 1. Análises: as quatro abas e os filtros lidos do banco
-- [ ] 2. Auditoria lida de `log_auditoria`
+- [x] 2. Auditoria lida de `log_auditoria`
 - [ ] 3. Operadores e Visão geral no banco
 - [ ] 4. App: login do pesquisador validado e token por pesquisador
 - [ ] 5. Pesquisas: lista com filtros, inserção manual (RF17)
@@ -31,3 +31,6 @@ Frente que falhar 3 vezes pela mesma causa fica em PR aberto e o plano segue.
 - Feito: as 5 abas e os filtros vêm do banco; exportação usa os números da tela.
 - Decisões padrão: nota Ótimo=5, Regular=3, Ruim=1; cidade com menos de 5 respostas vira "Outras cidades" e não é filtro;
   texto livre só para quem tem login. O aviso de que "renda não é coletada" saiu: o formulário coleta.
+### Frente 2 — Auditoria
+- Feito: lê `log_auditoria`, com filtros por usuário, ação, período e protocolo, paginação e exportação.
+- Decisões padrão: só a área Sistema consulta; senha, hash, token e código de acesso nunca aparecem.
