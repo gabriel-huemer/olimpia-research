@@ -48,16 +48,13 @@ class ReviewPresenter extends BasePresenter<ReviewView> with ConnectivityAware<R
     _render();
   }
 
-  /// Counters start at their minimum value, so they count as answered.
-  static bool _countsAsAnswered(Question q, Object? v) => q.type == QuestionType.counter || hasAnswer(v);
-
   void _render() {
     final q = _questionnaire, s = _survey;
     if (q == null || s == null) return;
     final rows = <ReviewRowViewModel>[];
     for (final section in q.sections) {
       final flags = s.flags.where((f) => f.sectionId == section.id).toList();
-      final missing = q.visibleQuestionsOf(section.id, s.answers).where((x) => !_countsAsAnswered(x, s.answers[x.key]));
+      final missing = q.unansweredOf(section.id, s.answers);
       final title = '${q.sections.indexOf(section) + 1}. ${section.reviewTitle}';
       rows.add(switch (flags.length) {
         1 => ReviewRowViewModel(sectionId: section.id, title: title, tag: flags.first.reviewTag, tone: TagTone.warning),
