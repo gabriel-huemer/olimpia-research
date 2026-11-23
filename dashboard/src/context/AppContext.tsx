@@ -3,7 +3,6 @@
 import React, { createContext, useContext, useState, useEffect, useCallback } from "react";
 import type {
   FormularioItem,
-  PesquisaColetada,
   ItemPublicacao,
   ProblemaImportacao,
 } from "@/lib/mockAndSeedData";
@@ -37,7 +36,6 @@ interface AppContextValue {
   dbConnected: boolean;
   pendentesRevisao: number;
   formularios: FormularioItem[];
-  pesquisas: PesquisaColetada[];
   publicacaoItens: ItemPublicacao[];
   ultimaPublicacao: string;
   metodoPublicacao: string;
@@ -71,7 +69,6 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
   const [dbConnected, setDbConnected] = useState(false);
   const [pendentesRevisao, setPendentesRevisao] = useState(0);
   const [formularios, setFormularios] = useState<FormularioItem[]>([]);
-  const [pesquisas, setPesquisas] = useState<PesquisaColetada[]>([]);
   const [publicacaoItens, setPublicacaoItens] = useState<ItemPublicacao[]>([]);
   const [ultimaPublicacao, setUltimaPublicacao] = useState("Nenhuma");
   const [metodoPublicacao, setMetodoPublicacao] = useState("Incorporar no site (iframe/link)");
@@ -92,7 +89,6 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
     }
     setPendentesRevisao(typeof data.pendentesRevisao === "number" ? data.pendentesRevisao : 0);
     setFormularios((data.formularios as FormularioItem[]) || []);
-    setPesquisas((data.pesquisas as PesquisaColetada[]) || []);
     setPublicacaoItens((data.publicacaoItens as ItemPublicacao[]) || []);
     setUltimaPublicacao((data.ultimaPublicacao as string) || "Nenhuma");
     setMetodoPublicacao(
@@ -252,7 +248,6 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
         dbConnected,
         pendentesRevisao,
         formularios,
-        pesquisas,
         publicacaoItens,
         ultimaPublicacao,
         metodoPublicacao,

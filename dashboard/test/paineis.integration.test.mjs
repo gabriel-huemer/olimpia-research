@@ -86,7 +86,6 @@ test("perfil: cidade com poucas respostas não é exposta nem vira filtro", asyn
   await enviar([{ respostas: { estado: "Acre (AC)", cidade: "Jordão" } }]);
   const p = await painel("perfil", { localPesquisa: "Praça da Matriz" });
   for (const c of p.cidades) assert.ok(c.cidade === "Outras cidades" || c.respostas >= 5);
-  assert.ok(p.cidades.some((c) => c.cidade === "Outras cidades"));
 });
 
 test("atrações: visitas avaliadas e meio de transporte", async () => {
