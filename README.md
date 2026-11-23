@@ -32,6 +32,11 @@ Painel web:
 Como rodar cada parte: [oto-db/README.md](oto-db/README.md) e [dashboard/README.md](dashboard/README.md).
 Publicar em um servidor: [deploy/README.md](deploy/README.md).
 
+## Rodar a demonstração
+
+Com Docker, Node 20+ e Python 3.9+ instalados: `cd oto-db && make demo` (no Windows: `py demo\iniciar_demo.py`).
+Cria o banco fictício e abre o painel em <http://localhost:3000>. Detalhes: [oto-db/demo/README.md](oto-db/demo/README.md).
+
 ## Bancos de dados: real e demonstração
 
 | | `oto` (real) | `oto_demo` (demonstração) |

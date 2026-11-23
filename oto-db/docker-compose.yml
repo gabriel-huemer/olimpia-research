@@ -5,7 +5,7 @@ name: oto-db
 services:
   db:
     image: postgres:16
-    container_name: oto-db
+    container_name: ${OTO_DB_CONTAINER:-oto-db}
     restart: unless-stopped
     environment:
       POSTGRES_DB: ${OTO_DB_NAME:-oto}
