@@ -31,9 +31,6 @@ export async function POST(request: NextRequest) {
   } catch (e) {
     // Banco indisponível ou formulário não cadastrado: o app mantém o lote na fila e tenta de novo.
     console.error("[sync] falha ao gravar lote:", e);
-    return NextResponse.json(
-      { error: "Falha ao gravar no banco de dados", detalhe: (e as Error).message },
-      { status: 503 }
-    );
+    return NextResponse.json({ error: "Falha ao gravar no banco de dados" }, { status: 503 });
   }
 }

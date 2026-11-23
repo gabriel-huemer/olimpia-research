@@ -93,8 +93,8 @@ void main() {
     final concluida = await h.completedSurvey(r, {'idade': 30});
     final rascunho = await surveys.startOrResume(r);
     await surveys.saveAnswer(rascunho.id, 'idade', 40, changedBy: r.code);
-    await surveys.discardDraft(rascunho.id);
-    await surveys.discardDraft(concluida.id);
+    await surveys.discardDraft(rascunho.id, reason: 'Turista desistiu');
+    await surveys.discardDraft(concluida.id, reason: 'x');
     expect(await surveys.byId(rascunho.id), isNull);
     expect(await surveys.byId(concluida.id), isNotNull);
     expect(await surveys.history(rascunho.id), isEmpty);

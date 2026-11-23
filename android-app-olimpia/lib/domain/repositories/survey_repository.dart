@@ -8,8 +8,13 @@ abstract interface class SurveyRepository {
   /// Resumes the researcher's open draft or creates a new one with the next protocol (RF16).
   Future<Survey> startOrResume(Researcher researcher);
 
-  /// Cancels an interview in progress (RF23). Completed surveys are never removed.
-  Future<void> discardDraft(String surveyId);
+  /// Cancels an interview in progress, keeping only the reason (RF23). Completed surveys are never removed.
+  Future<void> discardDraft(String surveyId, {required String reason});
+
+  /// Cancelled interviews not reported yet, in the API format.
+  Future<List<Map<String, Object?>>> cancelledToReport(int limit);
+
+  Future<void> markCancelledReported(List<String> ids);
 
   Future<Survey?> byId(String id);
 

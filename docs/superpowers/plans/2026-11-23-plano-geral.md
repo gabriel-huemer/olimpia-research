@@ -22,7 +22,7 @@ Frente que falhar 3 vezes pela mesma causa fica em PR aberto e o plano segue.
 - [x] 6. Importação de planilhas históricas (RF09)
 - [x] 7. Publicação de resultados (RF21)
 - [x] 8. Formulários e versões no banco (RF05); app baixa o publicado
-- [ ] 9. Conta (trocar a própria senha), limpeza dos dados de exemplo, SonarCloud
+- [x] 9. Conta (trocar a própria senha), limpeza dos dados de exemplo, SonarCloud
 - [ ] 10. Hospedagem: contêineres, HTTPS, backup; guia de Tailscale
 - [ ] 11. Relatório final
 
@@ -75,3 +75,11 @@ Frente que falhar 3 vezes pela mesma causa fica em PR aberto e o plano segue.
 - Cortado: marcar pergunta como obrigatória (o app ainda não bloqueia respostas em branco), agendar vigência futura, reordenar ou
   renomear seções, editar ou remover opções existentes, editar a condição depois de criada, várias pesquisas com formulários diferentes.
 - A condição fica em `pergunta.config` (o formato do app); `regra_exibicao` segue sem uso.
+
+### Frente 9 — Conta e limpeza
+- Feito: trocar a própria senha (`/conta`), entrevista cancelada registrada com o motivo (RF23, migração V010; nenhuma resposta
+  sai do aparelho), erro do lote sem detalhes internos, cabeçalhos de segurança (na frente 7), estado fictício removido (na frente 8).
+- Motivos do cancelamento são uma lista fixa, sem texto livre, para não guardar dados pessoais. Validar a lista com o cliente.
+- Limite conhecido: trocar a senha não derruba sessões já abertas (elas duram até 8 horas).
+- Não mexido: `Paraíba ((PB)` é o valor exato da planilha do cliente (o app já mostra "Paraíba (PB)"); o alerta de aleatoriedade do
+  Sonar em `oto-db/demo/popular_demo.py` é de um gerador de dados fictícios e ficou para o Hugo marcar como seguro.

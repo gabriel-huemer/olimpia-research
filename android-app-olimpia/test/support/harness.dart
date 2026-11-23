@@ -22,14 +22,14 @@ class Harness {
   final AppDatabase database;
   final Directory directory;
 
-  static Future<Harness> open({required SyncApi api, ResearcherApi? researcherApi, QuestionnaireApi? questionnaireApi}) async {
+  static Future<Harness> open({required SyncApi api, ResearcherApi? researcherApi, QuestionnaireApi? questionnaireApi, CancelledApi? cancelledApi}) async {
     TestWidgetsFlutterBinding.ensureInitialized();
     sqfliteFfiInit();
     await initializeDateFormatting('pt_BR');
     await sl.reset();
     final dir = await Directory.systemTemp.createTemp('oto_pesquisador_test_');
     final db = AppDatabase(factory: databaseFactoryFfi, path: p.join(dir.path, 'test.db'));
-    await configureDependencies(database: db, syncApi: api, researcherApi: researcherApi, questionnaireApi: questionnaireApi);
+    await configureDependencies(database: db, syncApi: api, researcherApi: researcherApi, questionnaireApi: questionnaireApi, cancelledApi: cancelledApi);
     await sl<QuestionnaireRepository>().ensureCached();
     return Harness._(db, dir);
   }
