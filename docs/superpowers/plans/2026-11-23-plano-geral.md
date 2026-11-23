@@ -24,7 +24,7 @@ Frente que falhar 3 vezes pela mesma causa fica em PR aberto e o plano segue.
 - [x] 8. Formulários e versões no banco (RF05); app baixa o publicado
 - [x] 9. Conta (trocar a própria senha), limpeza dos dados de exemplo, SonarCloud
 - [x] 10. Hospedagem: contêineres, HTTPS, backup; guia de Tailscale
-- [ ] 11. Relatório final
+- [x] 11. Relatório final
 
 ## Status
 ### Frente 1 — Análises
