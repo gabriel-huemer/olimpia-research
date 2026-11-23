@@ -181,11 +181,10 @@ export default function PanoramaPage() {
                   {item.uf}
                 </div>
                 <div className="col-span-9 flex items-center gap-3">
-                  <div
-                    style={{ width: `${Math.max(12, item.percentual * 1.4)}%` }}
-                    className="h-3.5 rounded-full bg-[#008767]"
-                  />
-                  <span className="font-bold text-slate-900">
+                  <div className="flex-1 bg-slate-100 h-3.5 rounded-full overflow-hidden">
+                    <div style={{ width: `${item.percentual}%` }} className="h-full rounded-full bg-[#008767]" />
+                  </div>
+                  <span className="font-bold text-slate-900 min-w-[3rem] text-right">
                     {item.detalhe ? item.detalhe : `${item.percentual}%`}
                   </span>
                 </div>

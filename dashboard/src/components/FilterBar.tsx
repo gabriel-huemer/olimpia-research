@@ -19,7 +19,7 @@ export function AnalyticsHeaderActions({
     <div className="flex flex-wrap items-center gap-2.5">
       {/* Seletor de Período */}
       <div className="relative flex items-center bg-white border border-slate-200 rounded-lg px-3 py-2 text-xs text-slate-700 shadow-2xs">
-        <span className="text-slate-400 mr-1">⌄Período:</span>
+        <span className="text-slate-400 mr-1">Período:</span>
         <select
           aria-label="Selecionar período"
           value={filters.periodo}
@@ -129,14 +129,14 @@ export function FilterBar() {
         {filterConfigs.map((fc) => (
           <div
             key={fc.key}
-            className="flex items-center bg-white border border-slate-200 rounded-lg px-3 py-1.5 text-xs shadow-2xs"
+            className="flex max-w-full items-center bg-white border border-slate-200 rounded-lg px-3 py-1.5 text-xs shadow-2xs"
           >
-            <span className="text-slate-400 mr-1">⌄{fc.label}:</span>
+            <span className="text-slate-400 mr-1">{fc.label}:</span>
             <select
               aria-label={fc.label}
               value={filters[fc.key]}
               onChange={(e) => setFilter(fc.key, e.target.value)}
-              className="font-semibold text-slate-900 bg-transparent focus:outline-none cursor-pointer"
+              className="min-w-0 font-semibold text-slate-900 bg-transparent focus:outline-none cursor-pointer"
             >
               {fc.options.map((opt) => (
                 <option key={opt} value={opt}>
@@ -154,7 +154,7 @@ export function FilterBar() {
           onClick={() => resetFilters()}
           className="bg-white hover:bg-slate-50 border border-slate-200 rounded-lg px-3 py-1.5 text-xs text-slate-500 font-medium shadow-2xs transition"
         >
-          ⌄Limpar filtros
+          Limpar filtros
         </button>
       </div>
     </div>
