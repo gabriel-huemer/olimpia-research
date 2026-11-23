@@ -7,20 +7,13 @@ import { useApp } from "@/context/AppContext";
 
 export function AnalyticsHeaderActions({
   abaTitulo,
-  defaultPeriodo = "Mês atual",
 }: {
   abaTitulo: string;
-  defaultPeriodo?: string;
 }) {
-  const { filters, setFilter, exportReportPdfOrExcel, canManageUsers } = useApp();
+  const { filters, setFilter, exportReportPdfOrExcel, canManageUsers, opcoesFiltro } = useApp();
   const [showExportMenu, setShowExportMenu] = useState(false);
 
-  const periodos = [
-    "Ano 2026",
-    "Mês atual",
-    "Últimos 30 dias",
-    "Ano 2025",
-  ];
+  const periodos = opcoesFiltro.periodos.length ? opcoesFiltro.periodos : [filters.periodo];
 
   return (
     <div className="flex flex-wrap items-center gap-2.5">
@@ -29,7 +22,7 @@ export function AnalyticsHeaderActions({
         <span className="text-slate-400 mr-1">⌄Período:</span>
         <select
           aria-label="Selecionar período"
-          value={filters.periodo || defaultPeriodo}
+          value={filters.periodo}
           onChange={(e) => setFilter("periodo", e.target.value)}
           className="font-semibold text-slate-900 bg-transparent focus:outline-none cursor-pointer pr-1"
         >
@@ -92,18 +85,16 @@ export function AnalyticsHeaderActions({
   );
 }
 
-export function FilterBar({
-  defaultPeriodo = "Mês atual",
-}: {
-  defaultPeriodo?: string;
-}) {
-  const { filters, setFilter, resetFilters } = useApp();
+export function FilterBar() {
+  const { filters, setFilter, resetFilters, opcoesFiltro } = useApp();
+  // A opção escolhida continua na lista mesmo se sair das opções do banco.
+  const com = (todas: string, lista: string[], atual: string) => [...new Set([todas, ...lista, atual])];
 
   const filterConfigs = [
     {
       key: "genero" as const,
       label: "Gênero",
-      options: ["Todos", "Feminino", "Masculino"],
+      options: com("Todos", opcoesFiltro.generos, filters.genero),
     },
     {
       key: "faixaIdade" as const,
@@ -113,13 +104,7 @@ export function FilterBar({
     {
       key: "cidade" as const,
       label: "Cidade",
-      options: [
-        "Todas",
-        "São Paulo, SP",
-        "Campinas, SP",
-        "Ribeirão Preto, SP",
-        "Belo Horizonte, MG",
-      ],
+      options: com("Todas", opcoesFiltro.cidades, filters.cidade),
     },
     {
       key: "hospedagem" as const,
@@ -134,12 +119,7 @@ export function FilterBar({
     {
       key: "localPesquisa" as const,
       label: "Local da pesquisa",
-      options: [
-        "Todos",
-        "Thermas dos Laranjais",
-        "Hot Beach",
-        "Praça da Matriz",
-      ],
+      options: com("Todos", opcoesFiltro.locais, filters.localPesquisa),
     },
   ];
 
@@ -171,18 +151,11 @@ export function FilterBar({
       <div className="flex flex-wrap items-center gap-2">
         <button
           type="button"
-          onClick={() => resetFilters(defaultPeriodo)}
+          onClick={() => resetFilters()}
           className="bg-white hover:bg-slate-50 border border-slate-200 rounded-lg px-3 py-1.5 text-xs text-slate-500 font-medium shadow-2xs transition"
         >
           ⌄Limpar filtros
         </button>
-
-        <span className="inline-flex items-center px-2.5 py-1 rounded-md bg-blue-50 text-blue-800 text-[11px] font-semibold">
-          filtros: painel atual
-        </span>
-        <span className="inline-flex items-center px-2.5 py-1 rounded-md bg-emerald-50 text-emerald-800 text-[11px] font-semibold">
-          layout: colega
-        </span>
       </div>
     </div>
   );

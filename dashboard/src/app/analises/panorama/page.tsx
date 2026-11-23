@@ -2,41 +2,20 @@
 
 import React from "react";
 import { BarChart2 } from "lucide-react";
-import { SidebarLayout } from "@/components/SidebarLayout";
-import { AnalyticsHeaderActions, FilterBar } from "@/components/FilterBar";
+import { AnalisePagina } from "@/components/analises";
 import { useApp } from "@/context/AppContext";
 
 export default function PanoramaPage() {
-  const { analytics } = useApp();
-  const p = analytics.panorama;
+  const { paineis } = useApp();
+  const p = paineis.panorama;
 
   return (
-    <SidebarLayout breadcrumb="Inteligência turística / Análises · Panorama">
-      {/* Cabeçalho da página */}
-      <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4 mb-5">
-        <div className="flex items-start gap-3">
-          <div className="w-9 h-9 rounded-lg bg-white border border-slate-200 flex items-center justify-center text-[#182657] shadow-2xs shrink-0 mt-0.5">
-            <BarChart2 className="w-5 h-5" />
-          </div>
-          <div>
-            <h1 className="text-xl font-bold text-slate-900 leading-tight">
-              Visão geral executiva
-            </h1>
-            <p className="text-xs text-slate-500 mt-0.5">
-              Demanda, padrões de visita e experiência do destino.
-            </p>
-          </div>
-        </div>
-
-        <AnalyticsHeaderActions
-          abaTitulo="Visão geral executiva"
-          defaultPeriodo="Ano 2026"
-        />
-      </div>
-
-      {/* Barra de filtros compartilhada */}
-      <FilterBar defaultPeriodo="Ano 2026" />
-
+    <AnalisePagina
+      trilha="Panorama"
+      titulo="Visão geral executiva"
+      subtitulo="Demanda, padrões de visita e experiência do destino."
+      icone={<BarChart2 className="w-5 h-5" />}
+    >
       {/* 3 KPI Cards principais */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
         {/* Card 1: Pesquisas coletadas (azul escuro) */}
@@ -240,13 +219,10 @@ export default function PanoramaPage() {
               <span className="text-2xl font-extrabold text-[#182657]">
                 {p.intencaoRetorno}%
               </span>
-              <span className="px-2.5 py-0.5 rounded-full bg-emerald-50 text-emerald-800 text-xs font-semibold">
-                Alta intenção
-              </span>
             </div>
           </div>
         </div>
       </div>
-    </SidebarLayout>
+    </AnalisePagina>
   );
 }
