@@ -26,8 +26,8 @@ export function destinoSeguro(destino: string | null | undefined): string {
     return DESTINO_PADRAO;
   }
   try {
-    const u = new URL(destino, "http://interno");
-    if (u.host !== "interno" || u.pathname === "/login" || u.pathname.startsWith("/login/")) return DESTINO_PADRAO;
+    const u = new URL(destino, "https://interno.invalid");
+    if (u.host !== "interno.invalid" || u.pathname === "/login" || u.pathname.startsWith("/login/")) return DESTINO_PADRAO;
     return u.pathname + u.search;
   } catch {
     return DESTINO_PADRAO;

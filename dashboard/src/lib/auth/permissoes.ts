@@ -27,7 +27,7 @@ export function areaDaRota(pathname: string): Area | null {
   // Normaliza como o navegador/servidor faria (resolve "..", "." e barras duplicadas).
   let caminho: string;
   try {
-    caminho = new URL(pathname, "http://x").pathname.toLowerCase();
+    caminho = new URL(pathname, "https://rota.invalid").pathname.toLowerCase();
   } catch {
     return null;
   }

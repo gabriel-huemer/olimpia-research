@@ -1,12 +1,14 @@
 // Senhas com bcrypt. Aceita hashes gerados pelo Postgres (pgcrypto, prefixo $2a$).
 import bcrypt from "bcryptjs";
+import { randomBytes } from "node:crypto";
 
 const CUSTO = 12;
 const MAX_BYTES = 72; // bcrypt ignora o que passa disso
 
-// Hash de uma senha aleatória descartada: usado quando o usuário não existe,
+// Hash de uma senha aleatória descartada, gerado na 1ª chamada: usado quando o usuário não existe,
 // para que a resposta leve o mesmo tempo (evita descobrir e-mails cadastrados).
-const HASH_FALSO = "$2a$12$3zisJtehg3twzJedcDmEc.cKwKOhpel9VqZgX3Pv018mxQJdrJCKi";
+let hashFalso: Promise<string> | null = null;
+const obterHashFalso = () => (hashFalso ??= bcrypt.hash(randomBytes(24).toString("hex"), CUSTO));
 
 export async function gerarHash(senha: string): Promise<string> {
   if (new TextEncoder().encode(senha).length > MAX_BYTES) {
@@ -18,7 +20,7 @@ export async function gerarHash(senha: string): Promise<string> {
 export async function verificarSenha(senha: string, hash: string | null | undefined): Promise<boolean> {
   const alvo = typeof hash === "string" && hash.length > 0 ? hash : null;
   try {
-    const ok = await bcrypt.compare(senha ?? "", alvo ?? HASH_FALSO);
+    const ok = await bcrypt.compare(senha ?? "", alvo ?? (await obterHashFalso()));
     return alvo !== null && ok;
   } catch {
     return false;
