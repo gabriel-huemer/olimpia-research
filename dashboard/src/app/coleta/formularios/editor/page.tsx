@@ -1,6 +1,6 @@
 "use client";
 
-import React, { Suspense, useState } from "react";
+import React, { Suspense, useEffect, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { Edit3 } from "lucide-react";
 import { BOTAO_CLARO, BOTAO_PERIGO, BOTAO_VERDE, CAIXA, CAMPO, Janela, Pagina, ROTULO, Selo } from "@/components/pagina";
@@ -284,10 +284,20 @@ function NovaPergunta({
   );
 }
 
+// Sem a versão no endereço não há o que editar: volta para a lista.
+function EditorOuLista() {
+  const temVersao = Boolean(useSearchParams().get("versao"));
+  const router = useRouter();
+  useEffect(() => {
+    if (!temVersao) router.replace("/coleta/formularios");
+  }, [temVersao, router]);
+  return temVersao ? <Editor /> : null;
+}
+
 export default function EditorPage() {
   return (
     <Suspense fallback={null}>
-      <Editor />
+      <EditorOuLista />
     </Suspense>
   );
 }

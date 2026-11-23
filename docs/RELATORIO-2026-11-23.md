@@ -35,11 +35,15 @@ aceitava a lista vazia como verde. Corrigi o script (exige os 5 checks) e o PR #
 6. **App:** gerar o APK na sua máquina (licenças do Android), configurar a assinatura e testar em um aparelho.
 7. **Validar com o cliente:** escala das notas (5/3/1), mínimo de 5 respostas, meta diária, motivos de cancelamento, formato pedido
    pelo prefeito e se alguma pergunta é obrigatória.
-8. **SonarCloud:** marcar como seguro o alerta de aleatoriedade em `oto-db/demo/popular_demo.py`.
+8. **Banco em uso na sua máquina:** `dashboard/.env.local` aponta para o `oto_teste`; copie `.env.real.local` ou `.env.demo.local`.
+9. **SonarCloud:** marcar como seguro o alerta de aleatoriedade em `oto-db/demo/popular_demo.py`.
 
 ## O que não está pronto ou não foi conferido
 
 - Formulários: pergunta obrigatória, vigência futura, reordenar seções, remover opções e mais de uma pesquisa (RF05 parcial).
 - Token do app é único para todos os aparelhos. Trocar a senha não derruba sessões abertas (até 8 horas).
-- Telas com login foram testadas pela API e pelo build, não clicadas uma a uma no navegador. O app não rodou em aparelho.
+- Cliquei no navegador em Publicação, `/publico`, Formulários e editor, `/conta` e Visão geral, sem erros. As outras telas com
+  login foram testadas pela API e pelo build. O app não rodou em aparelho.
+- O mínimo de 5 respostas em `/publico` vale para o indicador inteiro (e para cada cidade e cada nota), não para cada faixa ou
+  estado: uma faixa com 1 pessoa dentro de um indicador grande ainda aparece.
 - Importação sem planilha real; HTTPS e Tailscale sem servidor real.
