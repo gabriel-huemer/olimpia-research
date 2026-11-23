@@ -4,3 +4,6 @@ backups/*.log
 
 # Senhas das contas de teste (scripts/criar_usuarios_teste.sh)
 .usuarios-teste*.env
+
+# Gerado por scripts/carregar_municipios_ibge.py (não versionado de propósito)
+db/seeds/S03_municipios.sql
