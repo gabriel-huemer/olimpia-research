@@ -19,7 +19,7 @@ const acao = async (action, payload) => {
 
 test("GET /api/state devolve as coleções que as telas usam", async () => {
   const s = await estado();
-  for (const k of ["dbConnected", "pendentesRevisao", "pesquisas", "operadores", "auditoria", "formularios"]) {
+  for (const k of ["dbConnected", "pendentesRevisao", "pesquisas", "operadores", "formularios"]) {
     assert.ok(k in s, `falta ${k}`);
   }
   assert.equal(typeof s.dbConnected, "boolean");
@@ -37,16 +37,11 @@ test("operadores: criar gera código OTO-NNN ativo; alternar e redefinir registr
 
   r = await acao("ALTERNAR_STATUS_OPERADOR", { id: op.id });
   assert.equal(r.corpo.operadores.find((o) => o.id === op.id).ativo, false);
-  assert.match(r.corpo.auditoria[0].alteracao, /desativado/);
-  assert.equal(r.corpo.auditoria[0].usuario, "Admin de Teste"); // autor vem da sessão, não do corpo
 
   r = await acao("REDEFINIR_CODIGO_OPERADOR", { id: op.id });
-  assert.match(r.corpo.auditoria[0].alteracao, /código redefinido/);
 });
 
 test("ação desconhecida é recusada (400) e não altera nada", async () => {
-  const antes = await estado();
   const { status } = await acao("ACAO_QUE_NAO_EXISTE", {});
   assert.equal(status, 400);
-  assert.equal((await estado()).auditoria.length, antes.auditoria.length);
 });

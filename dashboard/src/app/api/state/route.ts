@@ -43,7 +43,6 @@ async function estadoVisivel(usuario: UsuarioSessao, extra: Record<string, unkno
         metodoPublicacao: store.metodoPublicacao,
         problemasImportacao: store.problemasImportacao,
         importacaoConcluida: store.importacaoConcluida,
-        auditoria: store.auditoria,
       }),
     },
     { headers: { "cache-control": "no-store" } }
@@ -98,15 +97,6 @@ export async function POST(request: NextRequest) {
       const formAtivo = store.formularios.find((f) => f.status === "Ativo");
       if (formAtivo) formAtivo.respostas += 1;
 
-      store.auditoria.unshift({
-        id: Date.now(),
-        dataHora: nowShort,
-        usuario,
-        acao: "Inseriu",
-        item: "Pesquisa",
-        protocoloBadge: protocolo,
-        alteracao: `resposta recebida por ${canalRecebimento || "telefone"} (${genero || "N/I"}, ${idade || "—"} anos, R$ ${gastoDiario || "350"})`,
-      });
       break;
     }
 
@@ -129,14 +119,6 @@ export async function POST(request: NextRequest) {
         ativo: true,
       };
       store.operadores.push(novoOp);
-      store.auditoria.unshift({
-        id: Date.now(),
-        dataHora: nowShort,
-        usuario,
-        acao: "Inseriu",
-        item: `Operador ${nome}`,
-        alteracao: `código gerado: ${randomCode} · local: ${novoOp.localHabitual}`,
-      });
       break;
     }
 
@@ -147,14 +129,6 @@ export async function POST(request: NextRequest) {
         const codigoAntigo = op.codigo;
         const novoCodigo = `OTO-${Math.floor(100 + Math.random() * 899)}`;
         op.codigo = novoCodigo;
-        store.auditoria.unshift({
-          id: Date.now(),
-          dataHora: nowShort,
-          usuario,
-          acao: "Corrigiu",
-          item: `Operador ${op.nome}`,
-          alteracao: `código redefinido: ${codigoAntigo} → ${novoCodigo}`,
-        });
       }
       break;
     }
@@ -164,14 +138,6 @@ export async function POST(request: NextRequest) {
       const op = store.operadores.find((o) => o.id === id);
       if (op) {
         op.ativo = !op.ativo;
-        store.auditoria.unshift({
-          id: Date.now(),
-          dataHora: nowShort,
-          usuario,
-          acao: "Corrigiu",
-          item: `Operador ${op.nome}`,
-          alteracao: `status alterado para ${op.ativo ? "ativo" : "desativado"}`,
-        });
       }
       break;
     }
@@ -228,14 +194,6 @@ export async function POST(request: NextRequest) {
         secoes: secoes || atualAtivo?.secoes || [],
       };
       store.formularios.unshift(novoForm);
-      store.auditoria.unshift({
-        id: Date.now(),
-        dataHora: nowShort,
-        usuario,
-        acao: "Publicou",
-        item: `Formulário ${versaoNome}`,
-        alteracao: "status: rascunho → ativo (versão anterior preservada)",
-      });
       break;
     }
 
@@ -252,14 +210,6 @@ export async function POST(request: NextRequest) {
         vigencia: vigencia || "não definida",
         atualizado: nowShort.split(" ")[0] + "/2026",
         secoes: JSON.parse(JSON.stringify(BaseSecoes)),
-      });
-      store.auditoria.unshift({
-        id: Date.now(),
-        dataHora: nowShort,
-        usuario,
-        acao: "Inseriu",
-        item: `Formulário ${nome} v1`,
-        alteracao: "criado como rascunho",
       });
       break;
     }
@@ -278,14 +228,6 @@ export async function POST(request: NextRequest) {
       if (metodo) store.metodoPublicacao = metodo;
       store.ultimaPublicacao = `${nowShort} por ${usuario}`;
       const qtdPublicados = store.publicacaoItens.filter((i) => i.publico).length;
-      store.auditoria.unshift({
-        id: Date.now(),
-        dataHora: nowShort,
-        usuario,
-        acao: "Publicou",
-        item: "Painel Público do Site",
-        alteracao: `${qtdPublicados} indicadores publicados (${store.metodoPublicacao})`,
-      });
       break;
     }
 
@@ -304,14 +246,6 @@ export async function POST(request: NextRequest) {
       store.importacaoConcluida = true;
       store.problemasImportacao.forEach((p) => {
         p.resolvido = true;
-      });
-      store.auditoria.unshift({
-        id: Date.now(),
-        dataHora: nowShort,
-        usuario,
-        acao: "Inseriu",
-        item: `Importação ${arquivoNome}`,
-        alteracao: "3.412 linhas válidas importadas · 112 duplicadas ignoradas · 38 tratadas",
       });
       break;
     }

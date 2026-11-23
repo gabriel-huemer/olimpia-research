@@ -4,6 +4,7 @@ import React, { useCallback, useEffect, useRef, useState } from "react";
 import { CheckSquare } from "lucide-react";
 import { SidebarLayout } from "@/components/SidebarLayout";
 import { useApp } from "@/context/AppContext";
+import { api } from "@/lib/cliente/api";
 import type { Decisao, DetalheCuradoria, ItemFila } from "@/lib/curadoria/tipos";
 
 const NA_FILA = 4;
@@ -12,13 +13,6 @@ const FEITO: Record<Decisao, string> = { APROVAR: "aprovada", CORRIGIR: "corrigi
 const CAMPO =
   "w-full border border-slate-200 rounded-lg px-3.5 py-2 text-xs text-slate-800 focus:outline-none focus:border-[#008767]";
 const ROTULO = "block text-[10px] font-bold uppercase tracking-wider text-slate-500 mb-1";
-
-async function ler<T>(url: string, init?: RequestInit): Promise<T> {
-  const r = await fetch(url, { cache: "no-store", ...init });
-  const corpo = await r.json().catch(() => null);
-  if (!r.ok) throw Object.assign(new Error(corpo?.erro ?? "Não foi possível falar com o servidor."), { status: r.status });
-  return corpo as T;
-}
 
 export default function RevisaoPage() {
   const { currentUser, recarregarEstado, showToast } = useApp();
@@ -32,7 +26,7 @@ export default function RevisaoPage() {
 
   const carregarFila = useCallback(async () => {
     try {
-      const { itens } = await ler<{ itens: ItemFila[] }>("/api/curadoria");
+      const { itens } = await api<{ itens: ItemFila[] }>("/api/curadoria");
       setFila(itens);
       setErroFila(null);
     } catch (e) {
@@ -165,7 +159,7 @@ function PainelDecisao({ id, podeDecidir, podeExcluir, avisar, aoDecidir }: Pain
 
   useEffect(() => {
     const c = new AbortController();
-    ler<DetalheCuradoria>(`/api/curadoria/${id}`, { signal: c.signal })
+    api<DetalheCuradoria>(`/api/curadoria/${id}`, { signal: c.signal })
       .then(setDetalhe)
       .catch((e) => {
         if (!c.signal.aborted) setErro((e as Error).message);
@@ -181,10 +175,9 @@ function PainelDecisao({ id, podeDecidir, podeExcluir, avisar, aoDecidir }: Pain
     setEnviando(true);
     setErro(null);
     try {
-      const r = await ler<{ aviso: string | null }>(`/api/curadoria/${id}`, {
+      const r = await api<{ aviso: string | null }>(`/api/curadoria/${id}`, {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ decisao, motivo, ...(decisao === "CORRIGIR" && { novoValor }) }),
+        body: { decisao, motivo, ...(decisao === "CORRIGIR" && { novoValor }) },
       });
       avisar(`Resposta de ${detalhe.protocolo} ${FEITO[decisao]}.${r.aviso ? ` ${r.aviso}` : ""}`);
       await aoDecidir();

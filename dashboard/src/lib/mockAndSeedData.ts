@@ -88,16 +88,6 @@ export interface UsuarioSistema {
   status: "Ativo" | "Inativo";
 }
 
-export interface RegistroAuditoria {
-  id: number;
-  dataHora: string;
-  usuario: string;
-  acao: "Corrigiu" | "Sincronizou" | "Publicou" | "Inseriu" | "Excluiu";
-  item: string;
-  protocoloBadge?: string;
-  alteracao: string;
-}
-
 const SECOES_PADRAO: SecaoFormulario[] = [
   {
     id: 1,
@@ -418,7 +408,6 @@ interface AppDataStore {
   problemasImportacao: ProblemaImportacao[];
   importacaoConcluida: boolean;
   usuarios: UsuarioSistema[];
-  auditoria: RegistroAuditoria[];
 }
 
 function buildFormularioSeed(
@@ -625,51 +614,6 @@ const initialStore: AppDataStore = {
       email: "ana.souza@campo.oto.br",
       perfil: "Pesquisador",
       status: "Ativo",
-    },
-  ],
-  auditoria: [
-    {
-      id: 1,
-      dataHora: "26/10 11:02",
-      usuario: "Coordenação OTO",
-      acao: "Corrigiu",
-      item: "Pesquisa",
-      protocoloBadge: "0038/26",
-      alteracao: "idade: 500 → 50 · motivo: erro de digitação",
-    },
-    {
-      id: 2,
-      dataHora: "26/10 10:44",
-      usuario: "Ana Souza (app)",
-      acao: "Sincronizou",
-      item: "Pesquisas 0041 a 0046",
-      alteracao: "6 pesquisas enviadas",
-    },
-    {
-      id: 3,
-      dataHora: "25/10 17:20",
-      usuario: "Hugo Zanni",
-      acao: "Publicou",
-      item: "Formulário v3",
-      alteracao: "status: rascunho → ativo",
-    },
-    {
-      id: 4,
-      dataHora: "25/10 11:30",
-      usuario: "Estagiária",
-      acao: "Inseriu",
-      item: "Pesquisa",
-      protocoloBadge: "0041/26",
-      alteracao: "resposta recebida por telefone",
-    },
-    {
-      id: 5,
-      dataHora: "24/10 09:12",
-      usuario: "Coordenação OTO",
-      acao: "Excluiu",
-      item: "Pesquisa",
-      protocoloBadge: "0029/26",
-      alteracao: "duplicada · motivo registrado",
     },
   ],
 };
