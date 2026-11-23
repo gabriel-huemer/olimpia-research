@@ -19,10 +19,10 @@ import type {
 /** Com menos respostas que isso, uma cidade não é mostrada em público (RN10/RF21). */
 export const MINIMO_POR_CIDADE = 5;
 
-const pct = (n: number, total: number) => (total > 0 ? Math.round((n / total) * 100) : 0);
+export const pct = (n: number, total: number) => (total > 0 ? Math.round((n / total) * 100) : 0);
 const numero = (v: unknown) => (v === null || v === undefined ? null : Number(v));
 
-type Recorte = ReturnType<typeof montarFiltro>;
+export type Recorte = ReturnType<typeof montarFiltro>;
 
 /** Junta as respostas válidas de uma pergunta ao recorte. `codigo` vem sempre do código, nunca do usuário. */
 const respostasDe = (r: Recorte, codigo: string, joins = "") =>
@@ -33,7 +33,7 @@ const respostasDe = (r: Recorte, codigo: string, joins = "") =>
     WHERE ${r.where}`;
 
 /** Quantas pesquisas marcaram cada opção, sobre quantas responderam a pergunta. */
-async function distribuicao(r: Recorte, codigo: string): Promise<Fatia[]> {
+export async function distribuicao(r: Recorte, codigo: string): Promise<Fatia[]> {
   const { rows } = await getDbPool().query(
     `WITH x AS (SELECT p.id, coalesce(o.rotulo, 'Outro') AS rotulo, coalesce(o.ordem, 999) AS ordem
                 ${respostasDe(r, codigo, "LEFT JOIN oto.opcao o ON o.id = rv.opcao_id")})

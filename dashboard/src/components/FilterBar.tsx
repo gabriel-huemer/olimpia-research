@@ -1,8 +1,9 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useCallback, useState } from "react";
 import Link from "next/link";
 import { Download, Globe } from "lucide-react";
+import { JanelaExportar } from "@/components/relatorio/JanelaExportar";
 import { SeletorPeriodo } from "@/components/SeletorPeriodo";
 import { useApp } from "@/context/AppContext";
 
@@ -11,8 +12,9 @@ export function AnalyticsHeaderActions({
 }: {
   abaTitulo: string;
 }) {
-  const { filters, setFilter, exportReportPdfOrExcel, canManageUsers, opcoesFiltro } = useApp();
-  const [showExportMenu, setShowExportMenu] = useState(false);
+  const { filters, setFilter, exportarAba, canManageUsers, opcoesFiltro } = useApp();
+  const [exportando, setExportando] = useState(false);
+  const fechar = useCallback(() => setExportando(false), []);
 
   return (
     <div className="flex flex-wrap items-center gap-2.5">
@@ -29,42 +31,16 @@ export function AnalyticsHeaderActions({
         </Link>
       )}
 
-      {/* Botão Exportar relatório (RF24 / UC16) */}
-      <div className="relative">
-        <button
-          type="button"
-          onClick={() => setShowExportMenu((v) => !v)}
-          className="inline-flex items-center gap-2 bg-[#008767] hover:bg-[#006e54] text-white rounded-lg px-4 py-2 text-xs font-semibold shadow-2xs transition"
-        >
-          <Download className="w-3.5 h-3.5" />
-          <span>Exportar relatório</span>
-        </button>
-
-        {showExportMenu && (
-          <div className="absolute right-0 mt-1.5 w-48 bg-white border border-slate-200 rounded-xl shadow-lg p-1.5 z-40 text-xs">
-            <button
-              type="button"
-              onClick={() => {
-                setShowExportMenu(false);
-                exportReportPdfOrExcel(abaTitulo, "XLSX");
-              }}
-              className="w-full text-left px-3 py-2 rounded-lg hover:bg-slate-100 font-medium text-slate-700"
-            >
-              Planilha Excel (.xlsx)
-            </button>
-            <button
-              type="button"
-              onClick={() => {
-                setShowExportMenu(false);
-                exportReportPdfOrExcel(abaTitulo, "PDF");
-              }}
-              className="w-full text-left px-3 py-2 rounded-lg hover:bg-slate-100 font-medium text-slate-700"
-            >
-              Relatório em PDF (Imprimir)
-            </button>
-          </div>
-        )}
-      </div>
+      {/* Exportar relatório (RF24 / UC16) */}
+      <button
+        type="button"
+        onClick={() => setExportando(true)}
+        className="inline-flex items-center gap-2 bg-[#008767] hover:bg-[#006e54] text-white rounded-lg px-4 py-2 text-xs font-semibold shadow-2xs transition"
+      >
+        <Download className="w-3.5 h-3.5" />
+        <span>Exportar relatório</span>
+      </button>
+      {exportando && <JanelaExportar filtros={filters} aoExcel={() => exportarAba(abaTitulo)} aoFechar={fechar} />}
     </div>
   );
 }
