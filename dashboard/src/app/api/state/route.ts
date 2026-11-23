@@ -13,8 +13,6 @@ const AREA_DA_ACAO: Record<string, Area> = {
   CRIAR_FORMULARIO: "coleta",
   TOGGLE_ITEM_PUBLICACAO: "sistema",
   PUBLICAR_SELECAO_SITE: "sistema",
-  RESOLVER_PROBLEMA_IMPORTACAO: "sistema",
-  CONCLUIR_IMPORTACAO: "sistema",
 };
 
 /** Devolve só as coleções das áreas que o perfil enxerga. */
@@ -34,8 +32,6 @@ async function estadoVisivel(usuario: UsuarioSessao, extra: Record<string, unkno
         publicacaoItens: store.publicacaoItens,
         ultimaPublicacao: store.ultimaPublicacao,
         metodoPublicacao: store.metodoPublicacao,
-        problemasImportacao: store.problemasImportacao,
-        importacaoConcluida: store.importacaoConcluida,
       }),
     },
     { headers: { "cache-control": "no-store" } }
@@ -158,25 +154,6 @@ export async function POST(request: NextRequest) {
       if (metodo) store.metodoPublicacao = metodo;
       store.ultimaPublicacao = `${nowShort} por ${usuario}`;
       const qtdPublicados = store.publicacaoItens.filter((i) => i.publico).length;
-      break;
-    }
-
-    case "RESOLVER_PROBLEMA_IMPORTACAO": {
-      const { id } = payload;
-      const prob = store.problemasImportacao.find((p) => p.id === Number(id));
-      if (prob) {
-        prob.resolvido = true;
-        prob.resolucao = prob.acaoTexto;
-      }
-      break;
-    }
-
-    case "CONCLUIR_IMPORTACAO": {
-      const { arquivoNome = "demanda_2024.xlsx" } = payload || {};
-      store.importacaoConcluida = true;
-      store.problemasImportacao.forEach((p) => {
-        p.resolvido = true;
-      });
       break;
     }
   }

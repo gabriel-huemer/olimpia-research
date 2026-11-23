@@ -4,7 +4,6 @@ import React, { createContext, useContext, useState, useEffect, useCallback } fr
 import type {
   FormularioItem,
   ItemPublicacao,
-  ProblemaImportacao,
 } from "@/lib/mockAndSeedData";
 import { usePathname } from "next/navigation";
 import { abaDaRota, paineisVazios, type AnalyticsFilters, type OpcoesFiltro, type Paineis } from "@/lib/paineis-types";
@@ -39,8 +38,6 @@ interface AppContextValue {
   publicacaoItens: ItemPublicacao[];
   ultimaPublicacao: string;
   metodoPublicacao: string;
-  problemasImportacao: ProblemaImportacao[];
-  importacaoConcluida: boolean;
   /** Relê /api/state agora, sem esperar os 15 s. */
   recarregarEstado: () => Promise<void>;
   dispatchAction: (action: string, payload?: Record<string, unknown>) => Promise<void>;
@@ -72,8 +69,6 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
   const [publicacaoItens, setPublicacaoItens] = useState<ItemPublicacao[]>([]);
   const [ultimaPublicacao, setUltimaPublicacao] = useState("Nenhuma");
   const [metodoPublicacao, setMetodoPublicacao] = useState("Incorporar no site (iframe/link)");
-  const [problemasImportacao, setProblemasImportacao] = useState<ProblemaImportacao[]>([]);
-  const [importacaoConcluida, setImportacaoConcluida] = useState(false);
   const [toastMessage, setToastMessage] = useState<string | null>(null);
 
   const showToast = useCallback((msg: string) => {
@@ -94,8 +89,6 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
     setMetodoPublicacao(
       (data.metodoPublicacao as string) || "Incorporar no site (iframe/link)"
     );
-    setProblemasImportacao((data.problemasImportacao as ProblemaImportacao[]) || []);
-    setImportacaoConcluida(Boolean(data.importacaoConcluida));
   }, []);
 
   const fetchState = useCallback(async () => {
@@ -251,8 +244,6 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
         publicacaoItens,
         ultimaPublicacao,
         metodoPublicacao,
-        problemasImportacao,
-        importacaoConcluida,
         recarregarEstado: fetchState,
         dispatchAction,
         exportToExcel,

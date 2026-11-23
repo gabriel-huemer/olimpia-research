@@ -37,15 +37,6 @@ export interface ItemPublicacao {
   publico: boolean;
 }
 
-export interface ProblemaImportacao {
-  id: number;
-  linha: number;
-  problema: string;
-  acaoTexto: string;
-  resolvido: boolean;
-  resolucao?: string;
-}
-
 export interface UsuarioSistema {
   id: string;
   nome: string;
@@ -369,8 +360,6 @@ interface AppDataStore {
   publicacaoItens: ItemPublicacao[];
   ultimaPublicacao: string;
   metodoPublicacao: string;
-  problemasImportacao: ProblemaImportacao[];
-  importacaoConcluida: boolean;
   usuarios: UsuarioSistema[];
 }
 
@@ -443,23 +432,6 @@ const initialStore: AppDataStore = {
   ],
   ultimaPublicacao: "Nenhuma",
   metodoPublicacao: "Incorporar no site (iframe/link)",
-  problemasImportacao: [
-    {
-      id: 1,
-      linha: 204,
-      problema: 'Cidade não encontrada: "Rib. Preto"',
-      acaoTexto: "Corrigir para Ribeirão Preto",
-      resolvido: false,
-    },
-    {
-      id: 2,
-      linha: 519,
-      problema: "Idade vazia",
-      acaoTexto: "Importar como sinalizada",
-      resolvido: false,
-    },
-  ],
-  importacaoConcluida: false,
   usuarios: [
     {
       id: "u-1",

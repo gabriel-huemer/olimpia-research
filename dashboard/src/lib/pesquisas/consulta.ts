@@ -117,6 +117,6 @@ export async function exportarPesquisas(q: URLSearchParams): Promise<Array<Recor
     Origem: l.origem,
     Situacao: l.situacao,
     ...Object.fromEntries(codigos.map((c) => [c, l.respostas?.[c] ?? ""])),
-    ...Object.fromEntries(itens.map((i) => [i.nome, l.avaliacoes?.[i.codigo] ?? ""])),
+    ...Object.fromEntries(itens.map((i) => [`Avaliação [${i.nome}]`, l.avaliacoes?.[i.codigo] ?? ""])),
   }));
 }

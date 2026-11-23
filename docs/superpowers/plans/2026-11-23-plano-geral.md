@@ -19,7 +19,7 @@ Frente que falhar 3 vezes pela mesma causa fica em PR aberto e o plano segue.
 - [x] 3. Operadores e Visão geral no banco
 - [x] 4. App: login do pesquisador validado no servidor e cancelar entrevista (RF23)
 - [x] 5. Pesquisas: lista com filtros, inserção manual (RF17)
-- [ ] 6. Importação de planilhas históricas (RF09)
+- [x] 6. Importação de planilhas históricas (RF09)
 - [ ] 7. Publicação de resultados (RF21)
 - [ ] 8. Formulários e versões no banco (RF05); app baixa o publicado
 - [ ] 9. Conta (trocar a própria senha), limpeza dos dados de exemplo, SonarCloud
@@ -50,3 +50,9 @@ Frente que falhar 3 vezes pela mesma causa fica em PR aberto e o plano segue.
   Migrações V007 e V008 (origem MANUAL, canal, autor, protocolo `MAN-0001`).
 - Decisões padrão: na digitação manual nenhuma pergunta é obrigatória; valor fora da faixa entra sinalizado e vai para a revisão;
   quem tem Coleta pode inserir; exportação limitada a 5.000 linhas.
+### Frente 6 — Importação
+- Feito: .xlsx e .csv, com prévia sem gravar, erros por linha, duplicatas ignoradas e gravação em uma transação só. Reconhece a
+  planilha de tabulação de 2026 (layout do seed do app) e um modelo baixável. 500 linhas completas levaram 15 s.
+- Decisões padrão: linha com erro não entra; valor fora da faixa entra sinalizado; arquivo repetido é recusado; limite de 3.000
+  linhas e 8 MB; sem coluna de data, vale a data de chegada; não há desfazer.
+- Não verificado: nenhuma planilha real do cliente foi testada, porque nenhuma foi entregue.
