@@ -103,11 +103,8 @@ cat .usuarios-teste.oto.env      # mostra e-mails e senhas
 **Testes:** os de integração criam dados e mexem na curadoria; rode só em um banco descartável (ex.: `oto_teste`), nunca
 no `oto` nem no `oto_demo`.
 
-### Decisões em aberto
-
-- **Quem pode fazer login:** manter os perfis personalizados ou liberar só para o administrador?
-- **Banco demo:** o `oto_demo` começa vazio em cada máquina; antes do vídeo, carregue as 700 pesquisas fictícias
-  ([oto-db/demo/README.md](oto-db/demo/README.md)).
+**Banco demo:** o `oto_demo` começa vazio em cada máquina; antes do vídeo, carregue as 700 pesquisas fictícias
+([oto-db/demo/README.md](oto-db/demo/README.md)).
 
 ## Melhoria futura: administração só na rede certa (Tailscale)
 
