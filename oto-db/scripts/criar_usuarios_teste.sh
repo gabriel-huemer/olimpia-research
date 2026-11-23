@@ -12,7 +12,7 @@
 set -euo pipefail
 export PGOPTIONS="${PGOPTIONS:--c client_min_messages=warning}"
 
-gerar() { head -c 18 /dev/urandom | base64 | tr -d '/+=' | head -c 20; printf 'A9'; }
+gerar() { head -c 18 /dev/urandom | od -An -vtx1 | tr -d ' \n'; printf 'A9'; }  # hex: nunca tem quebra de linha
 export TEST_ADMIN_EMAIL="${TEST_ADMIN_EMAIL:-admin.teste@oto.local}"
 export TEST_VIS_EMAIL="${TEST_VIS_EMAIL:-visualizador.teste@oto.local}"
 export TEST_PESQ_EMAIL="${TEST_PESQ_EMAIL:-pesquisador.teste@oto.local}"
