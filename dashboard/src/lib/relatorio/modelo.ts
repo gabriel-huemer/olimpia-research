@@ -61,7 +61,9 @@ export const curto = (s: string, max = 34) => {
 const barras = (titulo: string, fatias: Fatia[], limite: number, nota?: string): Bloco => {
   const teto = Math.max(1, ...fatias.map((f) => f.percentual));
   const cortada = fatias.length > limite;
-  const lista = cortada ? [...fatias].sort((a, b) => b.n - a.n).slice(0, limite) : fatias;
+  // Ficam os maiores, na ordem original (faixas de renda, prazo etc. têm sequência própria).
+  const maiores = new Set([...fatias].sort((a, b) => b.n - a.n).slice(0, limite));
+  const lista = cortada ? fatias.filter((f) => maiores.has(f)) : fatias;
   const aviso = cortada ? `${limite} maiores de ${fatias.length}` : undefined;
   return {
     tipo: "barras", titulo, nota: [nota, aviso].filter(Boolean).join(" · ") || undefined,
@@ -189,7 +191,7 @@ export function montarModelo(versao: Versao, d: DadosRelatorio): Modelo {
           [[{ tipo: "kpis", itens: [kpi.perm, kpi.gasto, kpi.retorno, kpi.primeira] }]],
           [[serie("colunas", "Pesquisas", "n", inteiro, 112)], [barras("Estados de origem", comOutros(d.estados, 5), 6)]],
           [[porConceito("Serviços: maior % de Ótimo", "otimo", "verde")], [porConceito("Serviços: maior % de Ruim", "ruim", "vermelho")]],
-          [[barras("Antecedência da decisão", p.impacto.antecedencia, 5)], [barras("Com quem viaja", d.comQuem, 5, "múltipla escolha")]],
+          [[barras("Antecedência da decisão", p.impacto.antecedencia, 8)], [barras("Com quem viaja", d.comQuem, 8, "múltipla escolha")]],
           [[barras("Motivos da viagem", p.perfil.motivos, 4, "múltipla escolha")], [barras("Meio de transporte", p.atracoes.transporte, 4)]],
           [[barras("Hospedagem", p.impacto.hospedagem, 4)], [maisAvaliadas(4)]]),
       ],

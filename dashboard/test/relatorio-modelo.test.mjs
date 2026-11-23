@@ -63,9 +63,15 @@ test("nome do arquivo: mês, ano ou intervalo", () => {
   assert.equal(nome("2026-11-01", "2026-11-10"), "OTO_Resumo_2026-11-01_a_2026-11-10.pdf");
 });
 
-test("lista cortada mostra os maiores e avisa quantos existem", () => {
-  const estadoCivil = ["A", "B", "C", "D", "E", "F", "G", "H"].map((rotulo, i) => ({ rotulo, n: i, percentual: i }));
-  const b = blocos(montarModelo("relatorio", { ...vazio, paineis: { ...vazio.paineis, perfil: { ...vazio.paineis.perfil, estadoCivil } } })).find((x) => x.titulo === "Estado civil");
-  assert.equal(b.itens[0].rotulo, "H");
-  assert.match(b.nota, /7 maiores de 8/);
+test("lista cortada fica com os maiores, na ordem original, e avisa quantos existem", () => {
+  const renda = [5, 1, 9, 8, 7, 6, 2, 4, 3].map((n, i) => ({ rotulo: `faixa ${i}`, n, percentual: n }));
+  const b = blocos(montarModelo("relatorio", { ...vazio, paineis: { ...vazio.paineis, impacto: { ...vazio.paineis.impacto, renda } } })).find((x) => x.titulo === "Renda familiar");
+  assert.deepEqual(b.itens.map((x) => x.rotulo), [0, 2, 3, 4, 5, 7, 8].map((i) => `faixa ${i}`));
+  assert.match(b.nota, /7 maiores de 9/);
+});
+
+test("resumo mostra a antecedência completa, em ordem", () => {
+  const antecedencia = [1, 8, 3, 7, 2, 6, 4, 5].map((n, i) => ({ rotulo: `a${i}`, n, percentual: n }));
+  const b = blocos(montarModelo("resumo", { ...vazio, paineis: { ...vazio.paineis, impacto: { ...vazio.paineis.impacto, antecedencia } } })).find((x) => x.titulo === "Antecedência da decisão");
+  assert.deepEqual(b.itens.map((x) => x.rotulo), antecedencia.map((x) => x.rotulo));
 });

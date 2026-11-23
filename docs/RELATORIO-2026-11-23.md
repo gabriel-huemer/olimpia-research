@@ -30,7 +30,7 @@ Decidido pelo Hugo: PDF nas três, só números, qualquer visitante exporta. Com
 sugeridas. Também ficaram fora o texto livre "o que falta" (pode identificar pessoas) e o gasto por viagem (fórmula não validada).
 Atrações usam nota de 1 a 5 e "% que avaliou", como na tela. A opção "PDF (imprimir)" saiu; a planilha Excel da aba continua.
 Conferido com `oto_demo` em 1366 e 390 px (mês, ano, recorte vazio) e com listas cheias: 1, 8 e 12 páginas, sem corte.
-Testes: 95 unitários, 108 de integração, 22 de acesso.
+Testes: 96 unitários, 108 de integração, 22 de acesso.
 
 ## O que precisa do Hugo
 
