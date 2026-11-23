@@ -234,4 +234,25 @@ class Questionnaire {
     int sectionId,
     Map<String, Object?> answers,
   ) => questionsOf(sectionId).where((q) => isVisible(q, answers)).toList();
+
+  /// Day use (0 nights) answers the stay: the dates of the same card are not required.
+  bool _waivedByDayUse(Question q, Map<String, Object?> answers) =>
+      q.type == QuestionType.date &&
+      questionsOf(q.sectionId).any(
+        (n) =>
+            n.type == QuestionType.nights &&
+            n.effectiveCardId == q.effectiveCardId &&
+            answers[n.key] == 0,
+      );
+
+  /// Visible questions still blank. Counters start at their minimum value, so they count as answered.
+  List<Question> unansweredOf(int sectionId, Map<String, Object?> answers) =>
+      visibleQuestionsOf(sectionId, answers)
+          .where(
+            (q) =>
+                q.type != QuestionType.counter &&
+                !hasAnswer(answers[q.key]) &&
+                !_waivedByDayUse(q, answers),
+          )
+          .toList();
 }
