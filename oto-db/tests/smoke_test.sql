@@ -30,8 +30,8 @@ END $$;
 
 -- ===== 1. Estrutura
 SELECT pg_temp.afirma((SELECT count(*) FROM information_schema.tables
-        WHERE table_schema='oto' AND table_type='BASE TABLE' AND table_name <> 'schema_migrations') = 31,
-        '31 tabelas do modelo');
+        WHERE table_schema='oto' AND table_type='BASE TABLE' AND table_name <> 'schema_migrations') = 32,
+        '32 tabelas do modelo');
 SELECT pg_temp.afirma((SELECT count(*) FROM uf) = 27, '27 UFs carregadas');
 SELECT pg_temp.afirma((SELECT count(*) FROM pais) >= 249, 'países carregados');
 SELECT pg_temp.afirma((SELECT count(*) FROM pg_trigger WHERE tgname = 'trg_auditoria') = 21,
@@ -104,6 +104,7 @@ SELECT pg_temp.permite('oto_readonly', 'SELECT count(*) FROM pesquisa', 'ler pes
 SELECT pg_temp.permite('oto_readonly', 'SELECT count(*) FROM vw_resposta_valida', 'ler view de respostas válidas');
 SELECT pg_temp.nega('oto_readonly', 'SELECT senha_hash FROM usuario', 'ler senha_hash');
 SELECT pg_temp.nega('oto_readonly', 'SELECT codigo_acesso FROM usuario', 'ler códigos de acesso');
+SELECT pg_temp.nega('oto_readonly', 'SELECT codigo FROM codigo_antigo', 'ler códigos antigos');
 SELECT pg_temp.nega('oto_readonly', 'SELECT * FROM log_auditoria', 'ler auditoria');
 SELECT pg_temp.nega('oto_readonly', $q$INSERT INTO local_coleta (nome) VALUES ('x')$q$, 'escrever');
 

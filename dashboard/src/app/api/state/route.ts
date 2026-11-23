@@ -9,9 +9,6 @@ import { podeAcessar, type Area } from "@/lib/auth/permissoes";
 // Cada ação pertence a uma área; ação fora desta lista é recusada.
 const AREA_DA_ACAO: Record<string, Area> = {
   INSERIR_PESQUISA_MANUAL: "coleta",
-  CRIAR_OPERADOR: "coleta",
-  REDEFINIR_CODIGO_OPERADOR: "coleta",
-  ALTERNAR_STATUS_OPERADOR: "coleta",
   SALVAR_PERGUNTA_FORMULARIO: "coleta",
   ADICIONAR_SECAO_FORMULARIO: "coleta",
   PUBLICAR_FORMULARIO: "coleta",
@@ -34,7 +31,6 @@ async function estadoVisivel(usuario: UsuarioSessao, extra: Record<string, unkno
       ...(coleta && {
         pendentesRevisao: await contarPendentes(),
         formularios: store.formularios,
-        operadores: store.operadores,
         pesquisas: await listarPesquisas(),
       }),
       ...(sistema && {
@@ -97,48 +93,6 @@ export async function POST(request: NextRequest) {
       const formAtivo = store.formularios.find((f) => f.status === "Ativo");
       if (formAtivo) formAtivo.respostas += 1;
 
-      break;
-    }
-
-    case "CRIAR_OPERADOR": {
-      const { nome, localHabitual } = payload;
-      const randomCode = `OTO-${Math.floor(100 + Math.random() * 899)}`;
-      const novoOp = {
-        id: `op-${Date.now()}`,
-        nome,
-        codigo: randomCode,
-        coletas7Dias: 0,
-        coletas30Dias: 0,
-        alertas7Dias: 0,
-        taxaAlerta: 0,
-        ultimoEnvio: "agora",
-        statusEnvio: "normal" as const,
-        localHabitual: localHabitual || "Thermas dos Laranjais",
-        mediaDiaria: 0,
-        serieDiaria: [0, 0, 0, 0, 0, 0, 0],
-        ativo: true,
-      };
-      store.operadores.push(novoOp);
-      break;
-    }
-
-    case "REDEFINIR_CODIGO_OPERADOR": {
-      const { id } = payload;
-      const op = store.operadores.find((o) => o.id === id);
-      if (op) {
-        const codigoAntigo = op.codigo;
-        const novoCodigo = `OTO-${Math.floor(100 + Math.random() * 899)}`;
-        op.codigo = novoCodigo;
-      }
-      break;
-    }
-
-    case "ALTERNAR_STATUS_OPERADOR": {
-      const { id } = payload;
-      const op = store.operadores.find((o) => o.id === id);
-      if (op) {
-        op.ativo = !op.ativo;
-      }
       break;
     }
 

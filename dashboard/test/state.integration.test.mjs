@@ -19,26 +19,11 @@ const acao = async (action, payload) => {
 
 test("GET /api/state devolve as coleções que as telas usam", async () => {
   const s = await estado();
-  for (const k of ["dbConnected", "pendentesRevisao", "pesquisas", "operadores", "formularios"]) {
+  for (const k of ["dbConnected", "pendentesRevisao", "pesquisas", "formularios"]) {
     assert.ok(k in s, `falta ${k}`);
   }
   assert.equal(typeof s.dbConnected, "boolean");
   assert.ok(Array.isArray(s.pesquisas));
-});
-
-test("operadores: criar gera código OTO-NNN ativo; alternar e redefinir registram auditoria", async () => {
-  const nome = `Operador Teste ${Date.now()}`;
-  let r = await acao("CRIAR_OPERADOR", { nome, localHabitual: "Hot Beach Olímpia" });
-  const op = r.corpo.operadores.find((o) => o.nome === nome);
-  assert.ok(op);
-  assert.match(op.codigo, /^OTO-\d{3}$/);
-  assert.equal(op.ativo, true);
-  assert.equal(op.localHabitual, "Hot Beach Olímpia");
-
-  r = await acao("ALTERNAR_STATUS_OPERADOR", { id: op.id });
-  assert.equal(r.corpo.operadores.find((o) => o.id === op.id).ativo, false);
-
-  r = await acao("REDEFINIR_CODIGO_OPERADOR", { id: op.id });
 });
 
 test("ação desconhecida é recusada (400) e não altera nada", async () => {

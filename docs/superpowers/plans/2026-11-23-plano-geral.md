@@ -16,7 +16,7 @@ Frente que falhar 3 vezes pela mesma causa fica em PR aberto e o plano segue.
 ## Frentes
 - [x] 1. Análises: as quatro abas e os filtros lidos do banco
 - [x] 2. Auditoria lida de `log_auditoria`
-- [ ] 3. Operadores e Visão geral no banco
+- [x] 3. Operadores e Visão geral no banco
 - [ ] 4. App: login do pesquisador validado e token por pesquisador
 - [ ] 5. Pesquisas: lista com filtros, inserção manual (RF17)
 - [ ] 6. Importação de planilhas históricas (RF09)
@@ -34,3 +34,8 @@ Frente que falhar 3 vezes pela mesma causa fica em PR aberto e o plano segue.
 ### Frente 2 — Auditoria
 - Feito: lê `log_auditoria`, com filtros por usuário, ação, período e protocolo, paginação e exportação.
 - Decisões padrão: só a área Sistema consulta; senha, hash, token e código de acesso nunca aparecem.
+### Frente 3 — Operadores e Visão geral
+- Feito: cadastro, código, ativar/desativar, desempenho e indicadores lidos do banco. Migração V006 (`codigo_antigo`).
+- Decisões padrão: só a área Sistema cadastra e vê o código; atraso = mais de 1 dia sem envio; após redefinir, o código antigo
+  ainda identifica pesquisas que estavam na fila; a meta diária de 60 saiu (não há meta cadastrada).
+- Pendência: rodar `make migrate` nos bancos `oto` e `oto_demo` (aqui só o `oto_teste` foi migrado).
