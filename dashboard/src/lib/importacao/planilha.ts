@@ -89,7 +89,8 @@ function lerXlsx(b: Buffer): Celula[][] {
 function lerCsv(texto: string): Celula[][] {
   const t = texto.replace(/^﻿/, "");
   const primeira = t.split("\n", 1)[0];
-  const sep = [";", "\t", ","].reduce((a, c) => (primeira.split(c).length > primeira.split(a).length ? c : a));
+  const contar = (s: string) => primeira.split(s).length;
+  const sep = ["\t", ","].reduce((a, c) => (contar(c) > contar(a) ? c : a), ";");
   const linhas: Celula[][] = [];
   let linha: string[] = [];
   let campo = "";

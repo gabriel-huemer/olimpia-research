@@ -41,7 +41,8 @@ Frente que falhar 3 vezes pela mesma causa fica em PR aberto e o plano segue.
 - Pendência: rodar `make migrate` nos bancos `oto` e `oto_demo` (aqui só o `oto_teste` foi migrado).
 ### Frente 4 — App
 - Feito: o código é conferido em `/api/v1/pesquisador`; depois da primeira entrada funciona sem internet; código desativado ou
-  trocado para de entrar; cancelar entrevista apaga o rascunho (RF23).
+  trocado para de entrar; cancelar entrevista apaga o rascunho.
+- Incompleto: o RF23 pede que a cancelada fique registrada com o motivo; isso ficou para a frente 9.
 - Decisões padrão: com servidor configurado, a lista de demonstração não serve para entrar; 20 códigos errados em 15 minutos
   bloqueiam o IP.
 - Cortado: token por pesquisador. O `SYNC_API_TOKEN` continua igual para todos os aparelhos.

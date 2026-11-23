@@ -130,7 +130,7 @@ async function ler(arquivo: string, bytes: Buffer): Promise<Leitura> {
     }
     const local = mapa.colunaLocal === null ? null : String(celulas[mapa.colunaLocal] ?? "").trim() || null;
     // Inclui a célula bruta da data (com hora): dois turistas iguais no mesmo dia não são duplicata.
-    const base = JSON.stringify([celulas[colunaData], local, respostas.map((r) => [r.chave, norm(r.valor)]).sort()]);
+    const base = JSON.stringify([celulas[colunaData], local, respostas.map((r) => `${r.chave}=${norm(r.valor)}`).sort((x, y) => x.localeCompare(y))]);
     candidatas.push({ numero, dia, local, respostas, alertas, hash: createHash("sha256").update(base).digest("hex") });
   }
   const jaGravadas = new Set(
