@@ -78,7 +78,7 @@ MSYS_NO_PATHCONV=1 docker exec -e PGUSER=oto_admin -e PGDATABASE=oto_demo oto-db
 cp .env.demo.local .env.local && npm run dev
 
 # c) em outro terminal, popular via o mesmo endpoint do app (em oto-db/)
-python3 demo/popular_demo.py --url http://localhost:3000 --total 700
+python3 demo/popular_demo.py --porta 3000 --total 700
 ```
 Resultado: Panorama e lista de Pesquisas cheios (jan a nov/2026), 10 respostas sinalizadas para a curadoria, protocolos demo a partir de `OTO482-1001`. Detalhes em `oto-db/demo/README.md`. Para refazer do zero: parar o painel, `docker exec oto-db psql -U oto_admin -d postgres -c "drop database oto_demo"` e repetir a)–c).
 
