@@ -63,3 +63,5 @@ Frente que falhar 3 vezes pela mesma causa fica em PR aberto e o plano segue.
 - Decisões padrão: nada publicado; indicador com menos de 5 respostas e texto livre nunca aparecem.
 - Decisão do Hugo: as Análises continuam públicas, como já combinado, mas o RF21 diz que nada aparece sem aprovação. Ou as
   Análises passam a exigir login, ou o RF21 vale só para `/publico`. Nada foi escondido.
+- **Desvio:** o PR #13 foi mergeado sem o CI ter rodado (só SonarCloud e os testes locais). O script de merge aceitava a lista de
+  checks vazia como verde; agora exige os 5 verdes. O CI completo da `stage` com o #13 foi conferido no PR seguinte, que traz este registro.
