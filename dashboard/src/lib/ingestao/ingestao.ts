@@ -6,8 +6,8 @@ import {
   converterValor,
   ufDeEstado,
   type Opcao,
-  type TipoPergunta,
 } from "./conversao";
+import type { PerguntaValidavel } from "./validacao";
 
 // Ingestão do lote de pesquisas do app (UC05 / RF08): grava no PostgreSQL de forma idempotente.
 
@@ -35,15 +35,12 @@ class Rejeicao extends Error {}
 
 const UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
 
-interface Pergunta {
+export interface Pergunta extends PerguntaValidavel {
   id: number;
-  codigo: string;
-  tipo: TipoPergunta;
   grupo: string | null;
-  opcoes: Opcao[];
   regraId: number | null;
 }
-interface Catalogo {
+export interface Catalogo {
   versaoId: number;
   perguntas: Map<string, Pergunta>;
   itens: Map<string, { id: number; grupo: string }>;
@@ -56,7 +53,7 @@ interface Usuario {
 
 let municipiosCache: Map<string, number> | null = null;
 
-async function carregarMunicipios(): Promise<Map<string, number>> {
+export async function carregarMunicipios(): Promise<Map<string, number>> {
   if (municipiosCache) return municipiosCache;
   const { rows } = await getMobilePool().query("SELECT codigo_ibge, nome, uf_sigla FROM oto.municipio");
   const mapa = new Map<string, number>();
@@ -65,7 +62,12 @@ async function carregarMunicipios(): Promise<Map<string, number>> {
   return mapa;
 }
 
-async function carregarCatalogo(versao: number | undefined): Promise<Catalogo> {
+function faixaDe(regra: { parametros?: { min?: number | null; max?: number | null }; mensagem: string } | undefined) {
+  if (!regra) return null;
+  return { min: regra.parametros?.min ?? null, max: regra.parametros?.max ?? null, mensagem: regra.mensagem };
+}
+
+export async function carregarCatalogo(versao: number | undefined): Promise<Catalogo> {
   const db = getMobilePool();
   const v = await db.query(
     `SELECT id FROM oto.formulario_versao WHERE publicada AND ($1::int IS NULL OR numero = $1)
@@ -79,7 +81,7 @@ async function carregarCatalogo(versao: number | undefined): Promise<Catalogo> {
 
   const [pg, op, rg, it] = await Promise.all([
     db.query(
-      `SELECT p.id, p.codigo, p.tipo, p.grupo_itens FROM oto.pergunta p
+      `SELECT p.id, p.codigo, p.enunciado, p.tipo, p.grupo_itens FROM oto.pergunta p
        JOIN oto.secao s ON s.id = p.secao_id WHERE s.formulario_versao_id = $1`,
       [versaoId]
     ),
@@ -90,7 +92,7 @@ async function carregarCatalogo(versao: number | undefined): Promise<Catalogo> {
       [versaoId]
     ),
     db.query(
-      "SELECT DISTINCT ON (pergunta_id) pergunta_id, id FROM oto.regra_validacao WHERE ativa ORDER BY pergunta_id, id"
+      "SELECT DISTINCT ON (pergunta_id) pergunta_id, id, parametros, mensagem FROM oto.regra_validacao WHERE ativa ORDER BY pergunta_id, id"
     ),
     db.query("SELECT id, codigo, tipo FROM oto.item_avaliacao WHERE codigo IS NOT NULL"),
   ]);
@@ -101,7 +103,7 @@ async function carregarCatalogo(versao: number | undefined): Promise<Catalogo> {
     lista.push({ id: o.id, rotulo: o.rotulo });
     opcoes.set(o.pergunta_id, lista);
   }
-  const regras = new Map<number, number>(rg.rows.map((r) => [r.pergunta_id, r.id]));
+  const regras = new Map(rg.rows.map((r) => [r.pergunta_id, r]));
   const perguntas = new Map<string, Pergunta>();
   for (const p of pg.rows) {
     perguntas.set(p.codigo, {
@@ -110,7 +112,9 @@ async function carregarCatalogo(versao: number | undefined): Promise<Catalogo> {
       tipo: p.tipo,
       grupo: p.grupo_itens,
       opcoes: opcoes.get(p.id) ?? [],
-      regraId: regras.get(p.id) ?? null,
+      enunciado: p.enunciado,
+      regraId: regras.get(p.id)?.id ?? null,
+      faixa: faixaDe(regras.get(p.id)),
     });
   }
   return {
@@ -246,7 +250,6 @@ async function gravarPesquisa(
     ? (await c.query("SELECT id FROM oto.local_coleta WHERE nome = $1", [p.local])).rows[0]?.id
     : null;
   const respostas = (p.respostas ?? []).filter((r) => r && typeof r.chave === "string");
-  const porChave = new Map(respostas.map((r) => [r.chave, r.valor]));
   const sinais = (p.sinalizacoes ?? []).filter((s) => s && cat.perguntas.has(s.chave));
 
   const ins = await c.query(
@@ -270,6 +273,20 @@ async function gravarPesquisa(
   );
   if (!ins.rowCount) throw new Rejeicao(`Protocolo ${protocolo} já usado por outra pesquisa`);
 
+  await gravarRespostas(c, cat, municipios, p.id, respostas, sinais);
+  return "aceita";
+}
+
+/** Grava as respostas e os alertas de uma pesquisa já inserida (app, digitação manual e importação). */
+export async function gravarRespostas(
+  c: PoolClient,
+  cat: Catalogo,
+  municipios: Map<string, number>,
+  pesquisaId: string,
+  respostas: Array<{ chave: string; valor: unknown }>,
+  sinais: NonNullable<PesquisaPayload["sinalizacoes"]>
+): Promise<void> {
+  const porChave = new Map(respostas.map((r) => [r.chave, r.valor]));
   const ctx = { municipios, ufResidencia: ufDeEstado(porChave.get("estado")) };
   const suspeitas = new Set(sinais.map((s) => s.chave));
   const gravadas = new Map<string, number>(); // chave -> resposta.id
@@ -285,7 +302,7 @@ async function gravarPesquisa(
       if (!respostaId) {
         respostaId = (
           await c.query("INSERT INTO oto.resposta (pesquisa_id, pergunta_id) VALUES ($1, $2) RETURNING id", [
-            p.id,
+            pesquisaId,
             matriz.id,
           ])
         ).rows[0].id as number;
@@ -307,7 +324,7 @@ async function gravarPesquisa(
     const resp = await c.query(
       `INSERT INTO oto.resposta (pesquisa_id, pergunta_id, situacao) VALUES ($1, $2, $3::oto.situacao_resposta)
        ON CONFLICT (pesquisa_id, pergunta_id) DO NOTHING RETURNING id`,
-      [p.id, pergunta.id, suspeitas.has(r.chave) ? "SUSPEITA" : "NORMAL"]
+      [pesquisaId, pergunta.id, suspeitas.has(r.chave) ? "SUSPEITA" : "NORMAL"]
     );
     if (!resp.rowCount) continue;
     for (const v of valores) {
@@ -327,7 +344,7 @@ async function gravarPesquisa(
     if (!respostaId) {
       const vazia = await c.query(
         "INSERT INTO oto.resposta (pesquisa_id, pergunta_id, situacao) VALUES ($1, $2, 'SUSPEITA') RETURNING id",
-        [p.id, pergunta.id]
+        [pesquisaId, pergunta.id]
       );
       respostaId = vazia.rows[0].id as number;
       gravadas.set(s.chave, respostaId);
@@ -344,5 +361,4 @@ async function gravarPesquisa(
       ]
     );
   }
-  return "aceita";
 }

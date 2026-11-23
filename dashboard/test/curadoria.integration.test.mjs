@@ -37,7 +37,7 @@ const comIdade = async (valor = 500) => {
 const contarIdade = async (faixaIdade) =>
   (await (await fetch(`${baseUrl}/api/analytics?${new URLSearchParams({ faixaIdade, periodo: "Últimos 30 dias" })}`)).json()).panorama.pesquisasColetadas;
 const situacao = async (protocolo) =>
-  (await json(await admin("/api/state"))).corpo.pesquisas.find((p) => p.protocolo === protocolo)?.situacao;
+  (await json(await admin(`/api/pesquisas?busca=${protocolo}`))).corpo.pesquisas.find((p) => p.protocolo === protocolo)?.situacao;
 
 async function usuarioCom(areas) {
   const marca = `${sufixo}-${randomUUID().slice(0, 6)}`;
@@ -72,11 +72,11 @@ test("aprovar sem motivo: valor original passa a valer e a pesquisa é concluíd
   const antes = await contarIdade("45+");
   const { protocolo, item } = await comIdade(105);
   assert.equal(await contarIdade("45+"), antes);
-  assert.equal(await situacao(protocolo), "Sinalizada");
+  assert.equal(await situacao(protocolo), "EM_REVISAO");
   assert.equal((await decidir(item.id, { decisao: "APROVAR" })).status, 200);
   assert.equal(await contarIdade("45+"), antes + 1);
   assert.deepEqual(await itensDe(protocolo), []);
-  assert.equal(await situacao(protocolo), "Sincronizada");
+  assert.equal(await situacao(protocolo), "CONCLUIDA");
 });
 
 test("corrigir: o valor novo entra nos indicadores e o original continua guardado", async () => {
@@ -105,7 +105,7 @@ test("excluir tira a resposta dos indicadores e mantém a pesquisa", async () =>
   assert.equal((await decidir(item.id, { decisao: "EXCLUIR", motivo: "inconsistente" })).status, 200);
   assert.equal(await contarIdade("45+"), faixaAntes);
   assert.equal(await contarIdade("Todas"), totalAntes + 1);
-  assert.equal(await situacao(protocolo), "Sincronizada");
+  assert.equal(await situacao(protocolo), "CONCLUIDA");
 });
 
 test("dados inválidos dão 400 e o item continua na fila sem mudança", async () => {
@@ -144,12 +144,12 @@ test("pesquisa só é concluída quando não resta pendência, mesmo com decisõ
     assert.equal(itens.length, 2);
     if (i === 0) {
       await decidir(itens[0].id, { decisao: "APROVAR" });
-      assert.equal(await situacao(protocolo), "Sinalizada");
+      assert.equal(await situacao(protocolo), "EM_REVISAO");
       await decidir(itens[1].id, { decisao: "APROVAR" });
     } else {
       await Promise.all(itens.map((x) => decidir(x.id, { decisao: "APROVAR" })));
     }
-    assert.equal(await situacao(protocolo), "Sincronizada");
+    assert.equal(await situacao(protocolo), "CONCLUIDA");
   }
 });
 
@@ -185,7 +185,7 @@ test("ingestão: dois alertas na mesma resposta ficam guardados e uma decisão r
   assert.deepEqual([...itens[0].motivos].sort(), ["Alerta dois", "Alerta um"]);
   assert.equal((await decidir(itens[0].id, { decisao: "APROVAR" })).status, 200);
   assert.deepEqual(await itensDe(protocolo), []);
-  assert.equal(await situacao(protocolo), "Sincronizada");
+  assert.equal(await situacao(protocolo), "CONCLUIDA");
 });
 
 test("/api/state: pendentes vêm do banco e a ação antiga não existe mais", async () => {

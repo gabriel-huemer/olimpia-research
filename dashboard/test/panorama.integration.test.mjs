@@ -130,17 +130,17 @@ test("filtro sem nenhum resultado devolve Panorama vazio, não erro", async () =
   assert.deepEqual(p.origensEstados, []);
 });
 
-test("lista de pesquisas (/api/state) traz as pesquisas novas, com a sinalizada marcada", async () => {
-  const r = await fetch(`${baseUrl}/api/state`, { headers: { cookie: await entrarComoAdmin() } });
+test("lista de pesquisas traz as pesquisas novas, com a sinalizada marcada", async () => {
+  const r = await fetch(`${baseUrl}/api/pesquisas`, { headers: { cookie: await entrarComoAdmin() } });
   assert.equal(r.status, 200);
   const { pesquisas } = await r.json();
   assert.ok(Array.isArray(pesquisas));
   const ids = new Set(pesquisas.map((x) => x.id));
   for (const p of lote) assert.ok(ids.has(p.id), `pesquisa ${p.id} não está na lista`);
   const sinalizada = pesquisas.find((x) => x.id === lote[3].id);
-  assert.equal(sinalizada.situacao, "Sinalizada");
+  assert.equal(sinalizada.situacao, "EM_REVISAO");
   const normal = pesquisas.find((x) => x.id === lote[0].id);
-  assert.equal(normal.situacao, "Sincronizada");
+  assert.equal(normal.situacao, "SEM_PENDENCIA");
   assert.match(normal.protocolo, /^OTO117-/);
   assert.equal(normal.local, "Hot Beach Olímpia");
 });

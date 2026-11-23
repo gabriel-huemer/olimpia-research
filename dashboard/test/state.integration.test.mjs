@@ -19,11 +19,10 @@ const acao = async (action, payload) => {
 
 test("GET /api/state devolve as coleções que as telas usam", async () => {
   const s = await estado();
-  for (const k of ["dbConnected", "pendentesRevisao", "pesquisas", "formularios"]) {
+  for (const k of ["dbConnected", "pendentesRevisao", "formularios"]) {
     assert.ok(k in s, `falta ${k}`);
   }
   assert.equal(typeof s.dbConnected, "boolean");
-  assert.ok(Array.isArray(s.pesquisas));
 });
 
 test("ação desconhecida é recusada (400) e não altera nada", async () => {

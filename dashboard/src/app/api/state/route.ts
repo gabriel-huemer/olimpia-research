@@ -2,13 +2,11 @@ import { NextRequest, NextResponse } from "next/server";
 import { getStore } from "@/lib/mockAndSeedData";
 import { isDatabaseAvailable } from "@/lib/db";
 import { contarPendentes } from "@/lib/curadoria/curadoria";
-import { listarPesquisas } from "@/lib/pesquisas";
 import { erro, exigir, type UsuarioSessao } from "@/lib/auth/servidor";
 import { podeAcessar, type Area } from "@/lib/auth/permissoes";
 
 // Cada ação pertence a uma área; ação fora desta lista é recusada.
 const AREA_DA_ACAO: Record<string, Area> = {
-  INSERIR_PESQUISA_MANUAL: "coleta",
   SALVAR_PERGUNTA_FORMULARIO: "coleta",
   ADICIONAR_SECAO_FORMULARIO: "coleta",
   PUBLICAR_FORMULARIO: "coleta",
@@ -31,7 +29,6 @@ async function estadoVisivel(usuario: UsuarioSessao, extra: Record<string, unkno
       ...(coleta && {
         pendentesRevisao: await contarPendentes(),
         formularios: store.formularios,
-        pesquisas: await listarPesquisas(),
       }),
       ...(sistema && {
         publicacaoItens: store.publicacaoItens,
@@ -75,27 +72,6 @@ export async function POST(request: NextRequest) {
   const nowShort = formatNowShort();
 
   switch (action) {
-    case "INSERIR_PESQUISA_MANUAL": {
-      const { origem, local, idade, genero, gastoDiario, canalRecebimento } = payload;
-      const nextNum = 48 + store.pesquisas.length;
-      const protocolo = `${String(nextNum).padStart(4, "0")}/26`;
-      const novaPesquisa = {
-        id: `p-${Date.now()}`,
-        protocolo,
-        origem: origem || "— (telefone)",
-        operador: "Gestão (manual)",
-        local: local || "—",
-        coletada: nowShort,
-        periodo: "Out/2026",
-        situacao: "Inserida manualmente" as const,
-      };
-      store.pesquisas.unshift(novaPesquisa);
-      const formAtivo = store.formularios.find((f) => f.status === "Ativo");
-      if (formAtivo) formAtivo.respostas += 1;
-
-      break;
-    }
-
     case "SALVAR_PERGUNTA_FORMULARIO": {
       const { secaoId, pergunta } = payload;
       const formAtivo = store.formularios[0];

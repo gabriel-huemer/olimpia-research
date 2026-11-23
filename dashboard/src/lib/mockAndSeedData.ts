@@ -29,24 +29,6 @@ export interface FormularioItem {
   secoes: SecaoFormulario[];
 }
 
-export interface PesquisaColetada {
-  id: string;
-  protocolo: string;
-  origem: string;
-  operador: string;
-  local: string;
-  coletada: string;
-  periodo: string;
-  situacao:
-    | "Na fila do app"
-    | "Sinalizada"
-    | "Sincronizada"
-    | "Aprovada"
-    | "Corrigida"
-    | "Inserida manualmente"
-    | "Excluída";
-}
-
 export interface ItemPublicacao {
   id: string;
   indicador: string;
@@ -384,7 +366,6 @@ const SECOES_PADRAO: SecaoFormulario[] = [
 
 interface AppDataStore {
   formularios: FormularioItem[];
-  pesquisas: PesquisaColetada[];
   publicacaoItens: ItemPublicacao[];
   ultimaPublicacao: string;
   metodoPublicacao: string;
@@ -416,40 +397,12 @@ function buildFormularioSeed(
   };
 }
 
-function buildPesquisaSeed(
-  num: string,
-  origem: string,
-  operador: string,
-  local: string,
-  coletada: string,
-  situacao: PesquisaColetada["situacao"]
-): PesquisaColetada {
-  return {
-    id: `p-${num}`,
-    protocolo: `${num}/26`,
-    origem,
-    operador,
-    local,
-    coletada,
-    periodo: "Out/2026",
-    situacao,
-  };
-}
-
 const initialStore: AppDataStore = {
   formularios: [
     buildFormularioSeed(1, "Pesquisa de Demanda Turística", 3, "Ativo", 5012, "01/01/2026 a 31/12/2026", "12/10/2026"),
     buildFormularioSeed(2, "Pesquisa de Demanda Turística", 2, "Encerrada", 3870, "01/01/2025 a 31/12/2025", "20/12/2025"),
     buildFormularioSeed(3, "Ocupação Hoteleira e Diária Média", 1, "Rascunho", 0, "não definida", "22/10/2026", 4),
     buildFormularioSeed(4, "Expectativa de Feriados", 1, "Agendado", 0, "a partir de 06/11/2026", "18/10/2026", 5),
-  ],
-  pesquisas: [
-    buildPesquisaSeed("0047", "Ribeirão Preto, SP", "Ana Souza", "Thermas dos Laranjais", "26/10 10:42", "Na fila do app"),
-    buildPesquisaSeed("0045", "Uberlândia, MG", "Ana Souza", "Thermas dos Laranjais", "26/10 10:12", "Sinalizada"),
-    buildPesquisaSeed("0044", "Campinas, SP", "Carlos Lima", "Hot Beach", "26/10 09:50", "Sincronizada"),
-    buildPesquisaSeed("0043", "Goiânia, GO", "Carlos Lima", "Hot Beach", "26/10 09:20", "Aprovada"),
-    buildPesquisaSeed("0042", "Barretos, SP", "Marina Alves", "Praça da Matriz", "25/10 16:05", "Aprovada"),
-    buildPesquisaSeed("0041", "— (telefone)", "Gestão (manual)", "—", "25/10 11:30", "Inserida manualmente"),
   ],
   publicacaoItens: [
     {

@@ -18,7 +18,7 @@ Frente que falhar 3 vezes pela mesma causa fica em PR aberto e o plano segue.
 - [x] 2. Auditoria lida de `log_auditoria`
 - [x] 3. Operadores e Visão geral no banco
 - [x] 4. App: login do pesquisador validado no servidor e cancelar entrevista (RF23)
-- [ ] 5. Pesquisas: lista com filtros, inserção manual (RF17)
+- [x] 5. Pesquisas: lista com filtros, inserção manual (RF17)
 - [ ] 6. Importação de planilhas históricas (RF09)
 - [ ] 7. Publicação de resultados (RF21)
 - [ ] 8. Formulários e versões no banco (RF05); app baixa o publicado
@@ -45,3 +45,8 @@ Frente que falhar 3 vezes pela mesma causa fica em PR aberto e o plano segue.
 - Decisões padrão: com servidor configurado, a lista de demonstração não serve para entrar; 20 códigos errados em 15 minutos
   bloqueiam o IP.
 - Cortado: token por pesquisador. O `SYNC_API_TOKEN` continua igual para todos os aparelhos.
+### Frente 5 — Pesquisas
+- Feito: lista paginada com filtros reais, exportação com todas as respostas e inserção manual com o formulário publicado (RF17).
+  Migrações V007 e V008 (origem MANUAL, canal, autor, protocolo `MAN-0001`).
+- Decisões padrão: na digitação manual nenhuma pergunta é obrigatória; valor fora da faixa entra sinalizado e vai para a revisão;
+  quem tem Coleta pode inserir; exportação limitada a 5.000 linhas.
