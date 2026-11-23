@@ -17,7 +17,7 @@ Frente que falhar 3 vezes pela mesma causa fica em PR aberto e o plano segue.
 - [x] 1. Análises: as quatro abas e os filtros lidos do banco
 - [x] 2. Auditoria lida de `log_auditoria`
 - [x] 3. Operadores e Visão geral no banco
-- [ ] 4. App: login do pesquisador validado e token por pesquisador
+- [x] 4. App: login do pesquisador validado no servidor e cancelar entrevista (RF23)
 - [ ] 5. Pesquisas: lista com filtros, inserção manual (RF17)
 - [ ] 6. Importação de planilhas históricas (RF09)
 - [ ] 7. Publicação de resultados (RF21)
@@ -39,3 +39,9 @@ Frente que falhar 3 vezes pela mesma causa fica em PR aberto e o plano segue.
 - Decisões padrão: só a área Sistema cadastra e vê o código; atraso = mais de 1 dia sem envio; após redefinir, o código antigo
   ainda identifica pesquisas que estavam na fila; a meta diária de 60 saiu (não há meta cadastrada).
 - Pendência: rodar `make migrate` nos bancos `oto` e `oto_demo` (aqui só o `oto_teste` foi migrado).
+### Frente 4 — App
+- Feito: o código é conferido em `/api/v1/pesquisador`; depois da primeira entrada funciona sem internet; código desativado ou
+  trocado para de entrar; cancelar entrevista apaga o rascunho (RF23).
+- Decisões padrão: com servidor configurado, a lista de demonstração não serve para entrar; 20 códigos errados em 15 minutos
+  bloqueiam o IP.
+- Cortado: token por pesquisador. O `SYNC_API_TOKEN` continua igual para todos os aparelhos.

@@ -8,6 +8,9 @@ abstract interface class SurveyRepository {
   /// Resumes the researcher's open draft or creates a new one with the next protocol (RF16).
   Future<Survey> startOrResume(Researcher researcher);
 
+  /// Cancels an interview in progress (RF23). Completed surveys are never removed.
+  Future<void> discardDraft(String surveyId);
+
   Future<Survey?> byId(String id);
 
   /// Persists one answer immediately and records the audit trail (RF15).

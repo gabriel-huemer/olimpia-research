@@ -1,12 +1,15 @@
 import '../../domain/entities/researcher.dart';
 import '../../domain/repositories/auth_repository.dart';
 import '../datasources/local/session_local_datasource.dart';
+import '../datasources/remote/researcher_api.dart';
 
-/// Offline login against the locally cached researcher list.
+/// Login checked on the server; a code already used on this device also works offline.
+/// Without a server ([api] null, demo mode) only the bundled list is used.
 class AuthRepositoryImpl implements AuthRepository {
-  AuthRepositoryImpl(this._local);
+  AuthRepositoryImpl(this._local, {ResearcherApi? api}) : _api = api;
 
   final SessionLocalDataSource _local;
+  final ResearcherApi? _api;
 
   static String normalizeCode(String code) => code.toUpperCase().replaceAll(RegExp('[^A-Z0-9]'), '');
 
@@ -15,7 +18,29 @@ class AuthRepositoryImpl implements AuthRepository {
 
   @override
   Future<Researcher?> login(String code) async {
-    final row = await _local.researcher(normalizeCode(code));
+    final normalized = normalizeCode(code);
+    if (normalized.isEmpty) return null;
+    final api = _api;
+    if (api != null) {
+      final Researcher? remote;
+      try {
+        remote = await api.find(normalized);
+      } on Object {
+        final cached = await _loginFromCache(normalized);
+        if (cached == null) throw const LoginUnavailableException();
+        return cached;
+      }
+      if (remote == null) {
+        await _local.forgetResearcher(normalized);
+        return null;
+      }
+      await _local.saveResearcher(remote.code, remote.name, remote.location);
+    }
+    return _loginFromCache(normalized);
+  }
+
+  Future<Researcher?> _loginFromCache(String code) async {
+    final row = await _local.researcher(code);
     if (row == null) return null;
     final researcher = _map(row);
     await _local.open(researcher.code);

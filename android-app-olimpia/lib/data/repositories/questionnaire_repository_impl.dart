@@ -7,10 +7,12 @@ import '../datasources/local/seed_asset_datasource.dart';
 import '../mapper/questionnaire_mapper.dart';
 
 class QuestionnaireRepositoryImpl implements QuestionnaireRepository {
-  QuestionnaireRepositoryImpl(this._local, this._seed);
+  QuestionnaireRepositoryImpl(this._local, this._seed, {bool demoResearchers = true})
+    : _demoResearchers = demoResearchers;
 
   final QuestionnaireLocalDataSource _local;
   final SeedAssetDataSource _seed;
+  final bool _demoResearchers;
   Questionnaire? _cache;
 
   static int _version(Map<String, Object?> json) => (json['version']! as num).toInt();
@@ -19,7 +21,8 @@ class QuestionnaireRepositoryImpl implements QuestionnaireRepository {
   Future<void> ensureCached() async {
     await _cacheQuestionnaire();
     await _cacheCities();
-    await _cacheResearchers();
+    // With a server, only codes it confirms can log in.
+    if (_demoResearchers) await _cacheResearchers();
   }
 
   Future<void> _cacheQuestionnaire() async {
