@@ -1,6 +1,6 @@
 import assert from "node:assert/strict";
 import test from "node:test";
-import { areaDaRota, podeAcessar, perfilEditavel, PERFIS_PADRAO } from "../src/lib/auth/permissoes.ts";
+import { areaDaRota, podeAcessar, perfilEditavel, temAcessoWeb, PERFIS_PADRAO } from "../src/lib/auth/permissoes.ts";
 
 const perfil = (nome) => PERFIS_PADRAO.find((p) => p.nome === nome);
 
@@ -57,4 +57,12 @@ test("perfis padrao nao sao editaveis; perfis criados pelo admin sao", () => {
   assert.equal(perfilEditavel({ nome: "ADMINISTRADOR", padrao: true }), false);
   assert.equal(perfilEditavel({ nome: "VISUALIZADOR", padrao: true }), false);
   assert.equal(perfilEditavel({ nome: "Estagiario", padrao: false }), true);
+});
+
+test("so faz login quem tem Coleta ou Sistema; visualizador e pesquisador nao", () => {
+  assert.equal(temAcessoWeb(perfil("ADMINISTRADOR").areas), true);
+  assert.equal(temAcessoWeb(perfil("VISUALIZADOR").areas), false);
+  assert.equal(temAcessoWeb(perfil("PESQUISADOR").areas), false);
+  assert.equal(temAcessoWeb({ analises: true, coleta: true, sistema: false }), true);
+  assert.equal(temAcessoWeb(undefined), false);
 });

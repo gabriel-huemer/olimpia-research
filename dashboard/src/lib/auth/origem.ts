@@ -2,6 +2,12 @@
 
 export const DESTINO_PADRAO = "/analises/panorama";
 
+/**
+ * Entrada da equipe: nenhum link público aponta para cá (a equipe digita o endereço ou clica 5x no logo).
+ * É só discrição; quem protege o painel são a senha, o bloqueio por tentativas e as permissões.
+ */
+export const ROTA_LOGIN = "/acesso-oto";
+
 function hostDe(url: string | null | undefined): string | null {
   if (!url || url === "null") return null;
   try {
@@ -20,14 +26,14 @@ export function origemPermitida(h: { origin?: string | null; referer?: string | 
   return hostDe(h.referer) === host;
 }
 
-/** Só aceita caminho interno (evita open redirect) e nunca volta para o próprio /login. */
+/** Só aceita caminho interno (evita open redirect) e nunca volta para o próprio login. */
 export function destinoSeguro(destino: string | null | undefined): string {
   if (!destino || !destino.startsWith("/") || destino.startsWith("//") || destino.includes("\\")) {
     return DESTINO_PADRAO;
   }
   try {
     const u = new URL(destino, "https://interno.invalid");
-    if (u.host !== "interno.invalid" || u.pathname === "/login" || u.pathname.startsWith("/login/")) return DESTINO_PADRAO;
+    if (u.host !== "interno.invalid" || u.pathname === ROTA_LOGIN || u.pathname.startsWith(`${ROTA_LOGIN}/`)) return DESTINO_PADRAO;
     return u.pathname + u.search;
   } catch {
     return DESTINO_PADRAO;

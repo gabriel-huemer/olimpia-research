@@ -17,10 +17,8 @@ test("sessão: anônimo recebe null; logado recebe nome e áreas, sem hash de se
   assert.doesNotMatch(JSON.stringify(corpo), /senha|hash|\$2[aby]\$/i);
 });
 
-test("perfis: anônimo 401, visualizador 403, admin lista os 3 padrão", async () => {
+test("perfis: anônimo 401, admin lista os 3 padrão", async () => {
   assert.equal((await anonimo("/api/admin/perfis")).status, 401);
-  const vis = await entrar(env("TEST_VIS_EMAIL"), env("TEST_VIS_SENHA"));
-  assert.equal((await chamar(vis.cookie)("/api/admin/perfis")).status, 403);
   const { status, corpo } = await json(await admin("/api/admin/perfis"));
   assert.equal(status, 200);
   const padrao = corpo.perfis.filter((p) => p.padrao).map((p) => p.nome).sort();
@@ -51,9 +49,17 @@ test("escrita administrativa recusa Origin de outro site (CSRF)", async () => {
 });
 
 test("usuários: senha fraca e e-mail inválido são recusados", async () => {
-  const base = { nome: "Fraco", email: `fraco.${sufixo}@exemplo.com`, perfilId: 3 };
+  const base = { nome: "Fraco", email: `fraco.${sufixo}@exemplo.com`, perfilId: 1 };
   assert.equal((await admin("/api/admin/usuarios", { method: "POST", body: { ...base, senha: "senha12345" } })).status, 400);
   assert.equal((await admin("/api/admin/usuarios", { method: "POST", body: { ...base, email: "sem-arroba", senha: "Boa-Senha-2026" } })).status, 400);
+});
+
+test("usuários: perfil sem Coleta nem Sistema não recebe conta (é público, não faz login)", async () => {
+  const r = await admin("/api/admin/usuarios", {
+    method: "POST",
+    body: { nome: "Vis", email: `vis.${sufixo}@exemplo.com`, perfilId: 3, senha: "Boa-Senha-2026" },
+  });
+  assert.equal(r.status, 400);
 });
 
 test("perfil personalizado vale na hora: criar, entrar, mudar áreas e desativar", async () => {
@@ -87,7 +93,7 @@ test("perfil personalizado vale na hora: criar, entrar, mudar áreas e desativar
 
   // Admin tira Coleta do perfil: a mesma sessão perde acesso sem precisar sair.
   assert.equal((await admin(`/api/admin/perfis/${perfil.id}`, { method: "PATCH", body: { areas: { analises: true, coleta: false } } })).status, 200);
-  assert.equal((await u("/api/state")).status, 403);
+  assert.equal((await u("/api/state")).status, 401);
 
   // Admin desativa a usuária: a sessão deixa de valer.
   const id = novo.corpo.usuario.id;
@@ -103,6 +109,6 @@ test("admin não pode desativar a si mesmo nem tirar o próprio acesso a Sistema
 });
 
 test("página de login abre para anônimo", async () => {
-  const r = await fetch(`${baseUrl}/login`);
+  const r = await fetch(`${baseUrl}/acesso-oto`);
   assert.equal(r.status, 200);
 });

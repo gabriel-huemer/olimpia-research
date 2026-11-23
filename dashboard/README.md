@@ -113,8 +113,8 @@ O painel segue rigorosamente as regras de arquitetura definidas em `../oto-db/RE
 
 ### Acesso e permissões
 
-- **Análises** é pública (dados abertos): não precisa de login. **Coleta** e **Sistema** exigem login (`/login`).
-- Perfis padrão (fixos): `ADMINISTRADOR` (tudo), `VISUALIZADOR` (só Análises, logado) e `PESQUISADOR` (não entra no painel; usa o app).
+- **Análises** é pública (dados abertos): não precisa de login. **Coleta** e **Sistema** exigem login. A entrada da equipe fica em `/acesso-oto` ou com 5 cliques seguidos no logo OTO; nenhum link público aponta para ela.
+- Perfis padrão (fixos): `ADMINISTRADOR` (tudo), `VISUALIZADOR` (o público: só Análises, **não faz login**) e `PESQUISADOR` (não entra no painel; usa o app).
   Em **Sistema → Usuários**, quem tem a área Sistema cria perfis novos, marca as áreas de cada um, cria usuários e ativa/desativa contas. Vale na hora: a sessão é revalidada no banco a cada requisição.
 - Sessão: cookie `oto_sessao` HttpOnly, SameSite=Lax (Secure em HTTPS), JWT HS256 assinado com `AUTH_SECRET`, 8 h. Senhas em bcrypt (custo 12); login com bloqueio por força bruta; escrita só com `Origin` do próprio site (CSRF).
 - Onde está: `src/lib/auth/` (regras e sessão), `src/proxy.ts` (redireciona páginas), `src/app/api/auth/*` e `src/app/api/admin/*`. No banco: `V005__perfis_acesso.sql`.

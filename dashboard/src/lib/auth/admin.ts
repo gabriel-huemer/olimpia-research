@@ -150,10 +150,13 @@ export async function criarUsuario(
   const hash = await gerarHash(senha);
   try {
     return await withAuditTransaction(autorId, async (c) => {
-      const p = await c.query(`SELECT id, nome FROM oto.perfil_acesso WHERE id = $1`, [perfilId]);
+      const p = await c.query(`SELECT id, nome, (acesso_coleta OR acesso_sistema) AS faz_login FROM oto.perfil_acesso WHERE id = $1`, [perfilId]);
       if (!p.rows[0]) throw new ErroAdmin(400, "Perfil inexistente.");
       if (p.rows[0].nome === "PESQUISADOR") {
         throw new ErroAdmin(400, "Pesquisadores são cadastrados pelo código de acesso do app, não por aqui.");
+      }
+      if (!p.rows[0].faz_login) {
+        throw new ErroAdmin(400, "Este perfil só vê Análises, que é pública: não precisa de conta.");
       }
       // Enum legado: ADMINISTRADOR para quem gerencia o sistema; os demais entram como VISUALIZADOR.
       const r = await c.query(

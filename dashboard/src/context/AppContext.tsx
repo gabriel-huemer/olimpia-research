@@ -12,6 +12,7 @@ import type {
   RegistroAuditoria,
 } from "@/lib/mockAndSeedData";
 import { getFilteredAnalytics } from "@/lib/mockAndSeedData";
+import { ROTA_LOGIN } from "@/lib/auth/origem";
 import { downloadExcelXml } from "@/lib/excel";
 import { panoramaVazio, type PanoramaDados } from "@/lib/panorama-types";
 
@@ -152,7 +153,7 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
         body: JSON.stringify({ action, payload }),
       });
       if (res.status === 401) {
-        window.location.href = `/login?proximo=${encodeURIComponent(window.location.pathname)}`;
+        window.location.href = `${ROTA_LOGIN}?proximo=${encodeURIComponent(window.location.pathname)}`;
         return;
       }
       if (res.ok) {
