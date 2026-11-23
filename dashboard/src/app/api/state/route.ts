@@ -11,15 +11,12 @@ const AREA_DA_ACAO: Record<string, Area> = {
   ADICIONAR_SECAO_FORMULARIO: "coleta",
   PUBLICAR_FORMULARIO: "coleta",
   CRIAR_FORMULARIO: "coleta",
-  TOGGLE_ITEM_PUBLICACAO: "sistema",
-  PUBLICAR_SELECAO_SITE: "sistema",
 };
 
 /** Devolve só as coleções das áreas que o perfil enxerga. */
 async function estadoVisivel(usuario: UsuarioSessao, extra: Record<string, unknown> = {}) {
   const store = getStore();
   const coleta = podeAcessar(usuario.areas, "coleta");
-  const sistema = podeAcessar(usuario.areas, "sistema");
   return NextResponse.json(
     {
       ...extra,
@@ -27,11 +24,6 @@ async function estadoVisivel(usuario: UsuarioSessao, extra: Record<string, unkno
       ...(coleta && {
         pendentesRevisao: await contarPendentes(),
         formularios: store.formularios,
-      }),
-      ...(sistema && {
-        publicacaoItens: store.publicacaoItens,
-        ultimaPublicacao: store.ultimaPublicacao,
-        metodoPublicacao: store.metodoPublicacao,
       }),
     },
     { headers: { "cache-control": "no-store" } }
@@ -63,7 +55,6 @@ export async function POST(request: NextRequest) {
   if (!area) return erro(400, "Ação desconhecida.");
   if (!podeAcessar(g.usuario.areas, area)) return erro(403, "Seu perfil não tem acesso a esta área.");
   // Autor vem da sessão; campos "usuario"/"usuarioUuid" do corpo são ignorados.
-  const usuario = g.usuario.nome;
   const store = getStore();
   const nowShort = formatNowShort();
 
@@ -137,23 +128,6 @@ export async function POST(request: NextRequest) {
         atualizado: nowShort.split(" ")[0] + "/2026",
         secoes: JSON.parse(JSON.stringify(BaseSecoes)),
       });
-      break;
-    }
-
-    case "TOGGLE_ITEM_PUBLICACAO": {
-      const { id } = payload;
-      const item = store.publicacaoItens.find((i) => i.id === id);
-      if (item) {
-        item.publico = !item.publico;
-      }
-      break;
-    }
-
-    case "PUBLICAR_SELECAO_SITE": {
-      const { metodo } = payload;
-      if (metodo) store.metodoPublicacao = metodo;
-      store.ultimaPublicacao = `${nowShort} por ${usuario}`;
-      const qtdPublicados = store.publicacaoItens.filter((i) => i.publico).length;
       break;
     }
   }

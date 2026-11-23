@@ -99,7 +99,7 @@ test("pesquisador nao tem acesso ao painel web", async () => {
 
 test("escrita administrativa exige Origin do proprio site (CSRF)", async () => {
   const s = await entrar(env("TEST_ADMIN_EMAIL"), env("TEST_ADMIN_SENHA"));
-  const r = await post("/api/state", { action: "TOGGLE_ITEM_PUBLICACAO", payload: { id: "x" } }, s.cookie, {
+  const r = await post("/api/admin/perfis", { nome: "x", areas: {} }, s.cookie, {
     origin: "https://evil.example",
   });
   assert.equal(r.status, 403);

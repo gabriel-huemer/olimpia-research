@@ -3,7 +3,6 @@
 import React, { createContext, useContext, useState, useEffect, useCallback } from "react";
 import type {
   FormularioItem,
-  ItemPublicacao,
 } from "@/lib/mockAndSeedData";
 import { usePathname } from "next/navigation";
 import { abaDaRota, paineisVazios, type AnalyticsFilters, type OpcoesFiltro, type Paineis } from "@/lib/paineis-types";
@@ -35,9 +34,6 @@ interface AppContextValue {
   dbConnected: boolean;
   pendentesRevisao: number;
   formularios: FormularioItem[];
-  publicacaoItens: ItemPublicacao[];
-  ultimaPublicacao: string;
-  metodoPublicacao: string;
   /** Relê /api/state agora, sem esperar os 15 s. */
   recarregarEstado: () => Promise<void>;
   dispatchAction: (action: string, payload?: Record<string, unknown>) => Promise<void>;
@@ -66,9 +62,6 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
   const [dbConnected, setDbConnected] = useState(false);
   const [pendentesRevisao, setPendentesRevisao] = useState(0);
   const [formularios, setFormularios] = useState<FormularioItem[]>([]);
-  const [publicacaoItens, setPublicacaoItens] = useState<ItemPublicacao[]>([]);
-  const [ultimaPublicacao, setUltimaPublicacao] = useState("Nenhuma");
-  const [metodoPublicacao, setMetodoPublicacao] = useState("Incorporar no site (iframe/link)");
   const [toastMessage, setToastMessage] = useState<string | null>(null);
 
   const showToast = useCallback((msg: string) => {
@@ -84,11 +77,6 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
     }
     setPendentesRevisao(typeof data.pendentesRevisao === "number" ? data.pendentesRevisao : 0);
     setFormularios((data.formularios as FormularioItem[]) || []);
-    setPublicacaoItens((data.publicacaoItens as ItemPublicacao[]) || []);
-    setUltimaPublicacao((data.ultimaPublicacao as string) || "Nenhuma");
-    setMetodoPublicacao(
-      (data.metodoPublicacao as string) || "Incorporar no site (iframe/link)"
-    );
   }, []);
 
   const fetchState = useCallback(async () => {
@@ -241,9 +229,6 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
         dbConnected,
         pendentesRevisao,
         formularios,
-        publicacaoItens,
-        ultimaPublicacao,
-        metodoPublicacao,
         recarregarEstado: fetchState,
         dispatchAction,
         exportToExcel,

@@ -29,14 +29,6 @@ export interface FormularioItem {
   secoes: SecaoFormulario[];
 }
 
-export interface ItemPublicacao {
-  id: string;
-  indicador: string;
-  aba: string;
-  tagDados: "agregado" | "pode identificar pessoa" | "revisar texto";
-  publico: boolean;
-}
-
 export interface UsuarioSistema {
   id: string;
   nome: string;
@@ -357,9 +349,6 @@ const SECOES_PADRAO: SecaoFormulario[] = [
 
 interface AppDataStore {
   formularios: FormularioItem[];
-  publicacaoItens: ItemPublicacao[];
-  ultimaPublicacao: string;
-  metodoPublicacao: string;
   usuarios: UsuarioSistema[];
 }
 
@@ -393,45 +382,6 @@ const initialStore: AppDataStore = {
     buildFormularioSeed(3, "Ocupação Hoteleira e Diária Média", 1, "Rascunho", 0, "não definida", "22/10/2026", 4),
     buildFormularioSeed(4, "Expectativa de Feriados", 1, "Agendado", 0, "a partir de 06/11/2026", "18/10/2026", 5),
   ],
-  publicacaoItens: [
-    {
-      id: "pub-1",
-      indicador: "Respondentes por faixa de idade",
-      aba: "Perfil",
-      tagDados: "agregado",
-      publico: true,
-    },
-    {
-      id: "pub-2",
-      indicador: "Fluxo de turistas por mês",
-      aba: "Fluxo",
-      tagDados: "agregado",
-      publico: true,
-    },
-    {
-      id: "pub-3",
-      indicador: "NPS",
-      aba: "Percepção",
-      tagDados: "agregado",
-      publico: true,
-    },
-    {
-      id: "pub-4",
-      indicador: "Origem por cidade pequena (menos de 5 respostas)",
-      aba: "Perfil",
-      tagDados: "pode identificar pessoa",
-      publico: false,
-    },
-    {
-      id: "pub-5",
-      indicador: "Nuvem de palavras (texto livre)",
-      aba: "Percepção",
-      tagDados: "revisar texto",
-      publico: false,
-    },
-  ],
-  ultimaPublicacao: "Nenhuma",
-  metodoPublicacao: "Incorporar no site (iframe/link)",
   usuarios: [
     {
       id: "u-1",

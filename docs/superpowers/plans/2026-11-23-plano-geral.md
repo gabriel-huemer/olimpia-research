@@ -20,7 +20,7 @@ Frente que falhar 3 vezes pela mesma causa fica em PR aberto e o plano segue.
 - [x] 4. App: login do pesquisador validado no servidor e cancelar entrevista (RF23)
 - [x] 5. Pesquisas: lista com filtros, inserção manual (RF17)
 - [x] 6. Importação de planilhas históricas (RF09)
-- [ ] 7. Publicação de resultados (RF21)
+- [x] 7. Publicação de resultados (RF21)
 - [ ] 8. Formulários e versões no banco (RF05); app baixa o publicado
 - [ ] 9. Conta (trocar a própria senha), limpeza dos dados de exemplo, SonarCloud
 - [ ] 10. Hospedagem: contêineres, HTTPS, backup; guia de Tailscale
@@ -57,3 +57,9 @@ Frente que falhar 3 vezes pela mesma causa fica em PR aberto e o plano segue.
 - Decisões padrão: linha com erro não entra; valor fora da faixa entra sinalizado; arquivo repetido é recusado; limite de 3.000
   linhas e 8 MB; sem coluna de data, vale a data de chegada; não há desfazer.
 - Não verificado: nenhuma planilha real do cliente foi testada, porque nenhuma foi entregue.
+### Frente 7 — Publicação
+- Feito: seleção gravada e auditada (migração V009), pré-visualização idêntica ao público, página `/publico` para incorporar no
+  site, com planilha e impressão em PDF. As demais páginas não podem ser incorporadas em outro site.
+- Decisões padrão: nada publicado; indicador com menos de 5 respostas e texto livre nunca aparecem.
+- Decisão do Hugo: as Análises continuam públicas, como já combinado, mas o RF21 diz que nada aparece sem aprovação. Ou as
+  Análises passam a exigir login, ou o RF21 vale só para `/publico`. Nada foi escondido.
