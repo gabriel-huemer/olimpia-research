@@ -25,7 +25,7 @@ Os 4 commits estavam só locais. Faltava abrir o PR, dependendo de acesso de esc
 5. Lacunas de teste: mappers do app (`questionnaire_mapper`, `survey_mapper`), widgets de autocomplete/escolha, e login/permissões do painel (feito na branch `feat/auth-rbac`).
 
 ## Atenção
-- **Possível bug**: na curadoria, `CURAR_RESPOSTA` executa `UPDATE oto.sinalizacao ... WHERE id = <id do item de exemplo>`. Os ids dos itens de exemplo colidem com sinalizações reais (ids 1–10 no banco demo). Os testes de integração do `state` só devem rodar em banco descartável, nunca no `oto_demo`. Deve sumir quando a curadoria usar o banco de verdade.
+- **Resolvido (feat/curadoria)**: a curadoria agora lê e grava sinalizações reais por `/api/curadoria`; `CURAR_RESPOSTA` não existe mais. O bug descrito antes não alterava dados: o banco recusava o UPDATE (faltava o curador) e o erro era escondido. Os testes de integração continuam só em banco descartável, nunca no `oto_demo`.
 - `oto-db/db/seeds/S03_municipios.sql` é gerado por `oto-db/scripts/carregar_municipios_ibge.py` (precisa de internet) e não está versionado de propósito. Rode o script ao subir o banco numa máquina nova.
 - Ambiente: Docker Desktop com Postgres, Flutter instalado localmente, painel Next.js na porta 3000. Máquina com pouca memória: o `next dev` foi encerrado algumas vezes por falta de RAM.
 

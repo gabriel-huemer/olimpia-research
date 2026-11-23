@@ -73,26 +73,6 @@ export interface OperadorCampo {
   ativo: boolean;
 }
 
-export interface ItemRevisao {
-  id: number;
-  protocolo: string;
-  resumoMotivo: string;
-  operador: string;
-  dataCurta: string;
-  cidadeOrigem: string;
-  motivoDetalhado: string;
-  campoSuspeito: string;
-  valorSuspeito: string;
-  dadosColeta: {
-    idade: string;
-    genero: string;
-    estadoCivil: string;
-    gastoDiario: string;
-    coletadaEm: string;
-  };
-  status: "PENDENTE" | "APROVADA" | "CORRIGIDA" | "EXCLUIDA";
-}
-
 export interface ItemPublicacao {
   id: string;
   indicador: string;
@@ -442,7 +422,6 @@ interface AppDataStore {
   formularios: FormularioItem[];
   pesquisas: PesquisaColetada[];
   operadores: OperadorCampo[];
-  revisao: ItemRevisao[];
   publicacaoItens: ItemPublicacao[];
   ultimaPublicacao: string;
   metodoPublicacao: string;
@@ -570,148 +549,6 @@ const initialStore: AppDataStore = {
       mediaDiaria: 6,
       serieDiaria: [7, 8, 9, 6, 7, 0, 0],
       ativo: true,
-    },
-  ],
-  revisao: [
-    {
-      id: 1,
-      protocolo: "0038/26",
-      resumoMotivo: "idade 500",
-      operador: "Ana Souza",
-      dataCurta: "23/10",
-      cidadeOrigem: "Ribeirão Preto, SP",
-      motivoDetalhado:
-        'Idade fora do esperado. Informado: 500 anos. O operador escolheu "Manter e sinalizar".',
-      campoSuspeito: "Idade",
-      valorSuspeito: "500",
-      dadosColeta: {
-        idade: "500",
-        genero: "Feminino",
-        estadoCivil: "Casado(a)",
-        gastoDiario: "R$ 450,00",
-        coletadaEm: "23/10/2026 14:12 · Ana Souza",
-      },
-      status: "PENDENTE",
-    },
-    {
-      id: 2,
-      protocolo: "0045/26",
-      resumoMotivo: "grupo incoerente",
-      operador: "Ana Souza",
-      dataCurta: "26/10",
-      cidadeOrigem: "Uberlândia, MG",
-      motivoDetalhado:
-        'Grupo marcado como "Sozinho(a)", mas informou 2 acompanhantes crianças. O operador escolheu "Manter e sinalizar".',
-      campoSuspeito: "Grupo de viagem",
-      valorSuspeito: "Sozinho(a) + 2 acompanhantes",
-      dadosColeta: {
-        idade: "38",
-        genero: "Masculino",
-        estadoCivil: "Casado(a)",
-        gastoDiario: "R$ 380,00",
-        coletadaEm: "26/10/2026 10:12 · Ana Souza",
-      },
-      status: "PENDENTE",
-    },
-    {
-      id: 3,
-      protocolo: "0040/26",
-      resumoMotivo: "gasto alto",
-      operador: "Marina Alves",
-      dataCurta: "24/10",
-      cidadeOrigem: "São Paulo, SP",
-      motivoDetalhado:
-        'Gasto diário informado (R$ 8.500,00) incompatível com a faixa de renda (Até 2 salários). O operador escolheu "Manter e sinalizar".',
-      campoSuspeito: "Gasto diário",
-      valorSuspeito: "R$ 8.500,00",
-      dadosColeta: {
-        idade: "29",
-        genero: "Feminino",
-        estadoCivil: "Solteiro(a)",
-        gastoDiario: "R$ 8.500,00",
-        coletadaEm: "24/10/2026 15:30 · Marina Alves",
-      },
-      status: "PENDENTE",
-    },
-    {
-      id: 4,
-      protocolo: "0044/26",
-      resumoMotivo: "idade 3 anos, solteiro",
-      operador: "João Pereira",
-      dataCurta: "24/10",
-      cidadeOrigem: "Campinas, SP",
-      motivoDetalhado:
-        'Idade do respondente principal informada como 3 anos. O operador escolheu "Manter e sinalizar".',
-      campoSuspeito: "Idade",
-      valorSuspeito: "3",
-      dadosColeta: {
-        idade: "3",
-        genero: "Masculino",
-        estadoCivil: "Solteiro(a)",
-        gastoDiario: "R$ 310,00",
-        coletadaEm: "24/10/2026 11:05 · João Pereira",
-      },
-      status: "PENDENTE",
-    },
-    {
-      id: 5,
-      protocolo: "0035/26",
-      resumoMotivo: "permanência 65 noites",
-      operador: "Carlos Lima",
-      dataCurta: "22/10",
-      cidadeOrigem: "Belo Horizonte, MG",
-      motivoDetalhado:
-        'Pernoites calculados (65 noites) acima do limite esperado de 30 noites. O operador escolheu "Manter e sinalizar".',
-      campoSuspeito: "Permanência",
-      valorSuspeito: "65 noites",
-      dadosColeta: {
-        idade: "44",
-        genero: "Feminino",
-        estadoCivil: "Casado(a)",
-        gastoDiario: "R$ 340,00",
-        coletadaEm: "22/10/2026 16:40 · Carlos Lima",
-      },
-      status: "PENDENTE",
-    },
-    {
-      id: 6,
-      protocolo: "0032/26",
-      resumoMotivo: "cidade inválida (importação)",
-      operador: "Importação Excel",
-      dataCurta: "21/10",
-      cidadeOrigem: "Rib. Preto, SP",
-      motivoDetalhado:
-        "Linha importada da planilha histórica como sinalizada para revisão de município IBGE.",
-      campoSuspeito: "Cidade",
-      valorSuspeito: "Rib. Preto",
-      dadosColeta: {
-        idade: "51",
-        genero: "Masculino",
-        estadoCivil: "Casado(a)",
-        gastoDiario: "R$ 400,00",
-        coletadaEm: "21/10/2026 09:15 · Importação",
-      },
-      status: "PENDENTE",
-    },
-    {
-      id: 7,
-      protocolo: "0030/26",
-      resumoMotivo: "idade vazia (importação)",
-      operador: "Importação Excel",
-      dataCurta: "21/10",
-      cidadeOrigem: "São Paulo, SP",
-      motivoDetalhado:
-        "Linha 519 da planilha demanda_2024.xlsx importada sem idade preenchida.",
-      campoSuspeito: "Idade",
-      valorSuspeito: "Vazio",
-      dadosColeta: {
-        idade: "—",
-        genero: "Feminino",
-        estadoCivil: "Solteiro(a)",
-        gastoDiario: "R$ 350,00",
-        coletadaEm: "21/10/2026 09:15 · Importação",
-      },
-      status: "PENDENTE",
     },
   ],
   publicacaoItens: [

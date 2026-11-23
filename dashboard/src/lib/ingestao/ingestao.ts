@@ -271,6 +271,7 @@ async function gravarPesquisa(
 
   const ctx = { municipios, ufResidencia: ufDeEstado(porChave.get("estado")) };
   const suspeitas = new Set(sinais.map((s) => s.chave));
+  const gravadas = new Map<string, number>(); // chave -> resposta.id
   const matrizes = new Map<number, number>(); // pergunta matriz -> resposta.id
 
   for (const r of respostas) {
@@ -315,20 +316,32 @@ async function gravarPesquisa(
         [resp.rows[0].id, v.opcaoId ?? null, v.municipioIbge ?? null, v.numero ?? null, v.data ?? null, v.texto ?? null]
       );
     }
-    if (suspeitas.has(r.chave)) {
-      const s = sinais.find((x) => x.chave === r.chave)!;
-      await c.query(
-        `INSERT INTO oto.sinalizacao (resposta_id, regra_validacao_id, motivo, valor_original, decisao_no_app)
-         VALUES ($1, $2, $3, $4::jsonb, $5::oto.decisao_app)`,
-        [
-          resp.rows[0].id,
-          pergunta.regraId,
-          (s.mensagem || s.titulo || "Resposta fora do padrão").slice(0, 300),
-          JSON.stringify(r.valor ?? null),
-          s.status === "confirmed" ? "MANTIDA_E_SINALIZADA" : null,
-        ]
+    gravadas.set(r.chave, resp.rows[0].id);
+  }
+
+  // Todo alerta vira sinalização, mesmo quando a resposta marcada chegou vazia ou tem mais de um alerta.
+  for (const s of sinais) {
+    const pergunta = cat.perguntas.get(s.chave)!;
+    let respostaId = gravadas.get(s.chave) ?? matrizes.get(pergunta.id);
+    if (!respostaId) {
+      const vazia = await c.query(
+        "INSERT INTO oto.resposta (pesquisa_id, pergunta_id, situacao) VALUES ($1, $2, 'SUSPEITA') RETURNING id",
+        [p.id, pergunta.id]
       );
+      respostaId = vazia.rows[0].id as number;
+      gravadas.set(s.chave, respostaId);
     }
+    await c.query(
+      `INSERT INTO oto.sinalizacao (resposta_id, regra_validacao_id, motivo, valor_original, decisao_no_app)
+       VALUES ($1, $2, $3, $4::jsonb, $5::oto.decisao_app)`,
+      [
+        respostaId,
+        pergunta.regraId,
+        (s.mensagem || s.titulo || "Resposta fora do padrão").slice(0, 300),
+        JSON.stringify(porChave.get(s.chave) ?? null),
+        s.status === "confirmed" ? "MANTIDA_E_SINALIZADA" : null,
+      ]
+    );
   }
   return "aceita";
 }

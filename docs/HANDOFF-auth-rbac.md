@@ -42,7 +42,7 @@ A branch nasceu de `feat/ingestao-real` (já contém os commits de ingestão e t
 3. Migrar para o banco as telas que ainda usam o estado em memória (curadoria, operadores, formulários, publicação, importação) e a auditoria exibida no painel.
 
 ## Atenção
-- Não rode os testes de integração do painel contra `oto_demo`: `CURAR_RESPOSTA` pode alterar sinalizações reais (ver handoff da ingestão).
+- Não rode os testes de integração do painel contra `oto_demo`: eles gravam pesquisas e decisões de curadoria.
 
 ---
 
