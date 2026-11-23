@@ -6,6 +6,7 @@ const protecao = [
 
 const nextConfig = {
   reactStrictMode: true,
+  output: process.env.NEXT_STANDALONE ? "standalone" : undefined,
   async headers() {
     return [
       { source: "/:path*", headers: protecao },

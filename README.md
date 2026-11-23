@@ -30,6 +30,7 @@ Painel web:
 | `oto-db/` | Banco de dados central | PostgreSQL 16 |
 
 Como rodar cada parte: [oto-db/README.md](oto-db/README.md) e [dashboard/README.md](dashboard/README.md).
+Publicar em um servidor: [deploy/README.md](deploy/README.md).
 
 ## Bancos de dados: real e demonstração
 
@@ -123,7 +124,7 @@ privada/VPN), para que só as pessoas autorizadas, conectadas à rede certa, con
 - Continuam públicas as Análises. A sincronização do app precisa continuar acessível em campo (com token) ou o aparelho
   do pesquisador também precisa entrar na rede.
 
-**Ainda não implementado.**
+**Ainda não está no ar.** A configuração pronta para testar está em [deploy/README.md](deploy/README.md).
 
 ## Equipe
 

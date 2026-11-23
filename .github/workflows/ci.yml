@@ -30,6 +30,8 @@ jobs:
         run: npm test
       - name: Build de produção
         run: npm run build
+      - name: Imagem de produção
+        run: docker build -q .
 
   app:
     name: App do pesquisador (análise e testes)
