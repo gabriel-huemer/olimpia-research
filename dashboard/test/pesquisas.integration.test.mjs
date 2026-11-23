@@ -77,6 +77,6 @@ test("exportação traz as respostas com a mesma estrutura em todas as linhas", 
   const { linhas } = await (await admin(`/api/pesquisas/exportar?busca=${r.protocolo}`)).json();
   assert.equal(linhas.length, 1);
   assert.equal(linhas[0].idade, "33");
-  assert.equal(linhas[0].Hospedagem, "RUIM");
+  assert.equal(linhas[0]["Avaliação [Hospedagem]"], "RUIM");
   assert.ok("gasto_diario" in linhas[0]);
 });
