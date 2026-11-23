@@ -60,8 +60,8 @@ Como criar/recriar o banco demo: [oto-db/demo/README.md](oto-db/demo/README.md).
 | Pesquisador | App | código `OTO482` (Ana), `OTO117` (Bruno) ou `OTO305` (Carla) | não tem | Coleta de pesquisas no app |
 | Equipe com perfil personalizado | Painel (entrada da equipe) | e-mail cadastrado em Sistema → Usuários | definida pelo administrador | As áreas marcadas no perfil |
 
-**Entrada da equipe:** não há botão de login visível para o visitante. Clique **5 vezes seguidas no logo OTO** (canto
-superior esquerdo) ou abra `/acesso-oto`. Só entra quem tem Coleta ou Sistema; Visualizador e Pesquisador são recusados
+**Entrada da equipe:** abra `/administracao` (ex.: <http://localhost:3000/administracao>). Não há botão nem link para
+essa página no painel público. Só entra quem tem Coleta ou Sistema; Visualizador e Pesquisador são recusados
 com a mesma mensagem de senha errada. O script abaixo também cria `visualizador.teste@oto.local` e
 `pesquisador.teste@oto.local`, usadas só para testar esse bloqueio.
 
@@ -83,10 +83,24 @@ cat .usuarios-teste.oto.env      # mostra e-mails e senhas
   Rodar o script de novo gera senhas novas.
 - **Windows (Git Bash):** coloque `MSYS_NO_PATHCONV=1` antes de cada `docker exec`.
 - **Antes de entrar:** preencha `AUTH_SECRET` e `SYNC_API_TOKEN` no `dashboard/.env.local`
-  ([dashboard/README.md](dashboard/README.md)), suba o painel (`npm run dev`) e abra <http://localhost:3000/acesso-oto>.
+  ([dashboard/README.md](dashboard/README.md)), suba o painel (`npm run dev`) e abra <http://localhost:3000/administracao>.
 - **App:** rode com `--dart-define=SYNC_API_URL=...` e `--dart-define=SYNC_API_TOKEN=...` (o mesmo token do painel).
   Sem a URL, o app simula o envio; com a URL e sem o token, o painel recusa a sincronização.
 - **Errou a senha 5 vezes?** O login daquele e-mail fica bloqueado por 15 minutos.
+
+## Melhoria futura: administração só na rede certa (Tailscale)
+
+Hoje `/administracao` não tem link público, mas abre para quem souber o endereço; a proteção é a senha, o bloqueio por
+tentativas e as permissões. No futuro, poderia ser adicionada uma camada com [Tailscale](https://tailscale.com) (rede
+privada/VPN), para que só as pessoas autorizadas, conectadas à rede certa, consigam ver essa tela:
+
+- **Na rede do OTO:** a tela de login aparece normalmente, e a senha continua sendo exigida.
+- **Fora dela:** `/administracao` responde "página não encontrada" (404), como se não existisse.
+- O mesmo bloqueio precisa valer para Coleta, Sistema e as APIs de login e administração, não só para a tela.
+- Continuam públicas as Análises. A sincronização do app precisa continuar acessível em campo (com token) ou o aparelho
+  do pesquisador também precisa entrar na rede.
+
+**Ainda não implementado.**
 
 ## Equipe
 
