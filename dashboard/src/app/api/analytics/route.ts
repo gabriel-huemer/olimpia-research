@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { isDatabaseAvailable } from "@/lib/db";
+import { lerFiltros } from "@/lib/filtros";
 import { calcularPainel, opcoesDeFiltro } from "@/lib/paineis";
 import { ABAS, paineisVazios, type Aba } from "@/lib/paineis-types";
 import { sessaoAtual } from "@/lib/auth/servidor";
@@ -11,15 +12,7 @@ export async function GET(request: NextRequest) {
   const q = request.nextUrl.searchParams;
   const aba = (q.get("aba") ?? "panorama") as Aba;
   if (!ABAS.includes(aba)) return NextResponse.json({ erro: "Aba desconhecida." }, { status: 400 });
-  const filters = {
-    periodo: q.get("periodo") || `Ano ${new Date().getFullYear()}`,
-    genero: q.get("genero") || "Todos",
-    faixaIdade: q.get("faixaIdade") || "Todas",
-    cidade: q.get("cidade") || "Todas",
-    hospedagem: q.get("hospedagem") || "Todas",
-    transporte: q.get("transporte") || "Todos",
-    localPesquisa: q.get("localPesquisa") || "Todos",
-  };
+  const filters = lerFiltros(q);
   const headers = { "cache-control": "no-store" };
   if (!(await isDatabaseAvailable())) {
     return NextResponse.json({ dbConnected: false, filters, [aba]: paineisVazios[aba] }, { headers });
