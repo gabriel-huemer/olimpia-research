@@ -51,6 +51,40 @@ cp dashboard/.env.real.local dashboard/.env.local    # modo desenvolvimento (ban
 
 Como criar/recriar o banco demo: [oto-db/demo/README.md](oto-db/demo/README.md).
 
+## Como entrar com cada usuário
+
+| Usuário | Onde entra | Login | Senha | O que vê |
+|---|---|---|---|---|
+| Visitante | Painel | não precisa | não precisa | Só Análises |
+| Administrador | Painel (`/login`) | `admin.teste@oto.local` | `TEST_ADMIN_SENHA` | Análises, Coleta e Sistema |
+| Visualizador | Painel (`/login`) | `visualizador.teste@oto.local` | `TEST_VIS_SENHA` | Só Análises |
+| Pesquisador | App | código `OTO482` (Ana), `OTO117` (Bruno) ou `OTO305` (Carla) | não tem | Coleta de pesquisas no app |
+| Pesquisador (teste de bloqueio) | Painel (`/login`) | `pesquisador.teste@oto.local` | `TEST_PESQ_SENHA` | Nada: o login é **recusado** de propósito |
+| Perfil personalizado | Painel (`/login`) | e-mail cadastrado em Sistema → Usuários | definida pelo administrador | As áreas marcadas no perfil |
+
+**As senhas não ficam no Git** (o repositório é público): cada pessoa gera as suas. Com o banco no ar
+([oto-db/README.md](oto-db/README.md)), os comandos abaixo criam as contas de teste; não use essas contas em produção.
+
+```bash
+cd oto-db
+# banco já criado antes desta versão? aplique as migrações novas (V005):
+docker exec -e PGUSER=oto_admin -e PGDATABASE=oto oto-db bash /oto/scripts/bootstrap.sh
+# cria as 3 contas e grava as senhas em um arquivo ignorado pelo Git:
+docker exec -e PGUSER=oto_admin -e PGDATABASE=oto oto-db \
+  bash /oto/scripts/criar_usuarios_teste.sh > .usuarios-teste.oto.env
+chmod 600 .usuarios-teste.oto.env
+cat .usuarios-teste.oto.env      # mostra e-mails e senhas
+```
+
+- **Cada banco tem suas contas:** para o demo, troque `oto` por `oto_demo` em `PGDATABASE` e no nome do arquivo.
+  Rodar o script de novo gera senhas novas.
+- **Windows (Git Bash):** coloque `MSYS_NO_PATHCONV=1` antes de cada `docker exec`.
+- **Antes de entrar:** preencha `AUTH_SECRET` e `SYNC_API_TOKEN` no `dashboard/.env.local`
+  ([dashboard/README.md](dashboard/README.md)), suba o painel (`npm run dev`) e abra <http://localhost:3000/login>.
+- **App:** rode com `--dart-define=SYNC_API_URL=...` e `--dart-define=SYNC_API_TOKEN=...` (o mesmo token do painel).
+  Sem a URL, o app simula o envio; com a URL e sem o token, o painel recusa a sincronização.
+- **Errou a senha 5 vezes?** O login daquele e-mail fica bloqueado por 15 minutos.
+
 ## Equipe
 
 Hugo Rubira Zanni, Gabriel Huemer, João Pedro Baratella Mattos, Mark Seiji Takakura, Gabriel de Oliveira Merenciano e
