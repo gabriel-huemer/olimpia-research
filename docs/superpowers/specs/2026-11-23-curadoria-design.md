@@ -1,6 +1,6 @@
 # Curadoria (tela Revisão) no banco de verdade
 
-Status: aguardando aprovação do Hugo. Requisitos: RF13, RF19, RN13, RN18.
+Status: aprovado pelo Hugo em 2026-11-23. Requisitos: RF13, RF19, RN13, RN18.
 
 ## Intenção
 O gestor revisa as respostas suspeitas enviadas pelo app e a decisão vale nos indicadores, com autor registrado.
@@ -24,7 +24,7 @@ Hoje a tela mostra exemplos em memória; o UPDATE em `sinalizacao` não informa 
 - Uma transação com `withAuditTransaction`: sinalização (curador, data, justificativa, valor corrigido), resposta, valor
   e, sem pendências restantes, `pesquisa.status_curadoria = CONCLUIDA`. Erro desfaz tudo e aparece na tela.
 - Curador e autor da auditoria vêm da sessão, nunca do corpo da requisição.
-- Item já decidido: 409. Item inexistente: 404. A linha é travada (`FOR UPDATE`) para duas decisões simultâneas.
+- Item já decidido: 409. Item inexistente: 404. A pesquisa é travada (`FOR UPDATE`) para decisões simultâneas.
 - Valor novo validado pelo tipo da pergunta. Fora da faixa da regra: avisa, não bloqueia (RN13).
 - Motivo até 500 caracteres. Os campos motivo e valor começam vazios.
 - Se a mesma resposta tiver mais de um alerta pendente, a decisão vale para todos os alertas dela.

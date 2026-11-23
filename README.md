@@ -94,6 +94,7 @@ cat .usuarios-teste.oto.env      # mostra e-mails e senhas
 | Visitante | Não faz login e vê só Análises. Em Coleta ou Sistema, volta para o Panorama |
 | Quem faz login | O administrador e os perfis criados por ele com Coleta ou Sistema. Visualizador e Pesquisador são recusados |
 | Entrada | `/administracao`, sem link público. `/login` e `/acesso-oto` não existem |
+| Revisão (curadoria) | Aprovar e corrigir: quem tem Coleta. Excluir: quem tem Coleta e Sistema. Corrigir e excluir exigem motivo; tudo fica registrado com o autor |
 | Sessão | Dura 8 horas. Desativar a conta ou mudar as áreas do perfil vale na hora |
 | Senhas erradas | 5 erros em 15 minutos (mesmo e-mail e mesma rede) bloqueiam por 15 minutos; 20 erros no mesmo e-mail bloqueiam de qualquer rede |
 | Senha | Mínimo de 10 caracteres, com letras e números; senhas muito comuns são recusadas |

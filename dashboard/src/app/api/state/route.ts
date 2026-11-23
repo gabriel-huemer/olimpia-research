@@ -1,13 +1,13 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getStore } from "@/lib/mockAndSeedData";
-import { isDatabaseAvailable, withAuditTransaction } from "@/lib/db";
+import { isDatabaseAvailable } from "@/lib/db";
+import { contarPendentes } from "@/lib/curadoria/curadoria";
 import { listarPesquisas } from "@/lib/pesquisas";
 import { erro, exigir, type UsuarioSessao } from "@/lib/auth/servidor";
 import { podeAcessar, type Area } from "@/lib/auth/permissoes";
 
 // Cada ação pertence a uma área; ação fora desta lista é recusada.
 const AREA_DA_ACAO: Record<string, Area> = {
-  CURAR_RESPOSTA: "coleta",
   INSERIR_PESQUISA_MANUAL: "coleta",
   CRIAR_OPERADOR: "coleta",
   REDEFINIR_CODIGO_OPERADOR: "coleta",
@@ -32,10 +32,9 @@ async function estadoVisivel(usuario: UsuarioSessao, extra: Record<string, unkno
       ...extra,
       dbConnected: await isDatabaseAvailable(),
       ...(coleta && {
-        pendentesRevisao: store.revisao.filter((r) => r.status === "PENDENTE").length,
+        pendentesRevisao: await contarPendentes(),
         formularios: store.formularios,
         operadores: store.operadores,
-        revisao: store.revisao,
         pesquisas: await listarPesquisas(),
       }),
       ...(sistema && {
@@ -77,96 +76,10 @@ export async function POST(request: NextRequest) {
   if (!podeAcessar(g.usuario.areas, area)) return erro(403, "Seu perfil não tem acesso a esta área.");
   // Autor vem da sessão; campos "usuario"/"usuarioUuid" do corpo são ignorados.
   const usuario = g.usuario.nome;
-  const usuarioUuid = g.usuario.id;
   const store = getStore();
   const nowShort = formatNowShort();
 
-  // Se o banco PostgreSQL (oto-db) estiver ativo, executa com set_config('app.usuario_id', ...)
-  const dbActive = await isDatabaseAvailable();
-
   switch (action) {
-    case "CURAR_RESPOSTA": {
-      const { id, decisao, novoValor, motivo } = payload;
-      const item = store.revisao.find((r) => r.id === Number(id));
-      if (!item) {
-        return NextResponse.json({ error: "Item de revisão não encontrado" }, { status: 404 });
-      }
-
-      const valorAntigo = item.valorSuspeito;
-      if (decisao === "APROVAR") {
-        item.status = "APROVADA";
-        const pesq = store.pesquisas.find((p) => p.protocolo === item.protocolo);
-        if (pesq) pesq.situacao = "Aprovada";
-        store.auditoria.unshift({
-          id: Date.now(),
-          dataHora: nowShort,
-          usuario,
-          acao: "Corrigiu",
-          item: "Pesquisa",
-          protocoloBadge: item.protocolo,
-          alteracao: `${item.campoSuspeito.toLowerCase()}: ${valorAntigo} mantido (aprovado na curadoria)`,
-        });
-      } else if (decisao === "CORRIGIR") {
-        item.status = "CORRIGIDA";
-        item.valorSuspeito = String(novoValor);
-        if (item.campoSuspeito === "Idade") {
-          item.dadosColeta.idade = String(novoValor);
-        }
-        const pesq = store.pesquisas.find((p) => p.protocolo === item.protocolo);
-        if (pesq) pesq.situacao = "Aprovada";
-        store.auditoria.unshift({
-          id: Date.now(),
-          dataHora: nowShort,
-          usuario,
-          acao: "Corrigiu",
-          item: "Pesquisa",
-          protocoloBadge: item.protocolo,
-          alteracao: `${item.campoSuspeito.toLowerCase()}: ${valorAntigo} → ${novoValor} · motivo: ${motivo || "confirmado na curadoria"}`,
-        });
-      } else if (decisao === "EXCLUIR") {
-        item.status = "EXCLUIDA";
-        const pesq = store.pesquisas.find((p) => p.protocolo === item.protocolo);
-        if (pesq) pesq.situacao = "Excluída";
-        store.auditoria.unshift({
-          id: Date.now(),
-          dataHora: nowShort,
-          usuario,
-          acao: "Excluiu",
-          item: "Pesquisa",
-          protocoloBadge: item.protocolo,
-          alteracao: `${motivo || "inconsistência confirmada"} · motivo registrado`,
-        });
-      }
-
-      if (dbActive) {
-        try {
-          await withAuditTransaction(usuarioUuid, async (client) => {
-            const novoStatus =
-              decisao === "APROVAR"
-                ? "APROVADA"
-                : decisao === "CORRIGIR"
-                ? "CORRIGIDA"
-                : "EXCLUIDA";
-            await client.query(
-              `UPDATE oto.sinalizacao
-                  SET status = $1, curada_em = now(), justificativa = $2,
-                      valor_corrigido = $3
-                WHERE id = $4`,
-              [
-                novoStatus,
-                motivo || "Decisão registrada no painel Web",
-                novoValor ? JSON.stringify({ valor: novoValor }) : null,
-                Number(id),
-              ]
-            );
-          });
-        } catch {
-          // Mantém o estado atualizado mesmo se o registro específico for do seed em memória
-        }
-      }
-      break;
-    }
-
     case "INSERIR_PESQUISA_MANUAL": {
       const { origem, local, idade, genero, gastoDiario, canalRecebimento } = payload;
       const nextNum = 48 + store.pesquisas.length;

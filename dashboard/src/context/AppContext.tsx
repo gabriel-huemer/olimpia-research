@@ -6,7 +6,6 @@ import type {
   FormularioItem,
   PesquisaColetada,
   OperadorCampo,
-  ItemRevisao,
   ItemPublicacao,
   ProblemaImportacao,
   RegistroAuditoria,
@@ -40,13 +39,14 @@ interface AppContextValue {
   formularios: FormularioItem[];
   pesquisas: PesquisaColetada[];
   operadores: OperadorCampo[];
-  revisao: ItemRevisao[];
   publicacaoItens: ItemPublicacao[];
   ultimaPublicacao: string;
   metodoPublicacao: string;
   problemasImportacao: ProblemaImportacao[];
   importacaoConcluida: boolean;
   auditoria: RegistroAuditoria[];
+  /** Relê /api/state agora, sem esperar os 15 s. */
+  recarregarEstado: () => Promise<void>;
   dispatchAction: (action: string, payload?: Record<string, unknown>) => Promise<void>;
   exportToExcel: (sheetName: string, rows: Record<string, unknown>[], fileName: string) => void;
   exportReportPdfOrExcel: (abaTitulo: string, formato?: "PDF" | "XLSX") => void;
@@ -71,11 +71,10 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
   const [sessaoCarregada, setSessaoCarregada] = useState(false);
   const [filters, setFilters] = useState<Required<AnalyticsFilters>>(defaultFilters);
   const [dbConnected, setDbConnected] = useState(false);
-  const [pendentesRevisao, setPendentesRevisao] = useState(7);
+  const [pendentesRevisao, setPendentesRevisao] = useState(0);
   const [formularios, setFormularios] = useState<FormularioItem[]>([]);
   const [pesquisas, setPesquisas] = useState<PesquisaColetada[]>([]);
   const [operadores, setOperadores] = useState<OperadorCampo[]>([]);
-  const [revisao, setRevisao] = useState<ItemRevisao[]>([]);
   const [publicacaoItens, setPublicacaoItens] = useState<ItemPublicacao[]>([]);
   const [ultimaPublicacao, setUltimaPublicacao] = useState("Nenhuma");
   const [metodoPublicacao, setMetodoPublicacao] = useState("Incorporar no site (iframe/link)");
@@ -99,7 +98,6 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
     setFormularios((data.formularios as FormularioItem[]) || []);
     setPesquisas((data.pesquisas as PesquisaColetada[]) || []);
     setOperadores((data.operadores as OperadorCampo[]) || []);
-    setRevisao((data.revisao as ItemRevisao[]) || []);
     setPublicacaoItens((data.publicacaoItens as ItemPublicacao[]) || []);
     setUltimaPublicacao((data.ultimaPublicacao as string) || "Nenhuma");
     setMetodoPublicacao(
@@ -309,13 +307,13 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
         formularios,
         pesquisas,
         operadores,
-        revisao,
         publicacaoItens,
         ultimaPublicacao,
         metodoPublicacao,
         problemasImportacao,
         importacaoConcluida,
         auditoria,
+        recarregarEstado: fetchState,
         dispatchAction,
         exportToExcel,
         exportReportPdfOrExcel,
