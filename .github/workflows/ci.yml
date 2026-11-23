@@ -80,6 +80,9 @@ jobs:
       OTO_READONLY_PASSWORD: ci_readonly
       OTO_APP_ADMIN_EMAIL: admin@oto.test
       OTO_APP_ADMIN_PASSWORD: ci_admin_app
+      # Só para o CI (banco descartável). Em produção, gere valores próprios.
+      AUTH_SECRET: ci-auth-secret-de-teste-com-mais-de-32-caracteres
+      SYNC_API_TOKEN: ci-sync-token-de-teste-com-24-caracteres
     steps:
       - uses: actions/checkout@v4
       - name: Banco com municípios, formulário e pesquisadores
@@ -87,6 +90,7 @@ jobs:
         run: |
           python3 scripts/carregar_municipios_ibge.py
           bash scripts/bootstrap.sh
+          bash scripts/criar_usuarios_teste.sh >> "$GITHUB_ENV"
       - uses: actions/setup-node@v4
         with:
           node-version: 24
@@ -111,7 +115,9 @@ jobs:
           cat ../painel.log; exit 1
       - name: Testes de integração
         working-directory: dashboard
-        run: npm run test:integration
+        run: |
+          npm run test:integration
+          npm run test:auth
       - name: Log do painel (em caso de falha)
         if: failure()
         run: cat painel.log

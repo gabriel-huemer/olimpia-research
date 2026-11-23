@@ -8,10 +8,12 @@ import {
   BarChart2,
   ClipboardList,
   Sliders,
-  ChevronsUpDown,
   Database,
+  LogIn,
+  LogOut,
 } from "lucide-react";
-import { useApp, PERFIS_DISPONIVEIS } from "@/context/AppContext";
+import { useApp } from "@/context/AppContext";
+import { podeAcessar } from "@/lib/auth/permissoes";
 
 interface NavChild {
   label: string;
@@ -36,11 +38,11 @@ export function SidebarLayout({
   const pathname = usePathname();
   const {
     currentUser,
-    setCurrentUser,
+    sessaoCarregada,
+    sair,
     pendentesRevisao,
     dbConnected,
     toastMessage,
-    showToast,
   } = useApp();
 
   const [menuQuery, setMenuQuery] = useState("");
@@ -49,9 +51,8 @@ export function SidebarLayout({
     coleta: true,
     sistema: true,
   });
-  const [showRoleMenu, setShowRoleMenu] = useState(false);
 
-  const navGroups: NavGroup[] = [
+  const todosGrupos: NavGroup[] = [
     {
       id: "analises",
       label: "Análises",
@@ -88,6 +89,14 @@ export function SidebarLayout({
       ],
     },
   ];
+
+  // Mostra só as áreas que o perfil enxerga (visitante: só Análises).
+  const navGroups = todosGrupos.filter((g) => podeAcessar(currentUser?.areas, g.id));
+  const iniciais = (currentUser?.nome ?? "")
+    .split(/\s+/)
+    .slice(0, 2)
+    .map((p) => p[0]?.toUpperCase() ?? "")
+    .join("");
 
   const activeGroupId = pathname.startsWith("/coleta")
     ? "coleta"
@@ -219,57 +228,38 @@ export function SidebarLayout({
           </div>
         </div>
 
-        {/* Rodapé do usuário e alternador de perfil (RF01) */}
-        <div className="p-3 border-t border-[#293b75] relative">
-          {showRoleMenu && (
-            <div className="absolute bottom-16 left-3 right-3 bg-white text-slate-800 rounded-xl shadow-xl border border-slate-200 p-2 z-50 space-y-1">
-              <div className="px-2 py-1 text-[10px] font-bold uppercase text-slate-400">
-                Alternar perfil de acesso (RF01)
+        {/* Rodapé: usuário logado (Sair) ou visitante (Entrar) */}
+        <div className="p-3 border-t border-[#293b75]">
+          {currentUser ? (
+            <div className="flex items-center justify-between gap-2 px-1.5 py-1">
+              <div className="flex items-center gap-2.5 min-w-0">
+                <div className="w-7 h-7 rounded-full bg-[#008767] text-white font-bold text-xs flex items-center justify-center shrink-0">
+                  {iniciais}
+                </div>
+                <div className="min-w-0">
+                  <div className="text-xs font-bold text-white truncate">{currentUser.nome}</div>
+                  <div className="text-[11px] text-slate-300 truncate">{currentUser.email}</div>
+                </div>
               </div>
-              {PERFIS_DISPONIVEIS.map((p) => (
-                <button
-                  key={p.papel}
-                  type="button"
-                  onClick={() => {
-                    setCurrentUser(p);
-                    setShowRoleMenu(false);
-                    showToast(`Perfil alterado para: ${p.nome} (${p.papel})`);
-                  }}
-                  className={`w-full text-left px-2.5 py-1.5 rounded-lg text-xs flex items-center justify-between ${
-                    currentUser.papel === p.papel
-                      ? "bg-teal-50 text-teal-900 font-bold"
-                      : "hover:bg-slate-100"
-                  }`}
-                >
-                  <span>{p.nome}</span>
-                  <span className="text-[10px] px-1.5 py-0.5 rounded bg-slate-100 text-slate-600">
-                    {p.papel}
-                  </span>
-                </button>
-              ))}
+              <button
+                type="button"
+                onClick={() => void sair()}
+                title="Sair"
+                aria-label="Sair"
+                className="p-1.5 rounded-lg text-slate-300 hover:text-white hover:bg-[#23366e] transition shrink-0"
+              >
+                <LogOut className="w-4 h-4" />
+              </button>
             </div>
+          ) : (
+            <Link
+              href={`/login?proximo=${encodeURIComponent(pathname)}`}
+              className="w-full flex items-center justify-center gap-2 px-3 py-2 rounded-lg bg-[#23366e] hover:bg-[#2c4285] text-xs font-semibold text-white transition"
+            >
+              <LogIn className="w-4 h-4" />
+              <span>Entrar (equipe OTO)</span>
+            </Link>
           )}
-
-          <button
-            type="button"
-            onClick={() => setShowRoleMenu((v) => !v)}
-            className="w-full flex items-center justify-between gap-2 px-1.5 py-1 rounded-lg hover:bg-[#23366e] transition text-left"
-          >
-            <div className="flex items-center gap-2.5 min-w-0">
-              <div className="w-7 h-7 rounded-full bg-[#008767] text-white font-bold text-xs flex items-center justify-center shrink-0">
-                {currentUser.iniciais}
-              </div>
-              <div className="min-w-0">
-                <div className="text-xs font-bold text-white truncate">
-                  {currentUser.nome}
-                </div>
-                <div className="text-[11px] text-slate-300 truncate">
-                  {currentUser.email}
-                </div>
-              </div>
-            </div>
-            <ChevronsUpDown className="w-4 h-4 text-slate-300 shrink-0" />
-          </button>
         </div>
       </aside>
 
@@ -295,7 +285,7 @@ export function SidebarLayout({
               <span>{dbConnected ? "PostgreSQL (oto-db)" : "Base OTO ativa"}</span>
             </span>
             <div className="inline-flex items-center px-3.5 py-1 rounded-full border border-slate-200 bg-white text-xs font-medium text-slate-800 shadow-2xs">
-              {currentUser.nome} · {currentUser.papel}
+              {!sessaoCarregada ? "…" : currentUser ? `${currentUser.nome} · ${currentUser.perfil.nome}` : "Visitante · acesso público"}
             </div>
           </div>
         </div>

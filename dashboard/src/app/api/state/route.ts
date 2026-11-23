@@ -2,6 +2,54 @@ import { NextRequest, NextResponse } from "next/server";
 import { getStore } from "@/lib/mockAndSeedData";
 import { isDatabaseAvailable, withAuditTransaction } from "@/lib/db";
 import { listarPesquisas } from "@/lib/pesquisas";
+import { erro, exigir, type UsuarioSessao } from "@/lib/auth/servidor";
+import { podeAcessar, type Area } from "@/lib/auth/permissoes";
+
+// Cada ação pertence a uma área; ação fora desta lista é recusada.
+const AREA_DA_ACAO: Record<string, Area> = {
+  CURAR_RESPOSTA: "coleta",
+  INSERIR_PESQUISA_MANUAL: "coleta",
+  CRIAR_OPERADOR: "coleta",
+  REDEFINIR_CODIGO_OPERADOR: "coleta",
+  ALTERNAR_STATUS_OPERADOR: "coleta",
+  SALVAR_PERGUNTA_FORMULARIO: "coleta",
+  ADICIONAR_SECAO_FORMULARIO: "coleta",
+  PUBLICAR_FORMULARIO: "coleta",
+  CRIAR_FORMULARIO: "coleta",
+  TOGGLE_ITEM_PUBLICACAO: "sistema",
+  PUBLICAR_SELECAO_SITE: "sistema",
+  RESOLVER_PROBLEMA_IMPORTACAO: "sistema",
+  CONCLUIR_IMPORTACAO: "sistema",
+};
+
+/** Devolve só as coleções das áreas que o perfil enxerga. */
+async function estadoVisivel(usuario: UsuarioSessao, extra: Record<string, unknown> = {}) {
+  const store = getStore();
+  const coleta = podeAcessar(usuario.areas, "coleta");
+  const sistema = podeAcessar(usuario.areas, "sistema");
+  return NextResponse.json(
+    {
+      ...extra,
+      dbConnected: await isDatabaseAvailable(),
+      ...(coleta && {
+        pendentesRevisao: store.revisao.filter((r) => r.status === "PENDENTE").length,
+        formularios: store.formularios,
+        operadores: store.operadores,
+        revisao: store.revisao,
+        pesquisas: await listarPesquisas(),
+      }),
+      ...(sistema && {
+        publicacaoItens: store.publicacaoItens,
+        ultimaPublicacao: store.ultimaPublicacao,
+        metodoPublicacao: store.metodoPublicacao,
+        problemasImportacao: store.problemasImportacao,
+        importacaoConcluida: store.importacaoConcluida,
+        auditoria: store.auditoria,
+      }),
+    },
+    { headers: { "cache-control": "no-store" } }
+  );
+}
 
 function formatNowShort(): string {
   const now = new Date();
@@ -12,22 +60,24 @@ function formatNowShort(): string {
   return `${dd}/${mm} ${hh}:${min}`;
 }
 
-export async function GET() {
-  const store = getStore();
-  const dbConnected = await isDatabaseAvailable();
-  const pendentesRevisao = store.revisao.filter((r) => r.status === "PENDENTE").length;
-
-  return NextResponse.json({
-    dbConnected,
-    pendentesRevisao,
-    ...store,
-    pesquisas: await listarPesquisas(),
-  });
+export async function GET(request: NextRequest) {
+  const g = await exigir(request, ["coleta", "sistema"]);
+  if (g.resposta) return g.resposta;
+  return estadoVisivel(g.usuario);
 }
 
 export async function POST(request: NextRequest) {
-  const body = await request.json();
-  const { action, payload, usuario = "Maria Oliveira", usuarioUuid = null } = body;
+  const g = await exigir(request, ["coleta", "sistema"]);
+  if (g.resposta) return g.resposta;
+  const body = await request.json().catch(() => ({}));
+  const action = typeof body?.action === "string" ? body.action : "";
+  const payload = body?.payload && typeof body.payload === "object" ? body.payload : {};
+  const area = AREA_DA_ACAO[action];
+  if (!area) return erro(400, "Ação desconhecida.");
+  if (!podeAcessar(g.usuario.areas, area)) return erro(403, "Seu perfil não tem acesso a esta área.");
+  // Autor vem da sessão; campos "usuario"/"usuarioUuid" do corpo são ignorados.
+  const usuario = g.usuario.nome;
+  const usuarioUuid = g.usuario.id;
   const store = getStore();
   const nowShort = formatNowShort();
 
@@ -352,52 +402,7 @@ export async function POST(request: NextRequest) {
       });
       break;
     }
-
-    case "CRIAR_USUARIO": {
-      const { nome, email, perfil } = payload;
-      store.usuarios.push({
-        id: `u-${Date.now()}`,
-        nome,
-        email: email || `${nome.toLowerCase().replace(/\s+/g, ".")}@exemplo.com`,
-        perfil: perfil || "Visualizador",
-        status: "Ativo",
-      });
-      store.auditoria.unshift({
-        id: Date.now(),
-        dataHora: nowShort,
-        usuario,
-        acao: "Inseriu",
-        item: `Usuário ${nome}`,
-        alteracao: `perfil atribuído: ${perfil}`,
-      });
-      break;
-    }
-
-    case "ATUALIZAR_USUARIO": {
-      const { id, perfil, status } = payload;
-      const u = store.usuarios.find((usr) => usr.id === id);
-      if (u) {
-        const antes = `${u.perfil} (${u.status})`;
-        if (perfil) u.perfil = perfil;
-        if (status) u.status = status;
-        store.auditoria.unshift({
-          id: Date.now(),
-          dataHora: nowShort,
-          usuario,
-          acao: "Corrigiu",
-          item: `Usuário ${u.nome}`,
-          alteracao: `${antes} → ${u.perfil} (${u.status})`,
-        });
-      }
-      break;
-    }
   }
 
-  const pendentesRevisao = store.revisao.filter((r) => r.status === "PENDENTE").length;
-  return NextResponse.json({
-    ok: true,
-    pendentesRevisao,
-    ...store,
-    pesquisas: await listarPesquisas(),
-  });
+  return estadoVisivel(g.usuario, { ok: true });
 }

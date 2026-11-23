@@ -1,12 +1,17 @@
 import { NextRequest, NextResponse } from "next/server";
 import { ingerirLote, type PesquisaPayload } from "@/lib/ingestao/ingestao";
+import { tokenSyncValido } from "@/lib/auth/sync";
 
 /**
  * Sincronização em lote do app do pesquisador (UC05 / RF08).
  * Contrato: POST { pesquisas: [...] } -> { aceitas: [uuid], rejeitadas: { uuid: motivo } }
  * Grava no PostgreSQL (oto-db) com o papel oto_mobile; reenviar um lote não duplica nada.
+ * Exige Authorization: Bearer <SYNC_API_TOKEN> (o app recebe via --dart-define=SYNC_API_TOKEN).
  */
 export async function POST(request: NextRequest) {
+  if (!tokenSyncValido(request.headers.get("authorization"), process.env.SYNC_API_TOKEN)) {
+    return NextResponse.json({ error: "Token de sincronização ausente ou inválido" }, { status: 401 });
+  }
   let body: { pesquisas?: unknown };
   try {
     body = await request.json();

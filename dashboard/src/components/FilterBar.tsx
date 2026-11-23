@@ -12,7 +12,7 @@ export function AnalyticsHeaderActions({
   abaTitulo: string;
   defaultPeriodo?: string;
 }) {
-  const { filters, setFilter, exportReportPdfOrExcel, canEdit } = useApp();
+  const { filters, setFilter, exportReportPdfOrExcel, canManageUsers } = useApp();
   const [showExportMenu, setShowExportMenu] = useState(false);
 
   const periodos = [
@@ -41,8 +41,8 @@ export function AnalyticsHeaderActions({
         </select>
       </div>
 
-      {/* Botão Publicar no site */}
-      {canEdit && (
+      {/* Botão Publicar no site (só quem tem a área Sistema) */}
+      {canManageUsers && (
         <Link
           href="/sistema/publicacao"
           className="inline-flex items-center gap-2 bg-white hover:bg-slate-50 border border-slate-200 rounded-lg px-3.5 py-2 text-xs font-semibold text-slate-800 shadow-2xs transition"

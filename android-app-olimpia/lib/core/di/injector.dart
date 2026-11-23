@@ -28,6 +28,9 @@ final sl = GetIt.instance;
 /// Backend URL comes from `--dart-define=SYNC_API_URL=https://...`. Empty = in-memory mock server.
 const _syncApiUrl = String.fromEnvironment('SYNC_API_URL');
 
+/// Token exigido pelo painel na sincronização: `--dart-define=SYNC_API_TOKEN=...` (mesmo valor do painel).
+const _syncApiToken = String.fromEnvironment('SYNC_API_TOKEN');
+
 Future<void> configureDependencies({
   AppDatabase? database,
   SyncApi? syncApi,
@@ -45,7 +48,10 @@ Future<void> configureDependencies({
           syncApi ??
           (_syncApiUrl.isEmpty
               ? MockSyncApi()
-              : HttpSyncApi(baseUrl: _syncApiUrl)),
+              : HttpSyncApi(
+                  baseUrl: _syncApiUrl,
+                  token: _syncApiToken.isEmpty ? null : _syncApiToken,
+                )),
     )
     ..registerLazySingleton(ConnectivityService.new)
     // Repositories
