@@ -193,5 +193,5 @@ test("/api/state: pendentes vêm do banco e a ação antiga não existe mais", a
   const { corpo } = await json(await admin("/api/state"));
   assert.equal(corpo.pendentesRevisao, (await fila()).length);
   assert.ok(!("revisao" in corpo));
-  assert.equal((await admin("/api/state", { method: "POST", body: { action: "CURAR_RESPOSTA", payload: { id: item.id, decisao: "APROVAR" } } })).status, 400);
+  assert.equal((await admin("/api/state", { method: "POST", body: { action: "CURAR_RESPOSTA", payload: { id: item.id, decisao: "APROVAR" } } })).status, 405);
 });

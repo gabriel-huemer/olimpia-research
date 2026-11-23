@@ -59,7 +59,18 @@ class SyncService {
   }
 
   void _onConnectivity() {
-    if (_connectivity.online.value) unawaited(syncNow());
+    if (_connectivity.online.value) unawaited(_syncAndRefresh());
+  }
+
+  /// Sends the queue, then updates the questionnaire (which only changes with the queue empty).
+  Future<void> _syncAndRefresh() async {
+    await syncNow();
+    try {
+      await _questionnaires.refresh();
+    } on Object catch (e) {
+      // Keeps the saved version; tried again on the next sync.
+      debugPrint('Formulário não atualizado: $e');
+    }
   }
 
   /// Call after saving a survey: sends right away when online.

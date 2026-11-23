@@ -54,7 +54,7 @@ test("API administrativa nega anonimo (GET e POST) e nao vaza dados", async () =
   assert.equal(g.status, 401);
   const corpo = await g.text();
   assert.doesNotMatch(corpo, /usuarios|auditoria|codigo/i);
-  const p = await post("/api/state", { action: "CRIAR_USUARIO", payload: { nome: "Invasor", perfil: "ADMINISTRADOR" } });
+  const p = await post("/api/admin/usuarios", { nome: "Invasor", email: "invasor@exemplo.com" });
   assert.equal(p.status, 401);
 });
 
