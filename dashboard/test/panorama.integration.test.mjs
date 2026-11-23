@@ -1,6 +1,7 @@
 import assert from "node:assert/strict";
 import { randomUUID } from "node:crypto";
 import test from "node:test";
+import { hojeLocal } from "../src/lib/periodo.ts";
 import { entrarComoAdmin } from "./support/sessao.mjs";
 
 // Requer: dashboard rodando (DASHBOARD_URL) com banco e seeds S04/S05.
@@ -55,6 +56,7 @@ const lote = [
   }),
 ];
 
+const hoje = hojeLocal(new Date(agora));
 const filtros = [
   ["total", {}],
   ["genero Feminino", { genero: "Feminino" }],
@@ -67,6 +69,9 @@ const filtros = [
   ["transporte Carro", { transporte: "Carro" }],
   ["local Hot Beach", { localPesquisa: "Hot Beach" }],
   ["mês atual", { periodo: "Mês atual" }],
+  ["mês pelo nome", { periodo: hoje.slice(0, 7) }],
+  ["personalizado só hoje", { periodo: `${hoje}..${hoje}` }],
+  ["personalizado antes de hoje", { periodo: "2001-01-01..2001-01-31" }],
 ];
 
 const antes = {};
@@ -92,6 +97,9 @@ const esperado = {
   "transporte Carro": 2,
   "local Hot Beach": 4,
   "mês atual": 4,
+  "mês pelo nome": 4,
+  "personalizado só hoje": 4,
+  "personalizado antes de hoje": 0,
 };
 
 for (const [nome, delta] of Object.entries(esperado)) {
@@ -114,6 +122,18 @@ test("sazonalidade tem 12 meses e origens somam no máximo 100%", async () => {
   assert.ok(p.sazonalidade.some((m) => m.pesquisas > 0));
   const soma = p.origensEstados.reduce((s, o) => s + o.percentual, 0);
   assert.ok(soma >= 98 && soma <= 102, `soma das origens = ${soma}`);
+});
+
+test("sazonalidade mostra o ano inteiro mesmo com um só mês escolhido", async () => {
+  const ano = await panorama({ periodo: `Ano ${hoje.slice(0, 4)}` });
+  const mes = await panorama({ periodo: hoje.slice(0, 7) });
+  assert.deepEqual(mes.sazonalidade.map((m) => m.pesquisas), ano.sazonalidade.map((m) => m.pesquisas));
+  assert.equal(mes.sazonalidade.filter((m) => m.noPeriodo).length, 1);
+  assert.equal(mes.anoSazonalidade, Number(hoje.slice(0, 4)));
+});
+
+test("período futuro não vira queda de 100%", async () => {
+  assert.equal((await panorama({ periodo: "2099-12" })).crescimento, "Este período ainda não começou");
 });
 
 test("filtros desconhecidos ou 'todos' não quebram a rota", async () => {

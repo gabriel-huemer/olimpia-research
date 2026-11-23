@@ -3,7 +3,8 @@
 export interface PanoramaDados {
   /** Total de pesquisas no recorte. 0 = ainda não há dados (as telas mostram "—"). */
   pesquisasColetadas: number;
-  crescimentoMes: string;
+  /** Comparação com o período anterior equivalente. */
+  crescimento: string;
   permanenciaMedia: string;
   nps: number;
   promotores: number;
@@ -11,7 +12,8 @@ export interface PanoramaDados {
   detratores: number;
   /** Quantas pesquisas tinham a nota de recomendação (base do NPS). */
   respostasNps: number;
-  sazonalidade: Array<{ mes: string; valor: number; pesquisas: number }>;
+  sazonalidade: Array<{ mes: string; valor: number; pesquisas: number; noPeriodo: boolean }>;
+  anoSazonalidade: number;
   origensEstados: Array<{ uf: string; percentual: number; detalhe?: string }>;
   visitanteRecorrente: { sim: number; nao: number };
   intencaoRetorno: number;
@@ -19,7 +21,7 @@ export interface PanoramaDados {
 
 export const panoramaVazio: PanoramaDados = {
   pesquisasColetadas: 0,
-  crescimentoMes: "Sem coletas no mês",
+  crescimento: "",
   permanenciaMedia: "—",
   nps: 0,
   promotores: 0,
@@ -30,7 +32,9 @@ export const panoramaVazio: PanoramaDados = {
     mes,
     valor: 0,
     pesquisas: 0,
+    noPeriodo: false,
   })),
+  anoSazonalidade: 0,
   origensEstados: [],
   visitanteRecorrente: { sim: 0, nao: 0 },
   intencaoRetorno: 0,

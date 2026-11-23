@@ -27,8 +27,7 @@ export default function PanoramaPage() {
             {p.pesquisasColetadas.toLocaleString("pt-BR")}
           </div>
           <div className="text-xs text-slate-300 mt-1.5 flex items-center gap-1">
-            <span>↗</span>
-            <span>{p.crescimentoMes}</span>
+            {p.crescimento}
           </div>
         </div>
 
@@ -81,6 +80,7 @@ export default function PanoramaPage() {
         <div className="lg:col-span-7 bg-white border border-slate-200 rounded-xl p-5 shadow-2xs flex flex-col justify-between">
           <h2 className="text-sm font-bold text-slate-900 mb-6">
             Movimentação mensal (sazonalidade)
+            <span className="font-normal text-xs text-slate-500"> · {p.anoSazonalidade || ""}</span>
           </h2>
 
           <div>
@@ -93,7 +93,7 @@ export default function PanoramaPage() {
                   <div
                     style={{ height: `${Math.min(100, item.valor)}%` }}
                     title={`${item.mes}: ${item.pesquisas} pesquisa(s)`}
-                    className="w-full rounded-t-md bg-[#008767] group-hover:bg-[#006e54] transition-all"
+                    className={`w-full rounded-t-md transition-all ${item.noPeriodo ? "bg-[#008767]" : "bg-[#008767]/30"} group-hover:bg-[#006e54]`}
                   />
                 </div>
               ))}

@@ -1,6 +1,7 @@
 import { agruparEstados } from "@/lib/estados";
 import { getDbPool } from "@/lib/db";
 import type { AnalyticsFilters } from "@/lib/paineis-types";
+import { comparacao, hojeLocal, intervaloAno, resolverPeriodo, type Intervalo } from "@/lib/periodo";
 import { panoramaVazio, type PanoramaDados } from "@/lib/panorama-types";
 
 // Indicadores do Panorama calculados direto do PostgreSQL (oto.pesquisa / resposta / resposta_valor).
@@ -31,8 +32,8 @@ export const FAIXAS_IDADE: Record<string, [number, number]> = {
 
 type Params = unknown[];
 
-/** Monta o WHERE (alias `p` = pesquisa) a partir dos filtros da tela. */
-export function montarFiltro(f: AnalyticsFilters): { where: string; params: Params; ano: number } {
+/** Monta o WHERE (alias `p` = pesquisa) a partir dos filtros da tela; `intervalo` troca só o período. */
+export function montarFiltro(f: AnalyticsFilters, intervalo?: Intervalo): { where: string; params: Params } {
   const cond: string[] = ["TRUE"];
   const params: Params = [];
   const add = (v: unknown) => {
@@ -44,20 +45,9 @@ export function montarFiltro(f: AnalyticsFilters): { where: string; params: Para
        JOIN oto.resposta_valor rv ON rv.resposta_id = r.id JOIN oto.opcao o ON o.id = rv.opcao_id
        WHERE r.pesquisa_id = p.id AND ${VALIDA} AND (${extra}))`;
 
-  let ano = new Date().getFullYear();
-  switch (f.periodo) {
-    case "Mês atual":
-      cond.push("p.iniciada_em >= date_trunc('month', now())");
-      break;
-    case "Últimos 30 dias":
-      cond.push("p.iniciada_em >= now() - interval '30 days'");
-      break;
-    default: {
-      const m = /^Ano (20\d{2})$/.exec(f.periodo ?? "");
-      if (m) ano = Number(m[1]);
-      cond.push(`p.iniciada_em >= timestamptz '${ano}-01-01 00:00-03' AND p.iniciada_em < timestamptz '${ano + 1}-01-01 00:00-03'`);
-    }
-  }
+  const { inicio, fim } = intervalo ?? resolverPeriodo(f.periodo, hojeLocal());
+  const dia = (d: string) => `${add(d)}::date::timestamp AT TIME ZONE 'America/Sao_Paulo'`;
+  cond.push(`p.iniciada_em >= ${dia(inicio)} AND p.iniciada_em < ${dia(fim)}`);
 
   if (f.genero && f.genero !== "Todos") cond.push(respostaOpcao("genero", `o.rotulo = ${add(f.genero)}`));
 
@@ -92,34 +82,34 @@ export function montarFiltro(f: AnalyticsFilters): { where: string; params: Para
       `EXISTS (SELECT 1 FROM oto.local_coleta lc WHERE lc.id = p.local_coleta_id AND starts_with(lc.nome, ${add(f.localPesquisa)}))`
     );
   }
-  return { where: cond.join(" AND "), params, ano };
+  return { where: cond.join(" AND "), params };
 }
 
 const pct = (parte: number, total: number) => (total > 0 ? Math.round((parte / total) * 100) : 0);
 
 export async function calcularPanorama(filtros: AnalyticsFilters): Promise<PanoramaDados> {
   const db = getDbPool();
-  const { where, params, ano } = montarFiltro(filtros);
+  const { where, params } = montarFiltro(filtros);
+  const hoje = hojeLocal();
+  const periodo = resolverPeriodo(filtros.periodo, hoje);
+  const anterior = comparacao(periodo, hoje);
+  const rAnterior = montarFiltro(filtros, anterior);
+  // A sazonalidade mostra sempre o ano inteiro (o do fim do período), com os demais filtros.
+  const ano = new Date(Date.parse(periodo.fim) - 1).getUTCFullYear();
+  const rAno = montarFiltro(filtros, intervaloAno(ano));
   const base = `FROM oto.pesquisa p WHERE ${where}`;
   const respostasDe = (codigo: string) =>
     `FROM oto.pesquisa p JOIN oto.resposta r ON r.pesquisa_id = p.id AND ${VALIDA}
        JOIN oto.pergunta pg ON pg.id = r.pergunta_id AND pg.codigo = '${codigo}'
        JOIN oto.resposta_valor rv ON rv.resposta_id = r.id WHERE ${where}`;
 
-  const [totais, sazonal, perm, nps, estados, recorrente, retorno] = await Promise.all([
-    db.query(
-      `SELECT count(*)::int AS total,
-         count(*) FILTER (WHERE p.iniciada_em >= date_trunc('month', now()))::int AS mes_atual,
-         count(*) FILTER (WHERE p.iniciada_em >= date_trunc('month', now()) - interval '1 month'
-                            AND p.iniciada_em < date_trunc('month', now()) - interval '1 month'
-                                                + (now() - date_trunc('month', now())))::int AS mes_anterior
-       ${base}`,
-      params
-    ),
+  const [totais, totaisAnterior, sazonal, perm, nps, estados, recorrente, retorno] = await Promise.all([
+    db.query(`SELECT count(*)::int AS total ${base}`, params),
+    db.query(`SELECT count(*)::int AS total FROM oto.pesquisa p WHERE ${rAnterior.where}`, rAnterior.params),
     db.query(
       `SELECT extract(month FROM p.iniciada_em AT TIME ZONE 'America/Sao_Paulo')::int AS mes, count(*)::int AS n
-       ${base} AND extract(year FROM p.iniciada_em AT TIME ZONE 'America/Sao_Paulo') = ${ano} GROUP BY 1`,
-      params
+         FROM oto.pesquisa p WHERE ${rAno.where} GROUP BY 1`,
+      rAno.params
     ),
     db.query(`SELECT avg(rv.valor_numero) AS media ${respostasDe("pernoites")} AND rv.valor_numero > 0`, params),
     db.query(
@@ -147,22 +137,26 @@ export async function calcularPanorama(filtros: AnalyticsFilters): Promise<Panor
     ),
   ]);
 
-  const { total, mes_atual, mes_anterior } = totais.rows[0];
-  if (total === 0) return { ...panoramaVazio };
-
-  const crescimentoMes =
-    mes_atual === 0
-      ? "Nenhuma coleta neste mês"
-      : mes_anterior === 0
-        ? `${mes_atual} neste mês (sem mês anterior)`
-        : `${mes_atual >= mes_anterior ? "+" : ""}${Math.round(((mes_atual - mes_anterior) / mes_anterior) * 100)}% neste mês`;
+  const total: number = totais.rows[0].total;
+  const totalAnterior: number = totaisAnterior.rows[0].total;
+  const variacao = totalAnterior === 0 ? 0 : Math.round(((total - totalAnterior) / totalAnterior) * 100);
+  const crescimento = periodo.inicio > hoje
+    ? "Este período ainda não começou"
+    : totalAnterior === 0
+      ? `Sem coletas no ${anterior.nome} para comparar`
+      : `${variacao > 0 ? "+" : ""}${variacao}% em relação ao ${anterior.nome}`;
 
   const porMes = new Map<number, number>(sazonal.rows.map((r) => [r.mes, r.n]));
   const maior = Math.max(1, ...porMes.values());
   const sazonalidade = MESES.map((mes, i) => {
     const n = porMes.get(i + 1) ?? 0;
-    return { mes, pesquisas: n, valor: Math.round((n / maior) * 100) };
+    const inicioMes = `${ano}-${String(i + 1).padStart(2, "0")}-01`;
+    const fimMes = i === 11 ? `${ano + 1}-01-01` : `${ano}-${String(i + 2).padStart(2, "0")}-01`;
+    const noPeriodo = inicioMes < periodo.fim && fimMes > periodo.inicio;
+    return { mes, pesquisas: n, valor: Math.round((n / maior) * 100), noPeriodo };
   });
+
+  if (total === 0) return { ...panoramaVazio, crescimento, sazonalidade, anoSazonalidade: ano };
 
   const { promotores = 0, neutros = 0, detratores = 0 } = nps.rows[0] ?? {};
   const baseNps = promotores + neutros + detratores;
@@ -180,7 +174,7 @@ export async function calcularPanorama(filtros: AnalyticsFilters): Promise<Panor
 
   return {
     pesquisasColetadas: total,
-    crescimentoMes,
+    crescimento,
     permanenciaMedia: media === null || media === undefined ? "—" : Number(media).toFixed(1).replace(".", ","),
     nps: baseNps ? pProm - pDet : 0,
     promotores: pProm,
@@ -188,6 +182,7 @@ export async function calcularPanorama(filtros: AnalyticsFilters): Promise<Panor
     detratores: pDet,
     respostasNps: baseNps,
     sazonalidade,
+    anoSazonalidade: ano,
     origensEstados,
     visitanteRecorrente: { sim: pct(sim, baseRec), nao: baseRec ? 100 - pct(sim, baseRec) : 0 },
     intencaoRetorno: pct(retorno.rows[0]?.sim ?? 0, retorno.rows[0]?.total ?? 0),
