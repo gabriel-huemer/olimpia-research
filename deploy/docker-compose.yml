@@ -1,0 +1,41 @@
+# Painel + HTTPS em produção. O banco sobe antes, por ../oto-db/docker-compose.yml (rede oto-db_default).
+#   cp .env.example .env   # preencha
+#   docker compose up -d --build
+name: oto-painel
+
+services:
+  painel:
+    build: ../dashboard
+    restart: unless-stopped
+    environment:
+      OTO_DB_HOST: oto-db
+      OTO_DB_PORT: 5432
+      OTO_DB_NAME: ${OTO_DB_NAME:-oto}
+      OTO_DB_USER: oto_web
+      OTO_DB_PASSWORD: ${OTO_WEB_PASSWORD:?defina OTO_WEB_PASSWORD}
+      OTO_MOBILE_PASSWORD: ${OTO_MOBILE_PASSWORD:?defina OTO_MOBILE_PASSWORD}
+      AUTH_SECRET: ${AUTH_SECRET:?defina AUTH_SECRET}
+      SYNC_API_TOKEN: ${SYNC_API_TOKEN:?defina SYNC_API_TOKEN}
+    networks: [default, banco]
+
+  caddy:
+    image: caddy:2-alpine
+    restart: unless-stopped
+    environment:
+      OTO_DOMINIO: ${OTO_DOMINIO:?defina OTO_DOMINIO}
+    ports: ["80:80", "443:443"]
+    volumes:
+      # Para restringir a administração à rede Tailscale, troque por ./Caddyfile.tailscale (veja o README).
+      - ./${OTO_CADDYFILE:-Caddyfile}:/etc/caddy/Caddyfile:ro
+      - caddy_data:/data
+      - caddy_config:/config
+    depends_on: [painel]
+
+networks:
+  banco:
+    name: oto-db_default
+    external: true
+
+volumes:
+  caddy_data:
+  caddy_config:

@@ -1,0 +1,14 @@
+# Fora da rede Tailscale só existe a parte pública; o resto responde 404.
+{$OTO_DOMINIO} {
+	encode gzip
+	header Strict-Transport-Security "max-age=31536000"
+	request_body {
+		max_size 25MB
+	}
+	@fora {
+		not remote_ip 100.64.0.0/10 fd7a:115c:a1e0::/48
+		not path / /analises /analises/* /publico /api/analytics /api/publico /api/auth/sessao /api/v1/* /_next/* /favicon.ico
+	}
+	respond @fora "Página não encontrada" 404
+	reverse_proxy painel:3000
+}

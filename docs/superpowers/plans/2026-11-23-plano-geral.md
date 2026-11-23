@@ -23,7 +23,7 @@ Frente que falhar 3 vezes pela mesma causa fica em PR aberto e o plano segue.
 - [x] 7. Publicação de resultados (RF21)
 - [x] 8. Formulários e versões no banco (RF05); app baixa o publicado
 - [x] 9. Conta (trocar a própria senha), limpeza dos dados de exemplo, SonarCloud
-- [ ] 10. Hospedagem: contêineres, HTTPS, backup; guia de Tailscale
+- [x] 10. Hospedagem: contêineres, HTTPS, backup; guia de Tailscale
 - [ ] 11. Relatório final
 
 ## Status
@@ -83,3 +83,9 @@ Frente que falhar 3 vezes pela mesma causa fica em PR aberto e o plano segue.
 - Limite conhecido: trocar a senha não derruba sessões já abertas (elas duram até 8 horas).
 - Não mexido: `Paraíba ((PB)` é o valor exato da planilha do cliente (o app já mostra "Paraíba (PB)"); o alerta de aleatoriedade do
   Sonar em `oto-db/demo/popular_demo.py` é de um gerador de dados fictícios e ficou para o Hugo marcar como seguro.
+
+### Frente 10 — Hospedagem
+- Feito: imagem do painel, compose com HTTPS automático (Caddy), variante Tailscale, guia e backup (`deploy/README.md`). O CI
+  constrói a imagem.
+- Conferido na máquina: imagem (com Node 20) e regras do Caddy contra o `oto_teste`; fora da rede só a parte pública respondeu.
+- Não conferido: emissão de certificado, servidor real e acesso vindo de dentro de uma rede Tailscale.
