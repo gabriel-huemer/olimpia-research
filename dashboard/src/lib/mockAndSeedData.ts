@@ -47,22 +47,6 @@ export interface PesquisaColetada {
     | "Excluída";
 }
 
-export interface OperadorCampo {
-  id: string;
-  nome: string;
-  codigo: string;
-  coletas7Dias: number;
-  coletas30Dias: number;
-  alertas7Dias: number;
-  taxaAlerta: number;
-  ultimoEnvio: string;
-  statusEnvio: "normal" | "offline";
-  localHabitual: string;
-  mediaDiaria: number;
-  serieDiaria: number[];
-  ativo: boolean;
-}
-
 export interface ItemPublicacao {
   id: string;
   indicador: string;
@@ -401,7 +385,6 @@ const SECOES_PADRAO: SecaoFormulario[] = [
 interface AppDataStore {
   formularios: FormularioItem[];
   pesquisas: PesquisaColetada[];
-  operadores: OperadorCampo[];
   publicacaoItens: ItemPublicacao[];
   ultimaPublicacao: string;
   metodoPublicacao: string;
@@ -467,68 +450,6 @@ const initialStore: AppDataStore = {
     buildPesquisaSeed("0043", "Goiânia, GO", "Carlos Lima", "Hot Beach", "26/10 09:20", "Aprovada"),
     buildPesquisaSeed("0042", "Barretos, SP", "Marina Alves", "Praça da Matriz", "25/10 16:05", "Aprovada"),
     buildPesquisaSeed("0041", "— (telefone)", "Gestão (manual)", "—", "25/10 11:30", "Inserida manualmente"),
-  ],
-  operadores: [
-    {
-      id: "op-1",
-      nome: "Ana Souza",
-      codigo: "OTO-482",
-      coletas7Dias: 142,
-      coletas30Dias: 412,
-      alertas7Dias: 3,
-      taxaAlerta: 2.9,
-      ultimoEnvio: "hoje 10:44",
-      statusEnvio: "normal",
-      localHabitual: "Thermas dos Laranjais",
-      mediaDiaria: 14,
-      serieDiaria: [11, 16, 13, 18, 19, 12, 15],
-      ativo: true,
-    },
-    {
-      id: "op-2",
-      nome: "Carlos Lima",
-      codigo: "OTO-377",
-      coletas7Dias: 116,
-      coletas30Dias: 356,
-      alertas7Dias: 0,
-      taxaAlerta: 1.1,
-      ultimoEnvio: "hoje 09:41",
-      statusEnvio: "normal",
-      localHabitual: "Hot Beach",
-      mediaDiaria: 12,
-      serieDiaria: [10, 12, 14, 15, 13, 11, 12],
-      ativo: true,
-    },
-    {
-      id: "op-3",
-      nome: "Marina Alves",
-      codigo: "OTO-519",
-      coletas7Dias: 88,
-      coletas30Dias: 301,
-      alertas7Dias: 1,
-      taxaAlerta: 6.3,
-      ultimoEnvio: "ontem",
-      statusEnvio: "normal",
-      localHabitual: "Praça da Matriz",
-      mediaDiaria: 10,
-      serieDiaria: [8, 11, 10, 12, 14, 9, 10],
-      ativo: true,
-    },
-    {
-      id: "op-4",
-      nome: "João Pereira",
-      codigo: "OTO-264",
-      coletas7Dias: 47,
-      coletas30Dias: 188,
-      alertas7Dias: 2,
-      taxaAlerta: 12.8,
-      ultimoEnvio: "há 2 dias",
-      statusEnvio: "offline",
-      localHabitual: "Thermas dos Laranjais",
-      mediaDiaria: 6,
-      serieDiaria: [7, 8, 9, 6, 7, 0, 0],
-      ativo: true,
-    },
   ],
   publicacaoItens: [
     {

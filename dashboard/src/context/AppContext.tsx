@@ -4,7 +4,6 @@ import React, { createContext, useContext, useState, useEffect, useCallback } fr
 import type {
   FormularioItem,
   PesquisaColetada,
-  OperadorCampo,
   ItemPublicacao,
   ProblemaImportacao,
 } from "@/lib/mockAndSeedData";
@@ -39,7 +38,6 @@ interface AppContextValue {
   pendentesRevisao: number;
   formularios: FormularioItem[];
   pesquisas: PesquisaColetada[];
-  operadores: OperadorCampo[];
   publicacaoItens: ItemPublicacao[];
   ultimaPublicacao: string;
   metodoPublicacao: string;
@@ -74,7 +72,6 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
   const [pendentesRevisao, setPendentesRevisao] = useState(0);
   const [formularios, setFormularios] = useState<FormularioItem[]>([]);
   const [pesquisas, setPesquisas] = useState<PesquisaColetada[]>([]);
-  const [operadores, setOperadores] = useState<OperadorCampo[]>([]);
   const [publicacaoItens, setPublicacaoItens] = useState<ItemPublicacao[]>([]);
   const [ultimaPublicacao, setUltimaPublicacao] = useState("Nenhuma");
   const [metodoPublicacao, setMetodoPublicacao] = useState("Incorporar no site (iframe/link)");
@@ -96,7 +93,6 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
     setPendentesRevisao(typeof data.pendentesRevisao === "number" ? data.pendentesRevisao : 0);
     setFormularios((data.formularios as FormularioItem[]) || []);
     setPesquisas((data.pesquisas as PesquisaColetada[]) || []);
-    setOperadores((data.operadores as OperadorCampo[]) || []);
     setPublicacaoItens((data.publicacaoItens as ItemPublicacao[]) || []);
     setUltimaPublicacao((data.ultimaPublicacao as string) || "Nenhuma");
     setMetodoPublicacao(
@@ -257,7 +253,6 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
         pendentesRevisao,
         formularios,
         pesquisas,
-        operadores,
         publicacaoItens,
         ultimaPublicacao,
         metodoPublicacao,

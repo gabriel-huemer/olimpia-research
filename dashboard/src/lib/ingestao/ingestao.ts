@@ -141,7 +141,8 @@ export async function ingerirLote(lote: PesquisaPayload[]): Promise<ResultadoLot
         ? (
             await db.query(
               `SELECT id, codigo_acesso AS codigo, local_padrao_id FROM oto.usuario
-               WHERE codigo_acesso = $1 AND perfil = 'PESQUISADOR' AND ativo`,
+               WHERE (codigo_acesso = $1 OR id = (SELECT usuario_id FROM oto.codigo_antigo WHERE codigo = $1))
+                 AND perfil = 'PESQUISADOR' AND ativo`,
               [pesquisador.toUpperCase().replace(/[^A-Z0-9]/g, "")]
             )
           ).rows[0]
