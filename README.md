@@ -86,7 +86,28 @@ cat .usuarios-teste.oto.env      # mostra e-mails e senhas
   ([dashboard/README.md](dashboard/README.md)), suba o painel (`npm run dev`) e abra <http://localhost:3000/administracao>.
 - **App:** rode com `--dart-define=SYNC_API_URL=...` e `--dart-define=SYNC_API_TOKEN=...` (o mesmo token do painel).
   Sem a URL, o app simula o envio; com a URL e sem o token, o painel recusa a sincronização.
-- **Errou a senha 5 vezes?** O login daquele e-mail fica bloqueado por 15 minutos.
+
+## Regras de acesso e segurança
+
+| Regra | Como funciona hoje |
+|---|---|
+| Visitante | Não faz login e vê só Análises. Em Coleta ou Sistema, volta para o Panorama |
+| Quem faz login | O administrador e os perfis criados por ele com Coleta ou Sistema. Visualizador e Pesquisador são recusados |
+| Entrada | `/administracao`, sem link público. `/login` e `/acesso-oto` não existem |
+| Sessão | Dura 8 horas. Desativar a conta ou mudar as áreas do perfil vale na hora |
+| Senhas erradas | 5 erros em 15 minutos (mesmo e-mail e mesma rede) bloqueiam por 15 minutos; 20 erros no mesmo e-mail bloqueiam de qualquer rede |
+| Senha | Mínimo de 10 caracteres, com letras e números; senhas muito comuns são recusadas |
+| Sincronização do app | Exige `SYNC_API_TOKEN`, hoje o mesmo para todos os aparelhos. Sem ele, as pesquisas ficam na fila do app |
+| Configuração obrigatória | `AUTH_SECRET` (sem ele ninguém entra) e `SYNC_API_TOKEN` (sem ele o app não sincroniza) |
+
+**Testes:** os de integração criam dados e mexem na curadoria; rode só em um banco descartável (ex.: `oto_teste`), nunca
+no `oto` nem no `oto_demo`.
+
+### Decisões em aberto
+
+- **Quem pode fazer login:** manter os perfis personalizados ou liberar só para o administrador?
+- **Banco demo:** o `oto_demo` começa vazio em cada máquina; antes do vídeo, carregue as 700 pesquisas fictícias
+  ([oto-db/demo/README.md](oto-db/demo/README.md)).
 
 ## Melhoria futura: administração só na rede certa (Tailscale)
 
