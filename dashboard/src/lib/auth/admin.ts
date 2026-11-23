@@ -131,7 +131,8 @@ export async function listarUsuarios(): Promise<UsuarioDto[]> {
   }));
 }
 
-const EMAIL = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+// Sem quantificadores aninhados; o tamanho é checado antes (evita backtracking caro).
+const EMAIL = /^[^\s@]+@[^\s@.]+(\.[^\s@.]+)+$/;
 
 export async function criarUsuario(
   autorId: string,
@@ -142,7 +143,7 @@ export async function criarUsuario(
   const perfilId = Number(dados.perfilId);
   const senha = typeof dados.senha === "string" ? dados.senha : "";
   if (!nome || nome.length > 150) throw new ErroAdmin(400, "Informe o nome (até 150 caracteres).");
-  if (!EMAIL.test(email) || email.length > 200) throw new ErroAdmin(400, "E-mail inválido.");
+  if (email.length > 200 || !EMAIL.test(email)) throw new ErroAdmin(400, "E-mail inválido.");
   if (!Number.isInteger(perfilId)) throw new ErroAdmin(400, "Escolha um perfil.");
   const forca = validarForcaSenha(senha);
   if (!forca.ok) throw new ErroAdmin(400, `Senha fraca: ${forca.motivo}`);

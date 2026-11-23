@@ -179,6 +179,12 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
 
   // Panorama: vem do banco. As demais abas ainda usam dados de exemplo até serem migradas.
   const [panorama, setPanorama] = useState<PanoramaDados>(panoramaVazio);
+  // Relê o Panorama a cada 15s também para visitantes (que não consultam /api/state).
+  const [atualizacao, setAtualizacao] = useState(0);
+  useEffect(() => {
+    const timer = setInterval(() => setAtualizacao((n) => n + 1), 15000);
+    return () => clearInterval(timer);
+  }, []);
   useEffect(() => {
     const controller = new AbortController();
     const qs = new URLSearchParams(filters as Record<string, string>).toString();
@@ -190,7 +196,7 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
       })
       .catch(() => {});
     return () => controller.abort();
-  }, [filters, pesquisas.length]);
+  }, [filters, pesquisas.length, atualizacao]);
   const analytics = { ...getFilteredAnalytics(filters), panorama };
 
   const exportToExcel = useCallback(
