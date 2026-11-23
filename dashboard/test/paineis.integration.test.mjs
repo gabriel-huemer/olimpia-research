@@ -34,6 +34,7 @@ test("aba desconhecida é 400; sem aba devolve o Panorama e as opções reais de
   assert.ok(j.panorama);
   assert.ok(j.opcoes.locais.includes("Praça da Matriz"));
   assert.ok(j.opcoes.periodos.includes(`Ano ${new Date().getFullYear()}`));
+  assert.equal(j.opcoes.periodos.filter((p) => /^\d{4}-\d{2}$/.test(p)).length, 12);
 });
 
 test("infraestrutura: notas 5/3/1, ignora 'não utilizei', expectativa e PcD", async () => {

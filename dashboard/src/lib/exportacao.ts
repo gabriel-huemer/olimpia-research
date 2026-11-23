@@ -1,6 +1,8 @@
 // Linhas da planilha exportada em cada aba de Análises: sempre os números que estão na tela (RF24).
 import type { Aba, AnalyticsFilters, Fatia, NotaItem, Paineis } from "./paineis-types";
 
+import { rotuloPeriodo } from "./periodo.ts";
+
 type Linha = Record<string, unknown>;
 
 const fatias = (indicador: string, lista: Fatia[]): Linha[] =>
@@ -17,7 +19,7 @@ export function linhasDaAba(aba: Aba, p: Paineis, filtros: AnalyticsFilters): Li
       valor("NPS", p.panorama.nps, p.panorama.respostasNps),
       valor("Intenção de retorno (%)", p.panorama.intencaoRetorno),
       valor("Visitante recorrente (%)", p.panorama.visitanteRecorrente.sim),
-      ...p.panorama.sazonalidade.map((m) => ({ Indicador: "Pesquisas por mês", Item: m.mes, Respostas: m.pesquisas })),
+      ...p.panorama.sazonalidade.map((m) => ({ Indicador: `Pesquisas por mês (${p.panorama.anoSazonalidade})`, Item: m.mes, Respostas: m.pesquisas })),
       ...p.panorama.origensEstados.map((o) => ({ Indicador: "Origem por estado", Item: o.uf, Percentual: o.percentual })),
     ],
     infraestrutura: () => [
@@ -51,7 +53,7 @@ export function linhasDaAba(aba: Aba, p: Paineis, filtros: AnalyticsFilters): Li
       ...fatias("Do aeroporto", p.atracoes.aeroporto),
     ],
   };
-  const recorte = Object.fromEntries(Object.entries(filtros).map(([k, v]) => [`Filtro_${k}`, v]));
+  const recorte = Object.fromEntries(Object.entries(filtros).map(([k, v]) => [`Filtro_${k}`, k === "periodo" ? rotuloPeriodo(v) : v]));
   // Todas as colunas em todas as linhas: o gerador de planilha usa as chaves da primeira.
   return linhas[aba]().map((l) => ({ Indicador: "", Item: "", Respostas: "", Percentual: "", Valor: "", ...semVazios(l), ...recorte }));
 }

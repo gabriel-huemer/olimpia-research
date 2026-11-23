@@ -1,4 +1,5 @@
 // Abas de Análises calculadas direto do PostgreSQL. Só respostas válidas (RF12/RF14).
+import { hojeLocal, mesesDoAno } from "@/lib/periodo";
 import { getDbPool } from "@/lib/db";
 import { calcularPanorama, FAIXAS_IDADE, montarFiltro, VALIDA } from "@/lib/panorama";
 import type {
@@ -226,10 +227,10 @@ export async function opcoesDeFiltro(): Promise<OpcoesFiltro> {
     ),
     db.query("SELECT nome FROM oto.local_coleta WHERE ativo ORDER BY nome"),
   ]);
-  const anoAtual = new Date().getFullYear();
+  const anoAtual = Number(hojeLocal().slice(0, 4));
   const lista = [...new Set([anoAtual, ...anos.rows.map((l) => l.ano as number)])].sort((a, b) => b - a);
   return {
-    periodos: ["Mês atual", "Últimos 30 dias", ...lista.map((a) => `Ano ${a}`)],
+    periodos: ["Mês atual", "Últimos 30 dias", ...mesesDoAno(anoAtual), ...lista.map((a) => `Ano ${a}`)],
     generos: generos.rows.map((l) => l.rotulo),
     cidades: cidades.rows.map((l) => l.cidade),
     locais: locais.rows.map((l) => l.nome),

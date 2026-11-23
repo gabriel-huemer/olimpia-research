@@ -3,6 +3,7 @@
 import React, { useState } from "react";
 import Link from "next/link";
 import { Download, Globe } from "lucide-react";
+import { SeletorPeriodo } from "@/components/SeletorPeriodo";
 import { useApp } from "@/context/AppContext";
 
 export function AnalyticsHeaderActions({
@@ -13,26 +14,9 @@ export function AnalyticsHeaderActions({
   const { filters, setFilter, exportReportPdfOrExcel, canManageUsers, opcoesFiltro } = useApp();
   const [showExportMenu, setShowExportMenu] = useState(false);
 
-  const periodos = opcoesFiltro.periodos.length ? opcoesFiltro.periodos : [filters.periodo];
-
   return (
     <div className="flex flex-wrap items-center gap-2.5">
-      {/* Seletor de Período */}
-      <div className="relative flex items-center bg-white border border-slate-200 rounded-lg px-3 py-2 text-xs text-slate-700 shadow-2xs">
-        <span className="text-slate-400 mr-1">Período:</span>
-        <select
-          aria-label="Selecionar período"
-          value={filters.periodo}
-          onChange={(e) => setFilter("periodo", e.target.value)}
-          className="font-semibold text-slate-900 bg-transparent focus:outline-none cursor-pointer pr-1"
-        >
-          {periodos.map((p) => (
-            <option key={p} value={p}>
-              {p}
-            </option>
-          ))}
-        </select>
-      </div>
+      <SeletorPeriodo valor={filters.periodo} opcoes={opcoesFiltro.periodos} aoMudar={(v) => setFilter("periodo", v)} />
 
       {/* Botão Publicar no site (só quem tem a área Sistema) */}
       {canManageUsers && (
