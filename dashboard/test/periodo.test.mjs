@@ -10,6 +10,7 @@ test("mês atual, últimos 30 dias, mês e ano viram intervalos (fim exclusivo)"
   assert.deepEqual(p("2026-12"), { tipo: "mes", inicio: "2026-12-01", fim: "2027-01-01" });
   assert.deepEqual(p("2026-02"), { tipo: "mes", inicio: "2026-02-01", fim: "2026-03-01" });
   assert.deepEqual(p("Ano 2025"), { tipo: "ano", inicio: "2025-01-01", fim: "2026-01-01" });
+  assert.deepEqual(p("Últimos 7 dias"), { tipo: "dias", inicio: "2026-11-17", fim: "2026-11-24" });
   assert.deepEqual(p("Últimos 30 dias"), { tipo: "dias", inicio: "2026-10-25", fim: "2026-11-24" });
 });
 

@@ -66,9 +66,12 @@ test("protocolos simultâneos não se repetem", async () => {
 test("filtros e paginação", async () => {
   const manuais = await listar({ origem: "MANUAL" });
   assert.ok(manuais.total > 0 && manuais.pesquisas.every((p) => p.origem === "MANUAL"));
-  assert.ok((await listar({ mes: "2026-11" })).pesquisas.every((p) => p.coletada.slice(3, 10) === "11/2026"));
+  assert.ok((await listar({ periodo: "2026-11" })).pesquisas.every((p) => p.coletada.slice(3, 10) === "11/2026"));
+  assert.equal((await listar({ periodo: "2001-01-01..2001-01-31" })).total, 0);
+  assert.equal((await listar({ periodo: "Tudo" })).total, (await listar()).total);
+  assert.equal((await listar()).opcoes.periodos.filter((p) => /^\d{4}-\d{2}$/.test(p)).length, 12);
   assert.ok((await listar({ pagina: "99999" })).pagina >= 1);
-  await listar({ mes: "x", operador: "' OR 1=1", local: "-1", situacao: "x", origem: "x", busca: "%_\\\0", pagina: "-5" });
+  await listar({ periodo: "x", operador: "' OR 1=1", local: "-1", situacao: "x", origem: "x", busca: "%_\\\0", pagina: "-5" });
   assert.equal((await listar({ operador: randomUUID() })).total, 0);
 });
 

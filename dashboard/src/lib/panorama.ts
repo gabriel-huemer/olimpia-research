@@ -1,7 +1,7 @@
 import { agruparEstados } from "@/lib/estados";
 import { getDbPool } from "@/lib/db";
 import type { AnalyticsFilters } from "@/lib/paineis-types";
-import { comparacao, hojeLocal, intervaloAno, resolverPeriodo, type Intervalo } from "@/lib/periodo";
+import { comparacao, diaSql, hojeLocal, intervaloAno, resolverPeriodo, type Intervalo } from "@/lib/periodo";
 import { panoramaVazio, type PanoramaDados } from "@/lib/panorama-types";
 
 // Indicadores do Panorama calculados direto do PostgreSQL (oto.pesquisa / resposta / resposta_valor).
@@ -46,8 +46,7 @@ export function montarFiltro(f: AnalyticsFilters, intervalo?: Intervalo): { wher
        WHERE r.pesquisa_id = p.id AND ${VALIDA} AND (${extra}))`;
 
   const { inicio, fim } = intervalo ?? resolverPeriodo(f.periodo, hojeLocal());
-  const dia = (d: string) => `${add(d)}::date::timestamp AT TIME ZONE 'America/Sao_Paulo'`;
-  cond.push(`p.iniciada_em >= ${dia(inicio)} AND p.iniciada_em < ${dia(fim)}`);
+  cond.push(`p.iniciada_em >= ${diaSql(add(inicio))} AND p.iniciada_em < ${diaSql(add(fim))}`);
 
   if (f.genero && f.genero !== "Todos") cond.push(respostaOpcao("genero", `o.rotulo = ${add(f.genero)}`));
 

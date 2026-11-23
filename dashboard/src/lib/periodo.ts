@@ -1,4 +1,4 @@
-// Período das Análises. Valores: "Mês atual", "Últimos 30 dias", "2026-03", "Ano 2026" ou "2026-03-10..2026-03-15".
+// Período das Análises. Valores: "Mês atual", "Últimos 7/30 dias", "2026-03", "Ano 2026" ou "2026-03-10..2026-03-15".
 // Datas em AAAA-MM-DD no fuso de São Paulo; o fim do intervalo é exclusivo.
 
 export interface Intervalo {
@@ -38,7 +38,8 @@ export function resolverPeriodo(valor: string | undefined, hoje: string): Period
   const v = valor ?? "";
   const atual = MES.exec(v === "Mês atual" ? hoje.slice(0, 7) : v);
   if (atual) return intervaloMes(Number(atual[1]), Number(atual[2]));
-  if (v === "Últimos 30 dias") return { tipo: "dias", inicio: somarDias(hoje, -29), fim: somarDias(hoje, 1) };
+  const dias = /^Últimos (7|30) dias$/.exec(v);
+  if (dias) return { tipo: "dias", inicio: somarDias(hoje, 1 - Number(dias[1])), fim: somarDias(hoje, 1) };
   const c = PERSONALIZADO.exec(v);
   if (c && diaValido(c[1]) && diaValido(c[2])) {
     const [de, ate] = c[1] <= c[2] ? [c[1], c[2]] : [c[2], c[1]];
@@ -68,6 +69,16 @@ export function comparacao(p: Periodo, hoje: string): Intervalo & { nome: string
 }
 
 export const mesesDoAno = (ano: number) => NOMES.map((_, i) => `${ano}-${String(i + 1).padStart(2, "0")}`);
+
+/** Opções do seletor: as rápidas, os 12 meses do ano vigente e os anos com coleta. */
+export function opcoesPeriodo(rapidas: string[], anos: number[], hoje: string): string[] {
+  const atual = Number(hoje.slice(0, 4));
+  const lista = [...new Set([atual, ...anos])].sort((a, b) => b - a);
+  return [...rapidas, ...mesesDoAno(atual), ...lista.map((a) => `Ano ${a}`)];
+}
+
+/** Dia (AAAA-MM-DD) já parametrizado em SQL -> meia-noite em São Paulo. */
+export const diaSql = (param: string) => `${param}::date::timestamp AT TIME ZONE 'America/Sao_Paulo'`;
 
 export function rotuloPeriodo(valor: string): string {
   const m = MES.exec(valor);

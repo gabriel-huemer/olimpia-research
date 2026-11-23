@@ -1,5 +1,6 @@
 // Abas de Análises calculadas direto do PostgreSQL. Só respostas válidas (RF12/RF14).
-import { hojeLocal, mesesDoAno } from "@/lib/periodo";
+import { anosComColeta } from "@/lib/anos";
+import { hojeLocal, opcoesPeriodo } from "@/lib/periodo";
 import { getDbPool } from "@/lib/db";
 import { calcularPanorama, FAIXAS_IDADE, montarFiltro, VALIDA } from "@/lib/panorama";
 import type {
@@ -209,10 +210,7 @@ export async function calcularPainel<A extends Aba>(aba: A, filtros: AnalyticsFi
 export async function opcoesDeFiltro(): Promise<OpcoesFiltro> {
   const db = getDbPool();
   const [anos, generos, cidades, locais] = await Promise.all([
-    db.query(
-      `SELECT DISTINCT extract(year FROM iniciada_em AT TIME ZONE 'America/Sao_Paulo')::int AS ano
-         FROM oto.pesquisa ORDER BY 1 DESC LIMIT 10`
-    ),
+    anosComColeta(),
     db.query(
       `SELECT o.rotulo, min(o.ordem) AS ordem FROM oto.opcao o
          JOIN oto.pergunta pg ON pg.id = o.pergunta_id AND pg.codigo = 'genero' GROUP BY 1 ORDER BY 2`
@@ -227,10 +225,8 @@ export async function opcoesDeFiltro(): Promise<OpcoesFiltro> {
     ),
     db.query("SELECT nome FROM oto.local_coleta WHERE ativo ORDER BY nome"),
   ]);
-  const anoAtual = Number(hojeLocal().slice(0, 4));
-  const lista = [...new Set([anoAtual, ...anos.rows.map((l) => l.ano as number)])].sort((a, b) => b - a);
   return {
-    periodos: ["Mês atual", "Últimos 30 dias", ...mesesDoAno(anoAtual), ...lista.map((a) => `Ano ${a}`)],
+    periodos: opcoesPeriodo(["Mês atual", "Últimos 30 dias"], anos, hojeLocal()),
     generos: generos.rows.map((l) => l.rotulo),
     cidades: cidades.rows.map((l) => l.cidade),
     locais: locais.rows.map((l) => l.nome),

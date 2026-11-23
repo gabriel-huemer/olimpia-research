@@ -5,7 +5,7 @@ import { baseUrl, chamar, entrar, entrarComoAdmin } from "./support/sessao.mjs";
 
 const admin = chamar(await entrarComoAdmin());
 const marca = randomUUID().slice(0, 8);
-const listar = async (quem = admin, dias = 30) => (await (await quem(`/api/operadores?dias=${dias}`)).json()).operadores;
+const listar = async (quem = admin, periodo = "Últimos 30 dias") => (await (await quem(`/api/operadores?${new URLSearchParams({ periodo })}`)).json()).operadores;
 const criar = async (extra = {}) => {
   const { locais } = await (await admin("/api/operadores")).json();
   const nome = `Operador ${randomUUID().slice(0, 8)}`;
@@ -68,6 +68,8 @@ test("desempenho: coletas, taxa de alerta, último envio e atraso", async () => 
   await enviar(o.codigo, true);
   v = (await listar()).find((x) => x.id === o.id);
   assert.equal(v.coletas, 2);
+  assert.equal((await listar(admin, "2001-01-01..2001-01-31")).find((x) => x.id === o.id).coletas, 0);
+  assert.equal((await listar(admin, "Últimos 7 dias")).find((x) => x.id === o.id).coletas, 2);
   assert.equal(v.taxaAlerta, 50);
   assert.equal(v.atrasado, false);
   assert.equal(v.porDia.length, 7);

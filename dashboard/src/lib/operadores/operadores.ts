@@ -2,6 +2,7 @@
 import { randomInt } from "node:crypto";
 import type { PoolClient } from "pg";
 import { getDbPool, withAuditTransaction } from "@/lib/db";
+import { diaSql, type Intervalo } from "@/lib/periodo";
 import { ErroAdmin } from "@/lib/auth/admin";
 
 export interface Operador {
@@ -21,12 +22,9 @@ export interface Operador {
 }
 
 const LETRAS = "ABCDEFGHJKMNPQRSTUVWXYZ23456789"; // sem 0/O, 1/I/L
-const DIAS = [7, 30, 365];
 const ID = /^[0-9a-f]{8}(-[0-9a-f]{4}){3}-[0-9a-f]{12}$/i;
 
-export const lerDias = (v: string | null) => (DIAS.includes(Number(v)) ? Number(v) : 30);
-
-export async function listarOperadores(dias: number, comCodigo: boolean): Promise<Operador[]> {
+export async function listarOperadores(intervalo: Intervalo, comCodigo: boolean): Promise<Operador[]> {
   const { rows } = await getDbPool().query(
     `SELECT u.id, u.nome, u.codigo_acesso, u.ativo, lc.id::text AS local_id, lc.nome AS local_nome,
             coalesce(c.coletas, 0)::int AS coletas, coalesce(c.alertas, 0)::int AS alertas, l.ultimo,
@@ -43,11 +41,11 @@ export async function listarOperadores(dias: number, comCodigo: boolean): Promis
                 count(*) FILTER (WHERE EXISTS (SELECT 1 FROM oto.resposta r JOIN oto.sinalizacao s ON s.resposta_id = r.id
                                                 WHERE r.pesquisa_id = p.id)) AS alertas
            FROM oto.pesquisa p
-          WHERE p.pesquisador_id = u.id AND p.iniciada_em >= now() - make_interval(days => $1)) c ON true
+          WHERE p.pesquisador_id = u.id AND p.iniciada_em >= ${diaSql("$1")} AND p.iniciada_em < ${diaSql("$2")}) c ON true
        LEFT JOIN LATERAL (SELECT max(iniciado_em) AS ultimo FROM oto.lote_sincronizacao WHERE usuario_id = u.id) l ON true
       WHERE u.perfil = 'PESQUISADOR'
       ORDER BY u.ativo DESC, c.coletas DESC NULLS LAST, u.nome`,
-    [dias]
+    [intervalo.inicio, intervalo.fim]
   );
   return rows.map((l) => ({
     id: l.id,

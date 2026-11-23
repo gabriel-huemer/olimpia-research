@@ -1,5 +1,7 @@
 // Lista de pesquisas coletadas, com filtros (RF18) e exportação com as respostas (RF24).
+import { anosComColeta } from "@/lib/anos";
 import { getDbPool } from "@/lib/db";
+import { diaSql, hojeLocal, opcoesPeriodo, resolverPeriodo } from "@/lib/periodo";
 
 export interface PesquisaLinha {
   id: string;
@@ -14,7 +16,7 @@ export interface PesquisaLinha {
 }
 
 export interface OpcoesPesquisas {
-  meses: string[];
+  periodos: string[];
   operadores: Array<{ id: string; nome: string }>;
   locais: Array<{ id: string; nome: string }>;
 }
@@ -33,8 +35,11 @@ function montar(q: URLSearchParams): { where: string; params: unknown[] } {
   const cond = ["TRUE"];
   const params: unknown[] = [];
   const add = (v: unknown) => `$${params.push(v)}`;
-  const mes = /^(20\d{2})-(0[1-9]|1[0-2])$/.exec(q.get("mes") ?? "");
-  if (mes) cond.push(`to_char(${INICIO_LOCAL}, 'YYYY-MM') = ${add(mes[0])}`);
+  const periodo = q.get("periodo") ?? "Tudo";
+  if (periodo !== "Tudo") {
+    const { inicio, fim } = resolverPeriodo(periodo, hojeLocal());
+    cond.push(`p.iniciada_em >= ${diaSql(add(inicio))} AND p.iniciada_em < ${diaSql(add(fim))}`);
+  }
   const operador = q.get("operador") ?? "";
   if (UUID.test(operador)) cond.push(`coalesce(p.pesquisador_id, p.registrada_por) = ${add(operador)}`);
   const local = q.get("local") ?? "";
@@ -72,15 +77,15 @@ export async function listarPesquisas(q: URLSearchParams): Promise<{ total: numb
 
 export async function opcoesPesquisas(): Promise<OpcoesPesquisas> {
   const db = getDbPool();
-  const [meses, operadores, locais] = await Promise.all([
-    db.query(`SELECT DISTINCT to_char(${INICIO_LOCAL}, 'YYYY-MM') AS mes FROM oto.pesquisa p ORDER BY 1 DESC LIMIT 60`),
+  const [anos, operadores, locais] = await Promise.all([
+    anosComColeta(),
     db.query(
       `SELECT id, nome FROM oto.usuario u
         WHERE EXISTS (SELECT 1 FROM oto.pesquisa p WHERE p.pesquisador_id = u.id OR p.registrada_por = u.id) ORDER BY nome`
     ),
     db.query("SELECT id::text AS id, nome FROM oto.local_coleta ORDER BY nome"),
   ]);
-  return { meses: meses.rows.map((l) => l.mes), operadores: operadores.rows, locais: locais.rows };
+  return { periodos: opcoesPeriodo(["Tudo", "Mês atual", "Últimos 30 dias"], anos, hojeLocal()), operadores: operadores.rows, locais: locais.rows };
 }
 
 /** Uma linha por pesquisa e uma coluna por pergunta. Respostas não validadas saem marcadas na coluna Situação. */

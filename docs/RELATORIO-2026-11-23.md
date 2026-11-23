@@ -25,10 +25,8 @@ aceitava a lista vazia como verde. Corrigi o script (exige os 5 checks) e o PR #
 
 ## O que precisa do Hugo
 
-1. **Migrar os bancos antes de usar a `stage`.** `oto` e `oto_demo` estão na V005 e precisam ir até a V010. Em `oto-db/`:
-   `make backup`, `make migrate` e depois `make migrate OTO_DB_NAME=oto_demo`. Sem isso, várias telas dão erro.
-2. **Decidir:** as Análises são públicas, mas o RF21 diz que nada aparece sem aprovação. Ou as Análises exigem login, ou o RF21 vale só
-   para `/publico`.
+1. **Feito em 23/11:** `oto` e `oto_demo` migrados para a V010, com backup antes. Outras máquinas e o servidor ainda precisam de `make migrate` (em `oto-db/`).
+2. **Decidido em 23/11 (Hugo):** as Análises são públicas, sem mínimo por recorte. O RF21 (aprovação) vale só para `/publico`.
 3. **Levar a `stage` para a `main`** quando aprovar.
 4. **Planilha real do cliente** para testar a importação.
 5. **Hospedagem:** servidor, domínio e, se quiser, Tailscale. Desativar OTO482, OTO117 e OTO305 em produção.

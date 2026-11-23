@@ -3,8 +3,9 @@
 import React, { useState } from "react";
 import { UserCheck } from "lucide-react";
 import {
-  BOTAO_CLARO, BOTAO_VERDE, CAIXA, CAMPO, Codigo, Janela, Pagina, ROTULO, Seletor, Selo, Tabela,
+  BOTAO_CLARO, BOTAO_VERDE, CAIXA, CAMPO, Codigo, Janela, Pagina, ROTULO, Selo, Tabela,
 } from "@/components/pagina";
+import { SeletorPeriodo } from "@/components/SeletorPeriodo";
 import { useApp } from "@/context/AppContext";
 import { api } from "@/lib/cliente/api";
 import { useDados } from "@/lib/cliente/useDados";
@@ -13,13 +14,9 @@ import type { Operador } from "@/lib/operadores/operadores";
 interface Resposta {
   operadores: Operador[];
   locais: Array<{ id: string; nome: string }>;
+  periodos: string[];
 }
 
-const PERIODOS = [
-  { valor: "7", rotulo: "Últimos 7 dias" },
-  { valor: "30", rotulo: "Últimos 30 dias" },
-  { valor: "365", rotulo: "Último ano" },
-];
 const NOVO = "novo";
 const TAXA_ALTA = 10;
 
@@ -29,8 +26,8 @@ const quando = (iso: string | null) =>
 
 export default function OperadoresPage() {
   const { canManageUsers, showToast } = useApp();
-  const [dias, setDias] = useState("30");
-  const { dados, erro, setErro, recarregar } = useDados<Resposta>(`/api/operadores?dias=${dias}`);
+  const [periodo, setPeriodo] = useState("Últimos 30 dias");
+  const { dados, erro, setErro, recarregar } = useDados<Resposta>(`/api/operadores?${new URLSearchParams({ periodo })}`);
   const [selecionado, setSelecionado] = useState<string | null>(null);
   const [criando, setCriando] = useState(false);
   const [codigoNovo, setCodigoNovo] = useState<{ nome: string; codigo: string } | null>(null);
@@ -92,7 +89,7 @@ export default function OperadoresPage() {
       erro={erro}
       acoes={
         <>
-          <Seletor rotulo="Período" valor={dias} aoMudar={setDias} opcoes={PERIODOS} />
+          <SeletorPeriodo valor={periodo} opcoes={dados?.periodos ?? []} aoMudar={setPeriodo} />
           {canManageUsers && (
             <button type="button" onClick={() => setCriando(true)} className={BOTAO_VERDE}>
               Novo operador

@@ -4,6 +4,7 @@ import React, { useState } from "react";
 import { ClipboardList } from "lucide-react";
 import { InsercaoManual } from "@/components/InsercaoManual";
 import { BOTAO_CLARO, BOTAO_VERDE, Busca, CAIXA, Codigo, type Cor, Pagina, Seletor, Selo, Tabela } from "@/components/pagina";
+import { SeletorPeriodo } from "@/components/SeletorPeriodo";
 import { useApp } from "@/context/AppContext";
 import { api } from "@/lib/cliente/api";
 import { useDados } from "@/lib/cliente/useDados";
@@ -27,11 +28,10 @@ const opcoes = (todas: string, lista: Array<{ id: string; nome: string }> = []) 
   { valor: "", rotulo: todas },
   ...lista.map((o) => ({ valor: o.id, rotulo: o.nome })),
 ];
-const mesLegivel = (m: string) => m.split("-").reverse().join("/");
 
 export default function PesquisasPage() {
   const { canEdit, exportToExcel, showToast } = useApp();
-  const [filtros, setFiltros] = useState({ mes: "", operador: "", local: "", situacao: "", origem: "", busca: "" });
+  const [filtros, setFiltros] = useState({ periodo: "Tudo", operador: "", local: "", situacao: "", origem: "", busca: "" });
   const [pagina, setPagina] = useState(1);
   const [inserindo, setInserindo] = useState(false);
   const [ocupado, setOcupado] = useState(false);
@@ -73,12 +73,7 @@ export default function PesquisasPage() {
       }
     >
       <div className="flex flex-wrap items-center gap-2.5 mb-4">
-        <Seletor
-          rotulo="Período"
-          valor={filtros.mes}
-          aoMudar={mudar("mes")}
-          opcoes={[{ valor: "", rotulo: "Tudo" }, ...(dados?.opcoes.meses ?? []).map((m) => ({ valor: m, rotulo: mesLegivel(m) }))]}
-        />
+        <SeletorPeriodo valor={filtros.periodo} opcoes={dados?.opcoes.periodos ?? []} aoMudar={mudar("periodo")} />
         <Seletor rotulo="Operador" valor={filtros.operador} aoMudar={mudar("operador")} opcoes={opcoes("Todos", dados?.opcoes.operadores)} />
         <Seletor rotulo="Local" valor={filtros.local} aoMudar={mudar("local")} opcoes={opcoes("Todos", dados?.opcoes.locais)} />
         <Seletor
