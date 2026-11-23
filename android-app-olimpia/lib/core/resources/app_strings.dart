@@ -61,6 +61,14 @@ abstract final class AppStrings {
       'As respostas ficam salvas no aparelho. Você pode continuar depois tocando em "Nova pesquisa". Cancelar a entrevista apaga as respostas.';
   static const leaveConfirm = 'Sair';
   static const discardConfirm = 'Cancelar entrevista';
+  static const discardReasonTitle = 'Por que cancelar?';
+  static const discardReasons = [
+    'Turista desistiu',
+    'Fora do público da pesquisa',
+    'Interrompida (clima, horário ou local)',
+    'Aberta por engano',
+    'Outro motivo',
+  ];
   static const leaveCancel = 'Continuar';
   static const showingCitiesOf = 'Mostrando só cidades de';
   static const noCityFound = 'Nenhuma cidade encontrada';

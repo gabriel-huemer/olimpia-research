@@ -64,7 +64,22 @@ class _SurveySectionPageState extends State<SurveySectionPage>
       ),
     );
     if (leave == 'leave') presenter.leaveConfirmed();
-    if (leave == 'discard') await presenter.discardConfirmed();
+    if (leave == 'discard') await _askReason();
+  }
+
+  Future<void> _askReason() async {
+    if (!mounted) return;
+    final reason = await showDialog<String>(
+      context: context,
+      builder: (ctx) => SimpleDialog(
+        title: Text(AppStrings.discardReasonTitle, style: AppTextStyles.appBarTitle),
+        children: [
+          for (final r in AppStrings.discardReasons)
+            SimpleDialogOption(onPressed: () => Navigator.pop(ctx, r), child: Text(r, style: AppTextStyles.body14)),
+        ],
+      ),
+    );
+    if (reason != null) await presenter.discardConfirmed(reason);
   }
 
   @override

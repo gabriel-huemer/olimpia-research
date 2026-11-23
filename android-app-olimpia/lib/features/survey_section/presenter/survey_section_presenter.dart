@@ -306,14 +306,14 @@ class SurveySectionPresenter extends BasePresenter<SurveySectionView>
 
   void leaveConfirmed() => withView((v) => v.backToHome());
 
-  /// Cancels the interview: nothing of it is kept (RF23).
-  Future<void> discardConfirmed() async {
+  /// Cancels the interview: only the reason is kept (RF23).
+  Future<void> discardConfirmed(String reason) async {
     for (final timer in _pendingWrites.values) {
       timer.cancel();
     }
     _pendingWrites.clear();
     _discarded = true;
-    await _surveys.discardDraft(_survey.id);
+    await _surveys.discardDraft(_survey.id, reason: reason);
     withView((v) => v.backToHome());
   }
 

@@ -2,7 +2,7 @@
 import type { PoolClient } from "pg";
 import { getDbPool, withAuditTransaction } from "@/lib/db";
 import { AREAS, type Area } from "./permissoes";
-import { gerarHash, validarForcaSenha } from "./senha";
+import { gerarHash, validarForcaSenha, verificarSenha } from "./senha";
 
 export class ErroAdmin extends Error {
   status: number;
@@ -224,4 +224,17 @@ async function garantirAlgumAdmin(c: PoolClient) {
       WHERE u.ativo AND p.acesso_sistema AND u.email IS NOT NULL`
   );
   if (r.rows[0].n === 0) throw new ErroAdmin(409, "A alteração deixaria o painel sem nenhum administrador ativo.");
+}
+
+/** Troca a senha do próprio usuário. false = a senha atual não confere. */
+export async function trocarSenha(usuarioId: string, atual: unknown, nova: unknown): Promise<boolean> {
+  if (typeof atual !== "string" || typeof nova !== "string") throw new ErroAdmin(400, "Informe a senha atual e a nova.");
+  const forca = validarForcaSenha(nova);
+  if (!forca.ok) throw new ErroAdmin(400, `Senha fraca: ${forca.motivo}`);
+  if (atual === nova) throw new ErroAdmin(400, "A nova senha precisa ser diferente da atual.");
+  const r = await getDbPool().query("SELECT senha_hash FROM oto.usuario WHERE id = $1 AND ativo", [usuarioId]);
+  if (!(await verificarSenha(atual, r.rows[0]?.senha_hash))) return false;
+  const hash = await gerarHash(nova);
+  await withAuditTransaction(usuarioId, (c) => c.query("UPDATE oto.usuario SET senha_hash = $2 WHERE id = $1", [usuarioId, hash]));
+  return true;
 }

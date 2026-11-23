@@ -235,10 +235,10 @@ export function SidebarLayout({
                 <div className="w-7 h-7 rounded-full bg-[#008767] text-white font-bold text-xs flex items-center justify-center shrink-0">
                   {iniciais}
                 </div>
-                <div className="min-w-0">
+                <Link href="/conta" title="Minha conta" className="min-w-0">
                   <div className="text-xs font-bold text-white truncate">{currentUser.nome}</div>
                   <div className="text-[11px] text-slate-300 truncate">{currentUser.email}</div>
-                </div>
+                </Link>
               </div>
               <button
                 type="button"

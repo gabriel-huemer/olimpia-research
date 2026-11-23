@@ -63,10 +63,25 @@ class SurveyRepositoryImpl implements SurveyRepository {
   }
 
   @override
-  Future<void> discardDraft(String surveyId) async {
-    await _local.deleteDraft(surveyId);
+  Future<void> discardDraft(String surveyId, {required String reason}) async {
+    await _local.cancelDraft(surveyId, reason: reason, at: _now().toIso8601String());
     _notify();
   }
+
+  @override
+  Future<List<Map<String, Object?>>> cancelledToReport(int limit) async => [
+    for (final r in await _local.cancelled(limit))
+      {
+        'id': r['id'],
+        'pesquisador': r['researcher_code'],
+        'motivo': r['reason'],
+        'iniciadaEm': DateTime.parse(r['started_at']! as String).toUtc().toIso8601String(),
+        'canceladaEm': DateTime.parse(r['cancelled_at']! as String).toUtc().toIso8601String(),
+      },
+  ];
+
+  @override
+  Future<void> markCancelledReported(List<String> ids) => _local.deleteCancelled(ids);
 
   @override
   Future<Survey?> byId(String id) async {

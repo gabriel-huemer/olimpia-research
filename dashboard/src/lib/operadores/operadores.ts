@@ -147,6 +147,8 @@ export async function editarOperador(autorId: string, id: string, dados: Record<
 }
 
 export interface VisaoGeral {
+  /** Entrevistas canceladas nos últimos 7 dias, por motivo (RF23). */
+  canceladas: Array<{ motivo: string; n: number }>;
   respostasNoAno: number;
   hoje: number;
   pendentes: number;
@@ -161,7 +163,7 @@ export async function visaoGeral(): Promise<VisaoGeral> {
   const db = getDbPool();
   const hoje = "(now() AT TIME ZONE 'America/Sao_Paulo')::date";
   const dia = "(p.iniciada_em AT TIME ZONE 'America/Sao_Paulo')::date";
-  const [t, s, dias, ultimo, form, atrasados] = await Promise.all([
+  const [t, s, dias, ultimo, form, atrasados, canceladas] = await Promise.all([
     db.query(
       `SELECT count(*) FILTER (WHERE extract(year FROM ${dia}) = extract(year FROM ${hoje}))::int AS ano,
               count(*) FILTER (WHERE ${dia} = ${hoje})::int AS hoje FROM oto.pesquisa p`
@@ -184,6 +186,10 @@ export async function visaoGeral(): Promise<VisaoGeral> {
       `SELECT count(*)::int AS n FROM oto.usuario u WHERE u.perfil = 'PESQUISADOR' AND u.ativo
           AND NOT EXISTS (SELECT 1 FROM oto.lote_sincronizacao l WHERE l.usuario_id = u.id AND l.iniciado_em >= now() - interval '1 day')`
     ),
+    db.query(
+      `SELECT motivo, count(*)::int AS n FROM oto.pesquisa_cancelada
+        WHERE cancelada_em >= now() - interval '7 days' GROUP BY motivo ORDER BY n DESC, motivo`
+    ),
   ]);
   const f = form.rows[0];
   return {
@@ -193,6 +199,7 @@ export async function visaoGeral(): Promise<VisaoGeral> {
     diasMaisAntiga: s.rows[0].dias,
     atrasados: atrasados.rows[0].n,
     porDia: dias.rows,
+    canceladas: canceladas.rows,
     ultimoProtocolo: ultimo.rows[0]?.protocolo ?? null,
     formulario: f ? { nome: f.nome, versao: f.numero, secoes: f.secoes } : null,
   };

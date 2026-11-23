@@ -49,6 +49,37 @@ class HttpSyncApi implements SyncApi {
   }
 }
 
+/// Reports cancelled interviews (RF23). Returns the ids the server stored.
+abstract interface class CancelledApi {
+  Future<List<String>> sendCancelled(List<Map<String, Object?>> cancelled);
+}
+
+/// `POST {baseUrl}/api/v1/pesquisas/canceladas` with `{"canceladas": [...]}`.
+class HttpCancelledApi implements CancelledApi {
+  HttpCancelledApi({required this.baseUrl, http.Client? client, this.token}) : _client = client ?? http.Client();
+
+  final String baseUrl;
+  final String? token;
+  final http.Client _client;
+
+  @override
+  Future<List<String>> sendCancelled(List<Map<String, Object?>> cancelled) async {
+    final response = await _client
+        .post(
+          Uri.parse('$baseUrl/api/v1/pesquisas/canceladas'),
+          headers: {
+            'Content-Type': 'application/json; charset=utf-8',
+            if (token != null) 'Authorization': 'Bearer $token',
+          },
+          body: jsonEncode({'canceladas': cancelled}),
+        )
+        .timeout(const Duration(seconds: 15));
+    if (response.statusCode != 200) throw SyncApiException('HTTP ${response.statusCode}');
+    final body = jsonDecode(utf8.decode(response.bodyBytes)) as Map<String, Object?>;
+    return (body['aceitas'] as List? ?? const []).cast<String>();
+  }
+}
+
 /// In-memory server used while the Java/PostgreSQL backend is not available.
 /// Simulates latency and keeps received ids to prove deduplication.
 class MockSyncApi implements SyncApi {

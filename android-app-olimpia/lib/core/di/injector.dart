@@ -38,6 +38,7 @@ Future<void> configureDependencies({
   SyncApi? syncApi,
   ResearcherApi? researcherApi,
   QuestionnaireApi? questionnaireApi,
+  CancelledApi? cancelledApi,
   AssetBundle? bundle,
 }) async {
   // Server used to check codes; null = demo mode (bundled list only).
@@ -51,6 +52,11 @@ Future<void> configureDependencies({
       (_syncApiUrl.isEmpty
           ? null
           : HttpQuestionnaireApi(baseUrl: _syncApiUrl, token: _syncApiToken.isEmpty ? null : _syncApiToken));
+  final cancelled =
+      cancelledApi ??
+      (_syncApiUrl.isEmpty
+          ? null
+          : HttpCancelledApi(baseUrl: _syncApiUrl, token: _syncApiToken.isEmpty ? null : _syncApiToken));
   // Infra
   sl
     ..registerSingleton<AppDatabase>(database ?? AppDatabase())
@@ -77,7 +83,7 @@ Future<void> configureDependencies({
     ..registerLazySingleton<SurveyRepository>(
       () => SurveyRepositoryImpl(sl(), sl()),
     )
-    ..registerLazySingleton(() => SyncService(sl(), sl(), sl(), sl()))
+    ..registerLazySingleton(() => SyncService(sl(), sl(), sl(), sl(), cancelled: cancelled))
     // Presenters (one instance per page)
     ..registerFactory(() => AccessPresenter(sl()))
     ..registerFactory(() => HomePresenter(sl(), sl(), sl(), sl()))

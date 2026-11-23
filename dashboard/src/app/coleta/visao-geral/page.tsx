@@ -104,6 +104,11 @@ export default function ColetaVisaoGeralPage() {
           )}
         </div>
         <div className={`lg:col-span-5 ${CAIXA}`}>
+          <h2 className="text-sm font-bold text-slate-900 mb-2">Entrevistas canceladas · últimos 7 dias</h2>
+          <ul className="text-xs text-slate-700 mb-4 space-y-1">
+            {dados?.canceladas.map((c) => <li key={c.motivo}>{c.motivo}: <b>{c.n}</b></li>)}
+            {dados?.canceladas.length === 0 && <li>Nenhuma.</li>}
+          </ul>
           <h2 className="text-sm font-bold text-slate-900 mb-3">Atalhos</h2>
           <div className="flex flex-wrap items-center gap-2.5">
             <Link href="/coleta/formularios" className={BOTAO_AZUL}>Formulários</Link>
