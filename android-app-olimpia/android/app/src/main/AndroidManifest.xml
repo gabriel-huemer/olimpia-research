@@ -1,4 +1,6 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
+    <!-- Sincronização com o painel (o release não herda a permissão do debug). -->
+    <uses-permission android:name="android.permission.INTERNET"/>
     <application
         android:label="oto_pesquisador"
         android:name="${applicationName}"
