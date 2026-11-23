@@ -1,20 +1,10 @@
 "use client";
 
 import React, { createContext, useContext, useState, useEffect, useCallback } from "react";
-import type {
-  AnalyticsFilters,
-  FormularioItem,
-  PesquisaColetada,
-  OperadorCampo,
-  ItemRevisao,
-  ItemPublicacao,
-  ProblemaImportacao,
-  RegistroAuditoria,
-} from "@/lib/mockAndSeedData";
-import { getFilteredAnalytics } from "@/lib/mockAndSeedData";
-import { ROTA_LOGIN } from "@/lib/auth/origem";
+import { usePathname } from "next/navigation";
+import { abaDaRota, paineisVazios, type AnalyticsFilters, type OpcoesFiltro, type Paineis } from "@/lib/paineis-types";
+import { linhasDaAba } from "@/lib/exportacao";
 import { downloadExcelXml } from "@/lib/excel";
-import { panoramaVazio, type PanoramaDados } from "@/lib/panorama-types";
 
 export interface UsuarioLogado {
   id: string;
@@ -34,20 +24,13 @@ interface AppContextValue {
   filters: Required<AnalyticsFilters>;
   setFilter: (key: keyof AnalyticsFilters, value: string) => void;
   resetFilters: (defaultPeriodo?: string) => void;
-  analytics: Omit<ReturnType<typeof getFilteredAnalytics>, "panorama"> & { panorama: PanoramaDados };
+  paineis: Paineis;
+  opcoesFiltro: OpcoesFiltro;
+  erroAnalises: string | null;
   dbConnected: boolean;
   pendentesRevisao: number;
-  formularios: FormularioItem[];
-  pesquisas: PesquisaColetada[];
-  operadores: OperadorCampo[];
-  revisao: ItemRevisao[];
-  publicacaoItens: ItemPublicacao[];
-  ultimaPublicacao: string;
-  metodoPublicacao: string;
-  problemasImportacao: ProblemaImportacao[];
-  importacaoConcluida: boolean;
-  auditoria: RegistroAuditoria[];
-  dispatchAction: (action: string, payload?: Record<string, unknown>) => Promise<void>;
+  /** Relê /api/state agora, sem esperar os 15 s. */
+  recarregarEstado: () => Promise<void>;
   exportToExcel: (sheetName: string, rows: Record<string, unknown>[], fileName: string) => void;
   exportReportPdfOrExcel: (abaTitulo: string, formato?: "PDF" | "XLSX") => void;
   toastMessage: string | null;
@@ -71,17 +54,7 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
   const [sessaoCarregada, setSessaoCarregada] = useState(false);
   const [filters, setFilters] = useState<Required<AnalyticsFilters>>(defaultFilters);
   const [dbConnected, setDbConnected] = useState(false);
-  const [pendentesRevisao, setPendentesRevisao] = useState(7);
-  const [formularios, setFormularios] = useState<FormularioItem[]>([]);
-  const [pesquisas, setPesquisas] = useState<PesquisaColetada[]>([]);
-  const [operadores, setOperadores] = useState<OperadorCampo[]>([]);
-  const [revisao, setRevisao] = useState<ItemRevisao[]>([]);
-  const [publicacaoItens, setPublicacaoItens] = useState<ItemPublicacao[]>([]);
-  const [ultimaPublicacao, setUltimaPublicacao] = useState("Nenhuma");
-  const [metodoPublicacao, setMetodoPublicacao] = useState("Incorporar no site (iframe/link)");
-  const [problemasImportacao, setProblemasImportacao] = useState<ProblemaImportacao[]>([]);
-  const [importacaoConcluida, setImportacaoConcluida] = useState(false);
-  const [auditoria, setAuditoria] = useState<RegistroAuditoria[]>([]);
+  const [pendentesRevisao, setPendentesRevisao] = useState(0);
   const [toastMessage, setToastMessage] = useState<string | null>(null);
 
   const showToast = useCallback((msg: string) => {
@@ -96,18 +69,6 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
       setDbConnected(Boolean(data.dbConnected));
     }
     setPendentesRevisao(typeof data.pendentesRevisao === "number" ? data.pendentesRevisao : 0);
-    setFormularios((data.formularios as FormularioItem[]) || []);
-    setPesquisas((data.pesquisas as PesquisaColetada[]) || []);
-    setOperadores((data.operadores as OperadorCampo[]) || []);
-    setRevisao((data.revisao as ItemRevisao[]) || []);
-    setPublicacaoItens((data.publicacaoItens as ItemPublicacao[]) || []);
-    setUltimaPublicacao((data.ultimaPublicacao as string) || "Nenhuma");
-    setMetodoPublicacao(
-      (data.metodoPublicacao as string) || "Incorporar no site (iframe/link)"
-    );
-    setProblemasImportacao((data.problemasImportacao as ProblemaImportacao[]) || []);
-    setImportacaoConcluida(Boolean(data.importacaoConcluida));
-    setAuditoria((data.auditoria as RegistroAuditoria[]) || []);
   }, []);
 
   const fetchState = useCallback(async () => {
@@ -145,28 +106,6 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
     window.location.href = "/analises/panorama";
   }, []);
 
-  const dispatchAction = useCallback(
-    async (action: string, payload: Record<string, unknown> = {}) => {
-      const res = await fetch("/api/state", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ action, payload }),
-      });
-      if (res.status === 401) {
-        window.location.href = `${ROTA_LOGIN}?proximo=${encodeURIComponent(window.location.pathname)}`;
-        return;
-      }
-      if (res.ok) {
-        const data = await res.json();
-        applyServerState(data);
-      } else {
-        const d = await res.json().catch(() => null);
-        showToast(d?.erro ?? "Não foi possível concluir a ação.");
-      }
-    },
-    [applyServerState, showToast]
-  );
-
   const setFilter = useCallback((key: keyof AnalyticsFilters, value: string) => {
     setFilters((prev) => ({ ...prev, [key]: value }));
   }, []);
@@ -178,27 +117,35 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
     });
   }, []);
 
-  // Panorama: vem do banco. As demais abas ainda usam dados de exemplo até serem migradas.
-  const [panorama, setPanorama] = useState<PanoramaDados>(panoramaVazio);
-  // Relê o Panorama a cada 15s também para visitantes (que não consultam /api/state).
+  // Análises: só a aba aberta é calculada, e relida a cada 15 s (também para visitantes).
+  const pathname = usePathname();
+  const aba = abaDaRota(pathname);
+  const [paineis, setPaineis] = useState<Paineis>(paineisVazios);
+  const [opcoesFiltro, setOpcoesFiltro] = useState<OpcoesFiltro>({ periodos: [], generos: [], cidades: [], locais: [] });
+  const [erroAnalises, setErroAnalises] = useState<string | null>(null);
   const [atualizacao, setAtualizacao] = useState(0);
   useEffect(() => {
     const timer = setInterval(() => setAtualizacao((n) => n + 1), 15000);
     return () => clearInterval(timer);
   }, []);
   useEffect(() => {
+    if (!aba) return;
     const controller = new AbortController();
-    const qs = new URLSearchParams(filters as Record<string, string>).toString();
+    const qs = new URLSearchParams({ ...filters, aba }).toString();
     fetch(`/api/analytics?${qs}`, { cache: "no-store", signal: controller.signal })
-      .then((r) => r.json())
-      .then((d) => {
-        if (d?.panorama) setPanorama(d.panorama);
-        if (typeof d?.dbConnected === "boolean") setDbConnected(d.dbConnected);
+      .then(async (r) => {
+        const d = await r.json();
+        if (!r.ok) throw new Error(d?.erro ?? "Erro");
+        setPaineis((p) => ({ ...p, [aba]: d[aba] }));
+        if (d.opcoes) setOpcoesFiltro(d.opcoes);
+        setDbConnected(Boolean(d.dbConnected));
+        setErroAnalises(d.dbConnected ? null : "Sem conexão com o banco de dados.");
       })
-      .catch(() => {});
+      .catch(() => {
+        if (!controller.signal.aborted) setErroAnalises("Não foi possível atualizar os dados. Nova tentativa em 15 segundos.");
+      });
     return () => controller.abort();
-  }, [filters, pesquisas.length, atualizacao]);
-  const analytics = { ...getFilteredAnalytics(filters), panorama };
+  }, [aba, filters, atualizacao]);
 
   const exportToExcel = useCallback(
     (sheetName: string, rows: Record<string, unknown>[], fileName: string) => {
@@ -216,65 +163,8 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
         return;
       }
 
-      const baseMeta = {
-        Painel: abaTitulo,
-        Periodo: filters.periodo,
-        Genero: filters.genero,
-        Faixa_Idade: filters.faixaIdade,
-        Cidade: filters.cidade,
-        Hospedagem: filters.hospedagem,
-        Transporte: filters.transporte,
-        Local_Pesquisa: filters.localPesquisa,
-      };
-
-      let rows: Record<string, unknown>[] = [];
-      const lower = abaTitulo.toLowerCase();
-
-      if (lower.includes("infraestrutura")) {
-        rows = analytics.infraestrutura.servicos.map((s) => ({
-          ...baseMeta,
-          Servico_Avaliado: s.nome,
-          Nota_Media_1_a_5: s.nota,
-          Meta: 3.0,
-          Expectativa_Superou_Pct: analytics.infraestrutura.expectativa.superou,
-          Expectativa_Atendeu_Pct: analytics.infraestrutura.expectativa.atendeu,
-          Grupos_PcD_Pct: analytics.infraestrutura.gruposPcd,
-        }));
-      } else if (lower.includes("impacto")) {
-        rows = analytics.impactoEconomico.gastoPorRenda.map((g) => ({
-          ...baseMeta,
-          Faixa_Renda: g.faixa,
-          Gasto_Diario_Medio_BRL: g.valor,
-          Gasto_Geral_Ponderado_BRL: analytics.impactoEconomico.gastoDiarioMedio,
-          Renda_Mais_Comum: analytics.impactoEconomico.rendaMaisComum,
-          Antecedencia_Media_Dias: analytics.impactoEconomico.antecedenciaMediaDias,
-        }));
-      } else if (lower.includes("perfil")) {
-        rows = analytics.perfilTurista.origensCidades.map((c) => ({
-          ...baseMeta,
-          Cidade_UF: c.cidadeUf,
-          Respostas: c.respostas,
-          Participacao_Total: c.percentual,
-          Diaria_Media: c.diariaMedia,
-        }));
-      } else if (lower.includes("atra")) {
-        rows = analytics.atracoes.pontosQuadrante.map((a) => ({
-          ...baseMeta,
-          Atracao: a.nome,
-          Visitas_Declaradas: a.visitas,
-          Nota_Media_0_a_5: a.nota,
-        }));
-      } else {
-        rows = analytics.panorama.sazonalidade.map((m) => ({
-          ...baseMeta,
-          Mes: m.mes,
-          Indice_Sazonalidade: m.valor,
-          Pesquisas_Coletadas_Total: analytics.panorama.pesquisasColetadas,
-          Permanencia_Media_Noites: analytics.panorama.permanenciaMedia,
-          NPS_Destino: analytics.panorama.nps,
-          Intencao_Retorno_Pct: analytics.panorama.intencaoRetorno,
-        }));
-      }
+      if (!aba) return;
+      const rows = linhasDaAba(aba, paineis, filters);
 
       const safeSlug = abaTitulo
         .normalize("NFD")
@@ -285,7 +175,7 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
 
       exportToExcel(abaTitulo, rows, `OTO_Relatorio_${safeSlug}.xlsx`);
     },
-    [analytics, exportToExcel, filters, showToast]
+    [aba, paineis, exportToExcel, filters, showToast]
   );
 
   // As páginas de Coleta/Sistema já são barradas pelo proxy; aqui só ajustamos os botões.
@@ -303,20 +193,12 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
         filters,
         setFilter,
         resetFilters,
-        analytics,
+        paineis,
+        opcoesFiltro,
+        erroAnalises,
         dbConnected,
         pendentesRevisao,
-        formularios,
-        pesquisas,
-        operadores,
-        revisao,
-        publicacaoItens,
-        ultimaPublicacao,
-        metodoPublicacao,
-        problemasImportacao,
-        importacaoConcluida,
-        auditoria,
-        dispatchAction,
+        recarregarEstado: fetchState,
         exportToExcel,
         exportReportPdfOrExcel,
         toastMessage,

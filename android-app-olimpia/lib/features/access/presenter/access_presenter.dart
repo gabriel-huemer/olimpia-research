@@ -1,5 +1,6 @@
 import '../../../core/mvp/base_presenter.dart';
 import '../../../core/resources/app_strings.dart';
+import '../../../domain/entities/researcher.dart';
 import '../../../domain/repositories/auth_repository.dart';
 import '../view/access_view.dart';
 
@@ -31,7 +32,13 @@ class AccessPresenter extends BasePresenter<AccessView> {
   Future<void> submit() async {
     if (!_vm.canSubmit) return;
     _emit(_vm.copyWith(loading: true));
-    final researcher = await _auth.login(_vm.code);
+    final Researcher? researcher;
+    try {
+      researcher = await _auth.login(_vm.code);
+    } on LoginUnavailableException {
+      _emit(_vm.copyWith(loading: false, error: AppStrings.loginUnavailable));
+      return;
+    }
     if (researcher == null) {
       _emit(_vm.copyWith(loading: false, error: AppStrings.loginInvalid));
       return;

@@ -15,16 +15,16 @@ dashboard/
     ├── context/
     │   └── AppContext.tsx           Estado global, RBAC (perfis), filtros analíticos e exportação
     ├── components/
-    │   ├── SidebarLayout.tsx        Menu lateral recolhível, busca rápida, contador de revisão e seletor de perfil
+    │   ├── SidebarLayout.tsx        Menu lateral recolhível, busca rápida e contador de revisão
     │   └── FilterBar.tsx            Barra de filtros unificada das 5 abas de Análises + exportação PDF/Excel
     ├── lib/
     │   ├── db.ts                    Pool PostgreSQL (oto_web) + transação auditada (set_config app.usuario_id)
     │   ├── excel.ts                 Gerador de planilhas compatíveis com Excel (.xlsx/.xls) sem dependências vulneráveis
-    │   └── mockAndSeedData.ts       Base de referência fiel ao PDF + cálculo dinâmico de indicadores filtrados
+    │   └── (um diretório por área: curadoria, publicacao, formularios, pesquisas...)
     └── app/
         ├── api/
         │   ├── analytics/route.ts   Consulta de indicadores analíticos (vw_resposta_valida + filtros)
-        │   ├── state/route.ts       Operações de escrita auditadas (curadoria, formulários, operadores, usuários)
+        │   ├── state/route.ts       Conexão e pendências mostradas no menu
         │   └── v1/pesquisas/lote/   Endpoint REST de sincronização em lote do app mobile (UC05 / RF08)
         ├── analises/
         │   ├── panorama/            1. Visão geral executiva
@@ -35,7 +35,7 @@ dashboard/
         ├── coleta/
         │   ├── visao-geral/         6. Visão geral da operação de campo
         │   ├── formularios/         7. Lista e versionamento de formulários
-        │   ├── formularios/editor/  8. Editor de formulário (10 seções, regras condicionais e prévia mobile)
+        │   ├── formularios/editor/  8. Editor de formulário (rascunho, condições e publicação)
         │   ├── pesquisas/           9. Pesquisas coletadas + inserção manual (UC13)
         │   ├── operadores/          10. Desempenho e gestão de operadores de campo (UC12)
         │   └── revisao/             11. Curadoria de respostas sinalizadas (UC08 / RF19)
@@ -52,7 +52,7 @@ dashboard/
 
 ### Pré-requisitos
 - **Node.js** ≥ 20 (testado em Node.js 24)
-- **PostgreSQL 16** (`../oto-db`, opcional em desenvolvimento graças ao modo resiliente integrado)
+- **PostgreSQL 16** (`../oto-db`)
 
 ### Passo a passo
 
@@ -140,20 +140,4 @@ npm run test:integration    # exige o painel rodando + banco; grava pesquisas de
                             # aponte o painel para um banco descartável (ex.: create database oto_test) e use DASHBOARD_URL=http://localhost:3100
 ```
 
-> **Em migração:** o Panorama e a lista de Pesquisas já leem do banco. As demais abas de Análises, Operadores, Curadoria, Formulários, Usuários e Auditoria ainda usam dados de exemplo (`mockAndSeedData.ts`) e serão ligadas ao banco nas próximas etapas.
-
----
-
-## 3. Perfis de Acesso e Permissões (`RF01` / `RNF08`)
-
-No rodapé da barra lateral esquerda, é possível alternar em tempo real entre os perfis para validar o bloqueio de ações administrativas:
-
-| Função | Administradora | Gestor | Editor | Visualizador |
-|---|:---:|:---:|:---:|:---:|
-| Consultar dashboards e exportar relatórios | ✓ | ✓ | ✓ | ✓ |
-| Criar, duplicar, editar e publicar formulários | ✓ | ✓ | — | — |
-| Revisar, aprovar, corrigir e excluir respostas | ✓ | ✓ | — | — |
-| Inserir resposta manual (`UC13`) | ✓ | ✓ | ✓ | — |
-| Publicar indicadores no site (`UC14`) | ✓ | ✓ | — | — |
-| Importar planilhas históricas (`UC09`) | ✓ | ✓ | — | — |
-| Gerenciar usuários e perfis (`UC10`) | ✓ | — | — | — |
+Todas as telas leem e gravam no banco; não há dados de exemplo no código.

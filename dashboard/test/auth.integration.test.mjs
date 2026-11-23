@@ -54,7 +54,7 @@ test("API administrativa nega anonimo (GET e POST) e nao vaza dados", async () =
   assert.equal(g.status, 401);
   const corpo = await g.text();
   assert.doesNotMatch(corpo, /usuarios|auditoria|codigo/i);
-  const p = await post("/api/state", { action: "CRIAR_USUARIO", payload: { nome: "Invasor", perfil: "ADMINISTRADOR" } });
+  const p = await post("/api/admin/usuarios", { nome: "Invasor", email: "invasor@exemplo.com" });
   assert.equal(p.status, 401);
 });
 
@@ -99,7 +99,7 @@ test("pesquisador nao tem acesso ao painel web", async () => {
 
 test("escrita administrativa exige Origin do proprio site (CSRF)", async () => {
   const s = await entrar(env("TEST_ADMIN_EMAIL"), env("TEST_ADMIN_SENHA"));
-  const r = await post("/api/state", { action: "TOGGLE_ITEM_PUBLICACAO", payload: { id: "x" } }, s.cookie, {
+  const r = await post("/api/admin/perfis", { nome: "x", areas: {} }, s.cookie, {
     origin: "https://evil.example",
   });
   assert.equal(r.status, 403);
@@ -107,16 +107,16 @@ test("escrita administrativa exige Origin do proprio site (CSRF)", async () => {
 
 test("autor da auditoria vem da sessao, nao do corpo da requisicao", async () => {
   const s = await entrar(env("TEST_ADMIN_EMAIL"), env("TEST_ADMIN_SENHA"));
+  const nome = `Autor ${Date.now()}`;
   const r = await post(
-    "/api/state",
-    { action: "CRIAR_OPERADOR", payload: { nome: "Operador Teste Auth" }, usuario: "Fulano Falso" },
+    "/api/admin/perfis",
+    { nome, areas: { coleta: true }, usuario: "Fulano Falso", usuarioId: "00000000-0000-0000-0000-000000000000" },
     s.cookie
   );
-  assert.equal(r.status, 200);
-  const estado = await r.json();
-  const registro = estado.auditoria.find((a) => a.item.includes("Operador Teste Auth"));
-  assert.ok(registro);
-  assert.notEqual(registro.usuario, "Fulano Falso");
+  assert.equal(r.status, 201);
+  const { registros } = await (await get(`/api/auditoria?busca=${encodeURIComponent(nome)}`, s.cookie)).json();
+  assert.equal(registros.length, 1);
+  assert.equal(registros[0].usuario, "Admin de Teste");
 });
 
 test("rate limit: muitas senhas erradas seguidas bloqueiam o login (429)", async () => {

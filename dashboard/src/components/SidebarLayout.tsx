@@ -10,6 +10,8 @@ import {
   Sliders,
   Database,
   LogOut,
+  Menu,
+  X,
 } from "lucide-react";
 import { useApp } from "@/context/AppContext";
 import { podeAcessar } from "@/lib/auth/permissoes";
@@ -44,6 +46,7 @@ export function SidebarLayout({
     toastMessage,
   } = useApp();
 
+  const [menuAberto, setMenuAberto] = useState(false);
   const [menuQuery, setMenuQuery] = useState("");
   const [openGroups, setOpenGroups] = useState<Record<string, boolean>>({
     analises: true,
@@ -108,12 +111,13 @@ export function SidebarLayout({
   };
 
   return (
-    <div className="min-h-screen flex bg-[#f8fafc] text-slate-900">
+    <div className="min-h-screen flex flex-col lg:flex-row bg-[#f8fafc] text-slate-900">
       {/* Sidebar fixa azul-marinho fiel ao PDF OTO – Painel Web */}
-      <aside className="w-[244px] shrink-0 bg-[#182657] text-white flex flex-col justify-between select-none print:hidden">
+      <aside className="w-full lg:w-[244px] shrink-0 bg-[#182657] text-white flex flex-col justify-between select-none print:hidden">
         <div className="p-3.5 space-y-4">
           {/* Logo OTO no topo */}
-          <Link href="/analises/panorama" className="block">
+          <div className="flex items-center gap-2">
+          <Link href="/analises/panorama" className="block flex-1">
             <div className="bg-white rounded-xl px-3.5 py-2.5 inline-flex items-center w-full shadow-sm">
               <span className="text-[20px] font-extrabold tracking-tight text-[#182657] leading-none">
                 OT
@@ -124,7 +128,19 @@ export function SidebarLayout({
               </span>
             </div>
           </Link>
+            <button
+              type="button"
+              onClick={() => setMenuAberto((v) => !v)}
+              aria-expanded={menuAberto}
+              aria-controls="menu-lateral"
+              aria-label={menuAberto ? "Fechar menu" : "Abrir menu"}
+              className="lg:hidden p-2.5 rounded-lg bg-[#253773] text-white shrink-0"
+            >
+              {menuAberto ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
+            </button>
+          </div>
 
+          <div id="menu-lateral" className={`${menuAberto ? "block" : "hidden"} lg:block space-y-4`}>
           <div className="px-0.5 space-y-1">
             <div className="text-[13px] font-bold leading-snug text-white">
               Observatório de
@@ -204,6 +220,7 @@ export function SidebarLayout({
                           <Link
                             key={child.href}
                             href={child.href}
+                            onClick={() => setMenuAberto(false)}
                             className={`flex items-center justify-between px-2.5 py-1.5 rounded-md text-xs transition ${
                               isChildActive
                                 ? "font-bold text-white bg-[#23366e]/70"
@@ -225,20 +242,21 @@ export function SidebarLayout({
               );
             })}
           </div>
+          </div>
         </div>
 
         {/* Rodapé: só para quem está logado (visitante não vê nada de login) */}
-        <div className={currentUser ? "p-3 border-t border-[#293b75]" : "hidden"}>
+        <div className={currentUser ? `${menuAberto ? "block" : "hidden"} lg:block p-3 border-t border-[#293b75]` : "hidden"}>
           {currentUser ? (
             <div className="flex items-center justify-between gap-2 px-1.5 py-1">
               <div className="flex items-center gap-2.5 min-w-0">
                 <div className="w-7 h-7 rounded-full bg-[#008767] text-white font-bold text-xs flex items-center justify-center shrink-0">
                   {iniciais}
                 </div>
-                <div className="min-w-0">
+                <Link href="/conta" title="Minha conta" className="min-w-0">
                   <div className="text-xs font-bold text-white truncate">{currentUser.nome}</div>
                   <div className="text-[11px] text-slate-300 truncate">{currentUser.email}</div>
-                </div>
+                </Link>
               </div>
               <button
                 type="button"
@@ -255,7 +273,7 @@ export function SidebarLayout({
       </aside>
 
       {/* Área principal */}
-      <main className="flex-1 min-w-0 p-6 lg:p-7 max-w-[1440px]">
+      <main className="flex-1 w-full min-w-0 p-4 sm:p-6 lg:p-7 max-w-[1440px]">
         {/* Barra superior: Breadcrumb à esquerda e badge de usuário à direita */}
         <div className="flex items-center justify-between gap-4 mb-3">
           <div className="text-xs text-slate-500 font-medium">{breadcrumb}</div>

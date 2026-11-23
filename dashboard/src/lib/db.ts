@@ -1,5 +1,8 @@
 import { Pool, PoolClient } from "pg";
 
+// Vai no início da conexão: um SET avulso no evento "connect" disputava com a 1ª consulta.
+const SEARCH_PATH = "-c search_path=oto,public";
+
 let pool: Pool | null = null;
 
 export function getDbPool(): Pool {
@@ -10,6 +13,7 @@ export function getDbPool(): Pool {
         connectionString,
         connectionTimeoutMillis: 2500,
         max: 10,
+        options: SEARCH_PATH,
       });
     } else {
       pool = new Pool({
@@ -20,12 +24,9 @@ export function getDbPool(): Pool {
         password: process.env.OTO_DB_PASSWORD || "",
         connectionTimeoutMillis: 2500,
         max: 10,
+        options: SEARCH_PATH,
       });
     }
-
-    pool.on("connect", (client) => {
-      client.query("SET search_path = oto, public;").catch(() => {});
-    });
   }
   return pool;
 }
@@ -85,7 +86,7 @@ export function getMobilePool(): Pool {
   if (!mobilePool) {
     const url = process.env.OTO_MOBILE_DATABASE_URL;
     mobilePool = url
-      ? new Pool({ connectionString: url, connectionTimeoutMillis: 2500, max: 10 })
+      ? new Pool({ connectionString: url, connectionTimeoutMillis: 2500, max: 10, options: SEARCH_PATH })
       : new Pool({
           host: process.env.OTO_DB_HOST || "127.0.0.1",
           port: Number(process.env.OTO_DB_PORT || 5432),
@@ -94,10 +95,8 @@ export function getMobilePool(): Pool {
           password: process.env.OTO_MOBILE_PASSWORD || "",
           connectionTimeoutMillis: 2500,
           max: 10,
+          options: SEARCH_PATH,
         });
-    mobilePool.on("connect", (client) => {
-      client.query("SET search_path = oto, public;").catch(() => {});
-    });
   }
   return mobilePool;
 }

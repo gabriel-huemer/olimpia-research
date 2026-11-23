@@ -25,14 +25,20 @@ class QuestionnaireLocalDataSource {
       txn.insert(DbSchema.meta, {'key': key, 'value': '$value'}, conflictAlgorithm: ConflictAlgorithm.replace);
 
   /// Replaces the questionnaire atomically (old version is kept if anything fails).
-  Future<void> replaceQuestionnaire({
+  /// With [onlyIfIdle], does nothing (false) while any survey is open or unsent.
+  Future<bool> replaceQuestionnaire({
     required int version,
     required List<Row> sections,
     required List<Row> questions,
     required List<Row> options,
+    bool onlyIfIdle = false,
   }) async {
     final db = await _database.db;
-    await db.transaction((txn) async {
+    return db.transaction((txn) async {
+      if (onlyIfIdle) {
+        final busy = await txn.query(DbSchema.surveys, where: "status <> 'synced'", limit: 1);
+        if (busy.isNotEmpty) return false;
+      }
       await txn.delete(DbSchema.options);
       await txn.delete(DbSchema.questions);
       await txn.delete(DbSchema.sections);
@@ -48,6 +54,7 @@ class QuestionnaireLocalDataSource {
       }
       await batch.commit(noResult: true);
       await _setMeta(txn, questionnaireVersionKey, version);
+      return true;
     });
   }
 

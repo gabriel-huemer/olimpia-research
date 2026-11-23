@@ -2,192 +2,121 @@
 
 import React from "react";
 import Link from "next/link";
-import { LayoutGrid, CornerDownRight } from "lucide-react";
-import { SidebarLayout } from "@/components/SidebarLayout";
+import { LayoutGrid } from "lucide-react";
+import { BOTAO_AZUL, BOTAO_VERDE, CAIXA, Codigo, Pagina, Selo } from "@/components/pagina";
 import { useApp } from "@/context/AppContext";
+import { useDados } from "@/lib/cliente/useDados";
+import type { Operador, VisaoGeral } from "@/lib/operadores/operadores";
+
+const plural = (n: number, um: string, varios: string) => `${n} ${n === 1 ? um : varios}`;
+
+function SeloOperador({ o }: { o: Operador }) {
+  if (o.atrasado) return <Selo cor="azul">sem enviar há mais de 1 dia</Selo>;
+  return o.alertas ? <Selo cor="amarelo">{plural(o.alertas, "alerta", "alertas")}</Selo> : <Selo cor="verde">sem alertas</Selo>;
+}
 
 export default function ColetaVisaoGeralPage() {
-  const { pendentesRevisao, operadores, formularios, canEdit } = useApp();
-  const formAtivo =
-    formularios.find((f) => f.status === "Ativo") || formularios[0];
+  const { canManageUsers } = useApp();
+  const { dados, erro } = useDados<VisaoGeral & { operadores: Operador[] }>("/api/visao-geral");
+  const hoje = new Date().toLocaleDateString("pt-BR", { dateStyle: "full" });
+  const n = (v?: number) => (v === undefined ? "—" : v.toLocaleString("pt-BR"));
+  const tetoOperador = Math.max(1, ...(dados?.operadores ?? []).map((o) => o.coletas));
+  const tetoDia = Math.max(1, ...(dados?.porDia ?? []).map((d) => d.n));
 
-  const coletasSemana = [38, 48, 43, 56, 68, 32, 46];
+  const kpis: Array<[string, string]> = [
+    [n(dados?.respostasNoAno), `pesquisas em ${new Date().getFullYear()}`],
+    [n(dados?.hoje), "coletadas hoje"],
+    [n(dados?.pendentes), "respostas aguardando revisão"],
+    [n(dados?.atrasados), "operadores sem enviar há mais de 1 dia"],
+  ];
 
   return (
-    <SidebarLayout breadcrumb="Inteligência turística / Visão geral">
-      {/* Cabeçalho */}
-      <div className="flex items-start gap-3 mb-5">
-        <div className="w-9 h-9 rounded-lg bg-white border border-slate-200 flex items-center justify-center text-[#182657] shadow-2xs shrink-0 mt-0.5">
-          <LayoutGrid className="w-5 h-5" />
+    <Pagina titulo="Visão geral" subtitulo={hoje} icone={<LayoutGrid className="w-5 h-5" />} erro={erro}>
+      {!!dados?.pendentes && (
+        <div className="bg-[#fefce8] border border-[#fde047] rounded-xl px-4 py-3 mb-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+          <div className="text-xs text-slate-800">
+            <b>{plural(dados.pendentes, "resposta sinalizada", "respostas sinalizadas")}</b> para revisar.{" "}
+            {dados.diasMaisAntiga
+              ? `A mais antiga chegou há ${plural(dados.diasMaisAntiga, "dia", "dias")}.`
+              : "A mais antiga chegou nas últimas 24 horas."}
+          </div>
+          <Link href="/coleta/revisao" className={BOTAO_AZUL}>Revisar agora</Link>
         </div>
-        <div>
-          <h1 className="text-xl font-bold text-slate-900 leading-tight">
-            Visão geral
-          </h1>
-          <p className="text-xs text-slate-500 mt-0.5">
-            Segunda-feira, 26/10/2026 · Pesquisa de Demanda Turística
-          </p>
-        </div>
-      </div>
+      )}
 
-      {/* Banner amarelo de respostas sinalizadas */}
-      <div className="bg-[#fefce8] border border-[#fde047] rounded-xl px-4 py-3 mb-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-        <div className="text-xs text-slate-800">
-          <span className="font-bold text-[#182657]">
-            {pendentesRevisao} respostas sinalizadas
-          </span>{" "}
-          aguardam revisão. A mais antiga tem 3 dias.
-        </div>
-        <Link
-          href="/coleta/revisao"
-          className="inline-flex items-center justify-center px-4 py-2 rounded-lg bg-[#182657] hover:bg-[#23366e] text-white text-xs font-semibold transition shrink-0"
-        >
-          Revisar agora
-        </Link>
-      </div>
-
-      {/* 4 KPIs */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-4">
-        <div className="bg-white border border-slate-200 rounded-xl p-5 shadow-2xs">
-          <div className="text-3xl font-extrabold text-slate-900">
-            {(formAtivo?.respostas || 5012).toLocaleString("pt-BR")}
+        {kpis.map(([v, r]) => (
+          <div key={r} className={CAIXA}>
+            <div className="text-3xl font-extrabold text-slate-900">{v}</div>
+            <div className="text-xs text-slate-500 mt-1.5">{r}</div>
           </div>
-          <div className="text-xs text-slate-500 mt-1.5">respostas em 2026</div>
-        </div>
-
-        <div className="bg-white border border-slate-200 rounded-xl p-5 shadow-2xs">
-          <div className="text-3xl font-extrabold text-slate-900">63</div>
-          <div className="text-xs text-slate-500 mt-1.5">coletadas hoje</div>
-        </div>
-
-        <div className="bg-white border border-slate-200 rounded-xl p-5 shadow-2xs">
-          <div className="text-3xl font-extrabold text-[#b45309]">
-            {pendentesRevisao}
-          </div>
-          <div className="text-xs text-slate-500 mt-1.5">sinalizadas</div>
-        </div>
-
-        <div className="bg-white border border-slate-200 rounded-xl p-5 shadow-2xs">
-          <div className="text-3xl font-extrabold text-slate-900">31</div>
-          <div className="text-xs text-slate-500 mt-1.5 leading-snug">
-            aguardando sincronização
-            <br />
-            (4 operadores)
-          </div>
-        </div>
+        ))}
       </div>
 
-      {/* Operadores · últimos 7 dias + Coletas por dia */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-4 mb-4">
-        <div className="lg:col-span-7 bg-white border border-slate-200 rounded-xl p-5 shadow-2xs">
-          <h2 className="text-sm font-bold text-slate-900 mb-3">
-            Operadores · últimos 7 dias
-          </h2>
-
+        <div className={`lg:col-span-7 ${CAIXA}`}>
+          <h2 className="text-sm font-bold text-slate-900 mb-3">Operadores · últimos 7 dias</h2>
           <div className="divide-y divide-slate-200">
-            {operadores.slice(0, 4).map((op) => (
-              <div
-                key={op.id}
-                className="py-3 grid grid-cols-12 items-center gap-3 text-sm"
-              >
-                <div className="col-span-4 font-medium text-[#182657]">
-                  {op.nome}
+            {dados?.operadores.slice(0, 5).map((o) => (
+              <div key={o.id} className="py-3 grid grid-cols-12 items-center gap-3 text-sm text-[#182657]">
+                <div className="col-span-4 font-medium">{o.nome}</div>
+                <div className="col-span-3">
+                  <div style={{ width: `${(o.coletas / tetoOperador) * 100}%` }} className="h-3 rounded-full bg-[#008767]" />
                 </div>
-                <div className="col-span-4">
-                  <div
-                    style={{
-                      width: `${Math.max(20, (op.coletas7Dias / 150) * 100)}%`,
-                    }}
-                    className="h-3 rounded-full bg-[#008767]"
-                  />
-                </div>
-                <div className="col-span-1 font-extrabold text-[#182657] text-right">
-                  {op.coletas7Dias}
-                </div>
-                <div className="col-span-3 flex justify-end">
-                  {op.statusEnvio === "offline" ? (
-                    <span className="px-2.5 py-0.5 rounded-full bg-blue-50 text-blue-800 text-xs font-semibold">
-                      offline {op.ultimoEnvio}
-                    </span>
-                  ) : op.alertas7Dias === 0 ? (
-                    <span className="px-2.5 py-0.5 rounded-full bg-emerald-50 text-emerald-800 text-xs font-semibold">
-                      0 alertas
-                    </span>
-                  ) : (
-                    <span className="px-2.5 py-0.5 rounded-full bg-[#fef08a] text-amber-950 text-xs font-semibold">
-                      {op.alertas7Dias} alerta{op.alertas7Dias > 1 ? "s" : ""}
-                    </span>
-                  )}
-                </div>
+                <div className="col-span-1 font-extrabold text-right">{o.coletas}</div>
+                <div className="col-span-4 flex justify-end"><SeloOperador o={o} /></div>
               </div>
             ))}
           </div>
         </div>
 
-        <div className="lg:col-span-5 bg-white border border-slate-200 rounded-xl p-5 shadow-2xs flex flex-col justify-between">
-          <div>
-            <h2 className="text-sm font-bold text-slate-900 mb-6">
-              Coletas por dia
-            </h2>
-            <div className="grid grid-cols-7 gap-2 items-end h-28 border-b border-slate-200 pb-1">
-              {coletasSemana.map((val, i) => (
-                <div
-                  key={i}
-                  style={{ height: `${val}%` }}
-                  className="w-full rounded-t-md bg-[#008767]"
-                />
-              ))}
-            </div>
-            <div className="text-xs text-slate-500 mt-2">
-              Seg a dom · meta diária: 60
-            </div>
+        <div className={`lg:col-span-5 ${CAIXA}`}>
+          <h2 className="text-sm font-bold text-slate-900 mb-6">Coletas por dia</h2>
+          <div className="grid grid-cols-7 gap-2 items-end h-28 border-b border-slate-200 pb-1">
+            {dados?.porDia.map((d) => (
+              <div
+                key={d.dia}
+                title={`${d.dia}: ${d.n}`}
+                style={{ height: `${(d.n / tetoDia) * 100}%` }}
+                className="w-full rounded-t-md bg-[#008767]"
+              />
+            ))}
+          </div>
+          <div className="grid grid-cols-7 gap-2 text-[11px] text-slate-500 text-center mt-1">
+            {dados?.porDia.map((d) => <span key={d.dia}>{d.dia}</span>)}
           </div>
         </div>
       </div>
 
-      {/* Formulário ativo + Atalhos */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-4">
-        <div className="lg:col-span-7 bg-white border border-slate-200 rounded-xl p-5 shadow-2xs">
-          <h2 className="text-sm font-bold text-slate-900 mb-2.5">
-            Formulário ativo
-          </h2>
-          <div className="flex flex-wrap items-center gap-2 text-sm text-[#182657] font-medium">
-            <span>{formAtivo?.nome || "Pesquisa de Demanda Turística"}</span>
-            <span className="px-2 py-0.5 rounded-full bg-emerald-50 text-emerald-800 text-xs font-semibold">
-              ativo
-            </span>
-          </div>
-          <div className="text-xs text-slate-500 mt-1.5 flex items-center gap-1.5">
-            <span>
-              {formAtivo?.versao || "v3"} · {formAtivo?.secoes.length || 10}{" "}
-              seções · último protocolo
-            </span>
-            <span className="px-1.5 py-0.5 rounded bg-slate-100 text-slate-800 font-mono text-[11px] font-semibold">
-              0047/26
-            </span>
-          </div>
+        <div className={`lg:col-span-7 ${CAIXA}`}>
+          <h2 className="text-sm font-bold text-slate-900 mb-2.5">Formulário ativo</h2>
+          {dados?.formulario ? (
+            <div className="text-sm text-[#182657] font-medium">
+              {dados.formulario.nome} <Selo cor="verde">ativo</Selo>
+              <div className="text-xs text-slate-500 font-normal mt-1.5">
+                v{dados.formulario.versao} · {dados.formulario.secoes} seções
+                {dados.ultimoProtocolo && <> · último protocolo recebido <Codigo>{dados.ultimoProtocolo}</Codigo></>}
+              </div>
+            </div>
+          ) : (
+            <p className="text-xs text-slate-500">{dados ? "Nenhum formulário publicado." : "Carregando..."}</p>
+          )}
         </div>
-
-        <div className="lg:col-span-5 bg-white border border-slate-200 rounded-xl p-5 shadow-2xs">
+        <div className={`lg:col-span-5 ${CAIXA}`}>
+          <h2 className="text-sm font-bold text-slate-900 mb-2">Entrevistas canceladas · últimos 7 dias</h2>
+          <ul className="text-xs text-slate-700 mb-4 space-y-1">
+            {dados?.canceladas.map((c) => <li key={c.motivo}>{c.motivo}: <b>{c.n}</b></li>)}
+            {dados?.canceladas.length === 0 && <li>Nenhuma.</li>}
+          </ul>
           <h2 className="text-sm font-bold text-slate-900 mb-3">Atalhos</h2>
           <div className="flex flex-wrap items-center gap-2.5">
-            <Link
-              href={canEdit ? "/coleta/formularios/editor" : "/coleta/formularios"}
-              className="inline-flex items-center gap-2 px-4 py-2.5 rounded-lg bg-[#182657] hover:bg-[#23366e] text-white text-xs font-semibold transition"
-            >
-              <CornerDownRight className="w-3.5 h-3.5" />
-              <span>Novo formulário</span>
-            </Link>
-
-            <Link
-              href="/sistema/importacao"
-              className="inline-flex items-center justify-center px-4 py-2.5 rounded-lg bg-[#008767] hover:bg-[#006e54] text-white text-xs font-semibold transition"
-            >
-              Importar planilha
-            </Link>
+            <Link href="/coleta/formularios" className={BOTAO_AZUL}>Formulários</Link>
+            <Link href="/coleta/pesquisas" className={BOTAO_VERDE}>Pesquisas</Link>
+            {canManageUsers && <Link href="/sistema/importacao" className={BOTAO_VERDE}>Importar planilha</Link>}
           </div>
         </div>
       </div>
-    </SidebarLayout>
+    </Pagina>
   );
 }

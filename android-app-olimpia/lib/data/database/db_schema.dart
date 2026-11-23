@@ -11,6 +11,17 @@ abstract final class DbSchema {
   static const answers = 'answers';
   static const answerHistory = 'answer_history';
   static const flags = 'flags';
+  static const cancelled = 'cancelled_surveys';
+
+  /// Cancelled interviews waiting to be reported (RF23): reason only, never the answers.
+  static const createCancelled =
+      '''CREATE TABLE $cancelled (
+      id TEXT PRIMARY KEY,
+      researcher_code TEXT NOT NULL,
+      reason TEXT NOT NULL,
+      started_at TEXT NOT NULL,
+      cancelled_at TEXT NOT NULL
+    )''';
 
   static const create = [
     'CREATE TABLE $meta (key TEXT PRIMARY KEY, value TEXT NOT NULL)',
@@ -106,5 +117,6 @@ abstract final class DbSchema {
       created_at TEXT NOT NULL,
       PRIMARY KEY (survey_id, rule_id)
     )''',
+    createCancelled,
   ];
 }

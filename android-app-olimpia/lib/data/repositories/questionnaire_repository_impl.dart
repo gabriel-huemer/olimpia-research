@@ -4,13 +4,18 @@ import '../../domain/entities/questionnaire.dart';
 import '../../domain/repositories/questionnaire_repository.dart';
 import '../datasources/local/questionnaire_local_datasource.dart';
 import '../datasources/local/seed_asset_datasource.dart';
+import '../datasources/remote/questionnaire_api.dart';
 import '../mapper/questionnaire_mapper.dart';
 
 class QuestionnaireRepositoryImpl implements QuestionnaireRepository {
-  QuestionnaireRepositoryImpl(this._local, this._seed);
+  QuestionnaireRepositoryImpl(this._local, this._seed, {bool demoResearchers = true, QuestionnaireApi? api})
+    : _demoResearchers = demoResearchers,
+      _api = api;
 
   final QuestionnaireLocalDataSource _local;
   final SeedAssetDataSource _seed;
+  final bool _demoResearchers;
+  final QuestionnaireApi? _api;
   Questionnaire? _cache;
 
   static int _version(Map<String, Object?> json) => (json['version']! as num).toInt();
@@ -19,22 +24,51 @@ class QuestionnaireRepositoryImpl implements QuestionnaireRepository {
   Future<void> ensureCached() async {
     await _cacheQuestionnaire();
     await _cacheCities();
-    await _cacheResearchers();
+    // With a server, only codes it confirms can log in.
+    if (_demoResearchers) await _cacheResearchers();
   }
 
   Future<void> _cacheQuestionnaire() async {
     final seed = await _seed.questionnaire();
     final version = _version(seed);
-    if (await _local.metaInt(QuestionnaireLocalDataSource.questionnaireVersionKey) == version) return;
-    final sections = (seed['sections']! as List).cast<Map<String, Object?>>();
-    final questions = (seed['questions']! as List).cast<Map<String, Object?>>();
-    await _local.replaceQuestionnaire(
+    // A newer version downloaded from the server is kept.
+    if ((await _local.metaInt(QuestionnaireLocalDataSource.questionnaireVersionKey) ?? 0) >= version) return;
+    await _store(seed, onlyIfIdle: false);
+  }
+
+  Future<bool> _store(Map<String, Object?> json, {required bool onlyIfIdle}) async {
+    final version = _version(json);
+    final sections = (json['sections']! as List).cast<Map<String, Object?>>();
+    final questions = (json['questions']! as List).cast<Map<String, Object?>>();
+    final sectionRows = sections.map(QuestionnaireMapper.sectionToRow).toList();
+    final questionRows = questions.map(QuestionnaireMapper.questionToRow).toList();
+    final optionRows = questions.expand(QuestionnaireMapper.optionsToRows).toList();
+    // Throws on an unknown type or missing field, before touching the saved version.
+    final parsed = QuestionnaireMapper.fromRows(
       version: version,
-      sections: sections.map(QuestionnaireMapper.sectionToRow).toList(),
-      questions: questions.map(QuestionnaireMapper.questionToRow).toList(),
-      options: questions.expand(QuestionnaireMapper.optionsToRows).toList(),
+      sections: sectionRows,
+      questions: questionRows,
+      options: optionRows,
     );
-    _cache = null;
+    if (parsed.sections.isEmpty || parsed.questions.isEmpty) throw const FormatException('Formulário vazio');
+    final replaced = await _local.replaceQuestionnaire(
+      version: version,
+      sections: sectionRows,
+      questions: questionRows,
+      options: optionRows,
+      onlyIfIdle: onlyIfIdle,
+    );
+    if (replaced) _cache = null;
+    return replaced;
+  }
+
+  @override
+  Future<bool> refresh() async {
+    final api = _api;
+    if (api == null) return false;
+    final json = await api.fetch();
+    if (await _local.metaInt(QuestionnaireLocalDataSource.questionnaireVersionKey) == _version(json)) return false;
+    return _store(json, onlyIfIdle: true);
   }
 
   Future<void> _cacheCities() async {

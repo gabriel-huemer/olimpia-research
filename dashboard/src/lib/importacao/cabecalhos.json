@@ -1,0 +1,294 @@
+{
+ "estado": {
+  "coluna": 3,
+  "titulo": "Em qual Estado reside?"
+ },
+ "cidade": {
+  "coluna": 4,
+  "titulo": "Em qual cidade reside?"
+ },
+ "data_chegada": {
+  "coluna": 5,
+  "titulo": "Data de chegada:"
+ },
+ "data_partida": {
+  "coluna": 6,
+  "titulo": "Data de partida:"
+ },
+ "pernoites": {
+  "coluna": 7,
+  "titulo": "Pernoites"
+ },
+ "antecedencia": {
+  "coluna": 9,
+  "titulo": "Com quanto tempo de antecedência você decidiu vir para Olímpia?"
+ },
+ "conhecimento": {
+  "coluna": 8,
+  "titulo": "Como você tomou conhecimento sobre a cidade de Olímpia?"
+ },
+ "motivos": {
+  "coluna": 10,
+  "titulo": "Qual ou quais foram os principais motivos desta viagem para Olímpia?"
+ },
+ "considerou_outro": {
+  "coluna": 11,
+  "titulo": "Você considerou viajar para outro destino antes de escolher Olímpia?"
+ },
+ "destinos": {
+  "coluna": 12,
+  "titulo": "Se a resposta anterior foi \"SIM\", nos diga qual ou quais foram os destinos que você considerou viajar? (Pular se a resposta anterior for \"NÃO\")"
+ },
+ "transporte": {
+  "coluna": 13,
+  "titulo": "Qual meio de transporte utilizado?"
+ },
+ "aeroporto": {
+  "coluna": 14,
+  "titulo": "Caso respondeu \"Aéreo\", como chegou do aeroporto à Olímpia? (Pular se a resposta anterior for diferente de \"Aéreo\")"
+ },
+ "com_quem": {
+  "coluna": 15,
+  "titulo": "Com quem está viajando?"
+ },
+ "acomp_0_12": {
+  "coluna": 16,
+  "titulo": "Nº de acompanhantes de 0 a 12 anos:"
+ },
+ "acomp_13_17": {
+  "coluna": 17,
+  "titulo": "Nº de acompanhantes de 13 a 17 anos:"
+ },
+ "acomp_18_29": {
+  "coluna": 18,
+  "titulo": "Nº de acompanhantes de 18 a 29 anos:"
+ },
+ "acomp_30_44": {
+  "coluna": 19,
+  "titulo": "Nº de acompanhantes de 30 a 44 anos:"
+ },
+ "acomp_45_64": {
+  "coluna": 20,
+  "titulo": "Nº de acompanhantes de 45 a 64 anos:"
+ },
+ "acomp_65_mais": {
+  "coluna": 21,
+  "titulo": "Nº de acompanhantes acima de 65 anos:"
+ },
+ "pcd": {
+  "coluna": 22,
+  "titulo": "No seu grupo há pessoas com alguma deficiência?"
+ },
+ "pcd_quantidade": {
+  "coluna": 23,
+  "titulo": "Se a resposta anterior for \"SIM\", quantas pessoas possuem alguma deficiência? (Pular se a resposta anterior for \"NÃO\")"
+ },
+ "pcd_tipo": {
+  "coluna": 24,
+  "titulo": "Qual o tipo de deficiência? (Pular se a resposta anterior for \"NÃO\")"
+ },
+ "hospedagem": {
+  "coluna": 25,
+  "titulo": "Qual meio de hospedagem utilizado?:"
+ },
+ "refeicoes": {
+  "coluna": 26,
+  "titulo": "Onde faz / fez as refeições?:"
+ },
+ "costuma_visitar": {
+  "coluna": 61,
+  "titulo": "Costuma visitar Olímpia?:"
+ },
+ "voltaria": {
+  "coluna": 62,
+  "titulo": "Voltaria a cidade em outra oportunidade?"
+ },
+ "indicaria": {
+  "coluna": 63,
+  "titulo": "Você indicaria a cidade para outras pessoas?"
+ },
+ "expectativa": {
+  "coluna": 64,
+  "titulo": "Sua expectativa de viagem foi atendida?:"
+ },
+ "nps": {
+  "coluna": 65,
+  "titulo": "Em um escala de 0 a 10 qual a probabilidade de você recomendar o Destino Olímpia a um amigo, colega ou parente?:"
+ },
+ "nota_destino": {
+  "coluna": 66,
+  "titulo": "Em um escala de 0 a 10 que nota você daria para o Destino Olímpia?:"
+ },
+ "o_que_falta": {
+  "coluna": 67,
+  "titulo": "O que falta para que Olímpia seja melhor ?"
+ },
+ "genero": {
+  "coluna": 68,
+  "titulo": "Com qual gênero se identifica?"
+ },
+ "idade": {
+  "coluna": 69,
+  "titulo": "Qual a sua Idade"
+ },
+ "estado_civil": {
+  "coluna": 70,
+  "titulo": "Estado Civil"
+ },
+ "escolaridade": {
+  "coluna": 71,
+  "titulo": "Grau de escolaridade"
+ },
+ "ocupacao": {
+  "coluna": 72,
+  "titulo": "Ocupação profissional"
+ },
+ "renda": {
+  "coluna": 73,
+  "titulo": "Qual a sua renda familiar:"
+ },
+ "pessoas_renda": {
+  "coluna": 74,
+  "titulo": "Quantas pessoas estão inclusas nessa renda familiar, incluindo você?"
+ },
+ "gasto_diario": {
+  "coluna": 75,
+  "titulo": "Qual o seu gasto médio diário em Olímpia?: **Não incluir gastos com transporte/viagem entre cidades."
+ },
+ "servico_27": {
+  "coluna": 27,
+  "titulo": "Avalie os serviços da Estância Turística de Olímpia: [Hospedagem]"
+ },
+ "servico_28": {
+  "coluna": 28,
+  "titulo": "Avalie os serviços da Estância Turística de Olímpia: [Alimentação]"
+ },
+ "servico_29": {
+  "coluna": 29,
+  "titulo": "Avalie os serviços da Estância Turística de Olímpia: [Artesanato]"
+ },
+ "servico_30": {
+  "coluna": 30,
+  "titulo": "Avalie os serviços da Estância Turística de Olímpia: [Compras em Geral]"
+ },
+ "servico_31": {
+  "coluna": 31,
+  "titulo": "Avalie os serviços da Estância Turística de Olímpia: [Atendimento/Hospitalidade]"
+ },
+ "servico_32": {
+  "coluna": 32,
+  "titulo": "Avalie os serviços da Estância Turística de Olímpia: [Segurança da Cidade]"
+ },
+ "servico_33": {
+  "coluna": 33,
+  "titulo": "Avalie os serviços da Estância Turística de Olímpia: [Sinalização Turística e de Ruas]"
+ },
+ "servico_34": {
+  "coluna": 34,
+  "titulo": "Avalie os serviços da Estância Turística de Olímpia: [Estrutura Viária Urbana]"
+ },
+ "servico_35": {
+  "coluna": 35,
+  "titulo": "Avalie os serviços da Estância Turística de Olímpia: [Rodovias de Acesso à Cidade]"
+ },
+ "servico_36": {
+  "coluna": 36,
+  "titulo": "Avalie os serviços da Estância Turística de Olímpia: [Limpeza da Cidade]"
+ },
+ "servico_37": {
+  "coluna": 37,
+  "titulo": "Avalie os serviços da Estância Turística de Olímpia: [Mobilidade/Transporte Urbano]"
+ },
+ "servico_38": {
+  "coluna": 38,
+  "titulo": "Avalie os serviços da Estância Turística de Olímpia: [Acessibilidade para PCD]"
+ },
+ "atrativo_51": {
+  "coluna": 51,
+  "titulo": "Avalie os atrativos de Olímpia [P. Aquático Thermas dos Laranjais]"
+ },
+ "atrativo_52": {
+  "coluna": 52,
+  "titulo": "Avalie os atrativos de Olímpia [P. Aquático Hot Beach]"
+ },
+ "atrativo_58": {
+  "coluna": 58,
+  "titulo": "Avalie os atrativos de Olímpia [Vale dos Dinossauros]"
+ },
+ "atrativo_49": {
+  "coluna": 49,
+  "titulo": "Avalie os atrativos de Olímpia [Museu do Folclore]"
+ },
+ "atrativo_56": {
+  "coluna": 56,
+  "titulo": "Avalie os atrativos de Olímpia [Praça da Matriz / Coreto]"
+ },
+ "atrativo_39": {
+  "coluna": 39,
+  "titulo": "Avalie os atrativos de Olímpia [Av. Aurora Forti Neves]"
+ },
+ "atrativo_40": {
+  "coluna": 40,
+  "titulo": "Avalie os atrativos de Olímpia [Bosque Mun. Educação Ambiental “Walter Zucca”]"
+ },
+ "atrativo_41": {
+  "coluna": 41,
+  "titulo": "Avalie os atrativos de Olímpia [Bosque Mun. “Rivaldo Mussolin” / Gruta de São José]"
+ },
+ "atrativo_42": {
+  "coluna": 42,
+  "titulo": "Avalie os atrativos de Olímpia [Centro Cultural Ruy Ohtake]"
+ },
+ "atrativo_43": {
+  "coluna": 43,
+  "titulo": "Avalie os atrativos de Olímpia [Dreams Ice Bar]"
+ },
+ "atrativo_44": {
+  "coluna": 44,
+  "titulo": "Avalie os atrativos de Olímpia [ECO - Estação Cultural de Olímpia]"
+ },
+ "atrativo_45": {
+  "coluna": 45,
+  "titulo": "Avalie os atrativos de Olímpia [Happy Jump Trampolim]"
+ },
+ "atrativo_46": {
+  "coluna": 46,
+  "titulo": "Avalie os atrativos de Olímpia [Igreja Matriz de São João Batista]"
+ },
+ "atrativo_47": {
+  "coluna": 47,
+  "titulo": "Avalie os atrativos de Olímpia [Museu de Arte Sacra e Diversidade Religiosa]"
+ },
+ "atrativo_48": {
+  "coluna": 48,
+  "titulo": "Avalie os atrativos de Olímpia [Museu de Cera Dreamland]"
+ },
+ "atrativo_50": {
+  "coluna": 50,
+  "titulo": "Avalie os atrativos de Olímpia [Orionverso Mundo Virtual ]"
+ },
+ "atrativo_53": {
+  "coluna": 53,
+  "titulo": "Avalie os atrativos de Olímpia [P. Aquático Dolce Dulce]"
+ },
+ "atrativo_54": {
+  "coluna": 54,
+  "titulo": "Avalie os atrativos de Olímpia [Praia do Mirante Clube]"
+ },
+ "atrativo_55": {
+  "coluna": 55,
+  "titulo": "Avalie os atrativos de Olímpia [Radical Play Park]"
+ },
+ "atrativo_57": {
+  "coluna": 57,
+  "titulo": "Avalie os atrativos de Olímpia [Santuário de Nossa Senhora Aparecida]"
+ },
+ "atrativo_59": {
+  "coluna": 59,
+  "titulo": "Avalie os atrativos de Olímpia [Vila Guarani - Hot Beach]"
+ },
+ "atrativo_60": {
+  "coluna": 60,
+  "titulo": "Avalie os atrativos de Olímpia [Villa Mall Olímpia Park - Enjoy]"
+ }
+}

@@ -3,43 +3,20 @@
 import React, { useState } from "react";
 import Link from "next/link";
 import { Download, Globe } from "lucide-react";
+import { SeletorPeriodo } from "@/components/SeletorPeriodo";
 import { useApp } from "@/context/AppContext";
 
 export function AnalyticsHeaderActions({
   abaTitulo,
-  defaultPeriodo = "Mês atual",
 }: {
   abaTitulo: string;
-  defaultPeriodo?: string;
 }) {
-  const { filters, setFilter, exportReportPdfOrExcel, canManageUsers } = useApp();
+  const { filters, setFilter, exportReportPdfOrExcel, canManageUsers, opcoesFiltro } = useApp();
   const [showExportMenu, setShowExportMenu] = useState(false);
-
-  const periodos = [
-    "Ano 2026",
-    "Mês atual",
-    "Últimos 30 dias",
-    "Ano 2025",
-  ];
 
   return (
     <div className="flex flex-wrap items-center gap-2.5">
-      {/* Seletor de Período */}
-      <div className="relative flex items-center bg-white border border-slate-200 rounded-lg px-3 py-2 text-xs text-slate-700 shadow-2xs">
-        <span className="text-slate-400 mr-1">⌄Período:</span>
-        <select
-          aria-label="Selecionar período"
-          value={filters.periodo || defaultPeriodo}
-          onChange={(e) => setFilter("periodo", e.target.value)}
-          className="font-semibold text-slate-900 bg-transparent focus:outline-none cursor-pointer pr-1"
-        >
-          {periodos.map((p) => (
-            <option key={p} value={p}>
-              {p}
-            </option>
-          ))}
-        </select>
-      </div>
+      <SeletorPeriodo valor={filters.periodo} opcoes={opcoesFiltro.periodos} aoMudar={(v) => setFilter("periodo", v)} />
 
       {/* Botão Publicar no site (só quem tem a área Sistema) */}
       {canManageUsers && (
@@ -92,18 +69,16 @@ export function AnalyticsHeaderActions({
   );
 }
 
-export function FilterBar({
-  defaultPeriodo = "Mês atual",
-}: {
-  defaultPeriodo?: string;
-}) {
-  const { filters, setFilter, resetFilters } = useApp();
+export function FilterBar() {
+  const { filters, setFilter, resetFilters, opcoesFiltro } = useApp();
+  // A opção escolhida continua na lista mesmo se sair das opções do banco.
+  const com = (todas: string, lista: string[], atual: string) => [...new Set([todas, ...lista, atual])];
 
   const filterConfigs = [
     {
       key: "genero" as const,
       label: "Gênero",
-      options: ["Todos", "Feminino", "Masculino"],
+      options: com("Todos", opcoesFiltro.generos, filters.genero),
     },
     {
       key: "faixaIdade" as const,
@@ -113,13 +88,7 @@ export function FilterBar({
     {
       key: "cidade" as const,
       label: "Cidade",
-      options: [
-        "Todas",
-        "São Paulo, SP",
-        "Campinas, SP",
-        "Ribeirão Preto, SP",
-        "Belo Horizonte, MG",
-      ],
+      options: com("Todas", opcoesFiltro.cidades, filters.cidade),
     },
     {
       key: "hospedagem" as const,
@@ -134,12 +103,7 @@ export function FilterBar({
     {
       key: "localPesquisa" as const,
       label: "Local da pesquisa",
-      options: [
-        "Todos",
-        "Thermas dos Laranjais",
-        "Hot Beach",
-        "Praça da Matriz",
-      ],
+      options: com("Todos", opcoesFiltro.locais, filters.localPesquisa),
     },
   ];
 
@@ -149,14 +113,14 @@ export function FilterBar({
         {filterConfigs.map((fc) => (
           <div
             key={fc.key}
-            className="flex items-center bg-white border border-slate-200 rounded-lg px-3 py-1.5 text-xs shadow-2xs"
+            className="flex max-w-full items-center bg-white border border-slate-200 rounded-lg px-3 py-1.5 text-xs shadow-2xs"
           >
-            <span className="text-slate-400 mr-1">⌄{fc.label}:</span>
+            <span className="text-slate-400 mr-1">{fc.label}:</span>
             <select
               aria-label={fc.label}
               value={filters[fc.key]}
               onChange={(e) => setFilter(fc.key, e.target.value)}
-              className="font-semibold text-slate-900 bg-transparent focus:outline-none cursor-pointer"
+              className="min-w-0 font-semibold text-slate-900 bg-transparent focus:outline-none cursor-pointer"
             >
               {fc.options.map((opt) => (
                 <option key={opt} value={opt}>
@@ -171,18 +135,11 @@ export function FilterBar({
       <div className="flex flex-wrap items-center gap-2">
         <button
           type="button"
-          onClick={() => resetFilters(defaultPeriodo)}
+          onClick={() => resetFilters()}
           className="bg-white hover:bg-slate-50 border border-slate-200 rounded-lg px-3 py-1.5 text-xs text-slate-500 font-medium shadow-2xs transition"
         >
-          ⌄Limpar filtros
+          Limpar filtros
         </button>
-
-        <span className="inline-flex items-center px-2.5 py-1 rounded-md bg-blue-50 text-blue-800 text-[11px] font-semibold">
-          filtros: painel atual
-        </span>
-        <span className="inline-flex items-center px-2.5 py-1 rounded-md bg-emerald-50 text-emerald-800 text-[11px] font-semibold">
-          layout: colega
-        </span>
       </div>
     </div>
   );

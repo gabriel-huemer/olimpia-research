@@ -42,6 +42,37 @@ class SurveyLocalDataSource {
     return rows.firstOrNull;
   }
 
+  Future<List<Row>> cancelled(int limit) async {
+    final db = await _database.db;
+    return db.query(DbSchema.cancelled, orderBy: 'cancelled_at', limit: limit);
+  }
+
+  Future<void> deleteCancelled(List<String> ids) async {
+    final db = await _database.db;
+    final batch = db.batch();
+    for (final id in ids) {
+      batch.delete(DbSchema.cancelled, where: 'id = ?', whereArgs: [id]);
+    }
+    await batch.commit(noResult: true);
+  }
+
+  /// Removes the draft and keeps only the reason, atomically.
+  Future<void> cancelDraft(String id, {required String reason, required String at}) async {
+    final db = await _database.db;
+    await db.transaction((txn) async {
+      await txn.rawInsert(
+        'INSERT OR IGNORE INTO ${DbSchema.cancelled} (id, researcher_code, reason, started_at, cancelled_at) '
+        "SELECT id, researcher_code, ?, started_at, MAX(started_at, ?) FROM ${DbSchema.surveys} WHERE id = ? AND status = 'draft'",
+        [reason, at, id],
+      );
+      final removed = await txn.delete(DbSchema.surveys, where: "id = ? AND status = 'draft'", whereArgs: [id]);
+      if (removed == 0) return;
+      for (final table in [DbSchema.answers, DbSchema.answerHistory, DbSchema.flags]) {
+        await txn.delete(table, where: 'survey_id = ?', whereArgs: [id]);
+      }
+    });
+  }
+
   /// Inserts a survey with the next protocol of the researcher inside one transaction (no gaps/duplicates).
   Future<int> insertWithNextProtocol(Row row) async {
     final db = await _database.db;

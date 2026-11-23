@@ -33,9 +33,12 @@ class SyncService {
     this._questionnaires,
     this._api,
     this._connectivity, {
+    CancelledApi? cancelled,
     this.batchSize = 5,
     this.retryDelay = const Duration(seconds: 30),
-  });
+  }) : _cancelled = cancelled;
+
+  final CancelledApi? _cancelled;
 
   final SurveyRepository _surveys;
   final QuestionnaireRepository _questionnaires;
@@ -59,7 +62,31 @@ class SyncService {
   }
 
   void _onConnectivity() {
-    if (_connectivity.online.value) unawaited(syncNow());
+    if (_connectivity.online.value) unawaited(_syncAndRefresh());
+  }
+
+  /// Sends the queue, then updates the questionnaire (which only changes with the queue empty).
+  Future<void> _syncAndRefresh() async {
+    await syncNow();
+    try {
+      await reportCancelled();
+    } on Object catch (e) {
+      debugPrint('Canceladas não enviadas: $e');
+    }
+    try {
+      await _questionnaires.refresh();
+    } on Object catch (e) {
+      // Keeps the saved version; tried again on the next sync.
+      debugPrint('Formulário não atualizado: $e');
+    }
+  }
+
+  Future<void> reportCancelled() async {
+    final api = _cancelled;
+    if (api == null) return;
+    final items = await _surveys.cancelledToReport(50);
+    if (items.isEmpty) return;
+    await _surveys.markCancelledReported(await api.sendCancelled(items));
   }
 
   /// Call after saving a survey: sends right away when online.

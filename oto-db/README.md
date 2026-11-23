@@ -91,7 +91,7 @@ O `bootstrap.sh` aplica só as pendentes e **recusa** rodar se uma migração j�
 ## 4. Backup e restauração
 
 ```bash
-./scripts/backup.sh                                   # gera backups/oto_AAAAMMDD_HHMMSS.dump e valida
+./scripts/backup.sh                                   # gera backups/oto_<banco>_AAAAMMDD_HHMMSS.dump e valida
 ./scripts/restore.sh backups/oto_2026....dump oto_restaurado   # restaura em banco NOVO
 ```
 

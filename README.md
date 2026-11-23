@@ -30,6 +30,7 @@ Painel web:
 | `oto-db/` | Banco de dados central | PostgreSQL 16 |
 
 Como rodar cada parte: [oto-db/README.md](oto-db/README.md) e [dashboard/README.md](dashboard/README.md).
+Publicar em um servidor: [deploy/README.md](deploy/README.md).
 
 ## Bancos de dados: real e demonstração
 
@@ -94,9 +95,14 @@ cat .usuarios-teste.oto.env      # mostra e-mails e senhas
 | Visitante | Não faz login e vê só Análises. Em Coleta ou Sistema, volta para o Panorama |
 | Quem faz login | O administrador e os perfis criados por ele com Coleta ou Sistema. Visualizador e Pesquisador são recusados |
 | Entrada | `/administracao`, sem link público. `/login` e `/acesso-oto` não existem |
+| Revisão (curadoria) | Aprovar e corrigir: quem tem Coleta. Excluir: quem tem Coleta e Sistema. Corrigir e excluir exigem motivo; tudo fica registrado com o autor |
 | Sessão | Dura 8 horas. Desativar a conta ou mudar as áreas do perfil vale na hora |
 | Senhas erradas | 5 erros em 15 minutos (mesmo e-mail e mesma rede) bloqueiam por 15 minutos; 20 erros no mesmo e-mail bloqueiam de qualquer rede |
 | Senha | Mínimo de 10 caracteres, com letras e números; senhas muito comuns são recusadas |
+| Trocar a própria senha | Clique no seu nome, no menu (`/conta`). Pede a senha atual; 5 erros bloqueiam por 15 minutos |
+| Publicação | Só o que for aprovado em Sistema → Publicação aparece em `/publico`, a única página que outro site pode incorporar |
+| Entrevista cancelada | O app guarda e envia só o motivo; as respostas são apagadas no aparelho |
+| Formulário | Versão publicada não muda. O app baixa a nova versão quando não há pesquisa aberta nem na fila |
 | Sincronização do app | Exige `SYNC_API_TOKEN`, hoje o mesmo para todos os aparelhos. Sem ele, as pesquisas ficam na fila do app |
 | Configuração obrigatória | `AUTH_SECRET` (sem ele ninguém entra) e `SYNC_API_TOKEN` (sem ele o app não sincroniza) |
 
@@ -118,7 +124,7 @@ privada/VPN), para que só as pessoas autorizadas, conectadas à rede certa, con
 - Continuam públicas as Análises. A sincronização do app precisa continuar acessível em campo (com token) ou o aparelho
   do pesquisador também precisa entrar na rede.
 
-**Ainda não implementado.**
+**Ainda não está no ar.** A configuração pronta para testar está em [deploy/README.md](deploy/README.md).
 
 ## Equipe
 

@@ -52,6 +52,7 @@ class SurveySectionPresenter extends BasePresenter<SurveySectionView>
   List<RuleHit> _hits = const [];
   String _query = '';
   bool _ready = false;
+  bool _discarded = false;
 
   @override
   void onAttach() {
@@ -166,6 +167,7 @@ class SurveySectionPresenter extends BasePresenter<SurveySectionView>
 
   void _write(String key) {
     _pendingWrites.remove(key);
+    if (_discarded) return;
     unawaited(
       _surveys.saveAnswer(
         _survey.id,
@@ -303,6 +305,17 @@ class SurveySectionPresenter extends BasePresenter<SurveySectionView>
   }
 
   void leaveConfirmed() => withView((v) => v.backToHome());
+
+  /// Cancels the interview: only the reason is kept (RF23).
+  Future<void> discardConfirmed(String reason) async {
+    for (final timer in _pendingWrites.values) {
+      timer.cancel();
+    }
+    _pendingWrites.clear();
+    _discarded = true;
+    await _surveys.discardDraft(_survey.id, reason: reason);
+    withView((v) => v.backToHome());
+  }
 
   void _flushWrites() {
     for (final key in [..._pendingWrites.keys]) {

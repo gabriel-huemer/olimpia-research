@@ -10,7 +10,7 @@ class AppDatabase {
         _path = path;
 
   static const fileName = 'oto_pesquisador.db';
-  static const version = 1;
+  static const version = 2;
 
   final DatabaseFactory _factory;
   final String? _path;
@@ -31,6 +31,9 @@ class AppDatabase {
             batch.execute(statement);
           }
           await batch.commit(noResult: true);
+        },
+        onUpgrade: (db, from, _) async {
+          if (from < 2) await db.execute(DbSchema.createCancelled);
         },
       ),
     );

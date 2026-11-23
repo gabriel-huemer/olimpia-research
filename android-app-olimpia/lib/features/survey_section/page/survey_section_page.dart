@@ -51,18 +51,35 @@ class _SurveySectionPageState extends State<SurveySectionPage>
 
   @override
   Future<void> askLeave() async {
-    final leave = await showDialog<bool>(
+    final leave = await showDialog<String>(
       context: context,
       builder: (ctx) => AlertDialog(
         title: Text(AppStrings.leaveTitle, style: AppTextStyles.appBarTitle),
         content: Text(AppStrings.leaveBody, style: AppTextStyles.body14),
         actions: [
-          TextButton(onPressed: () => Navigator.pop(ctx, false), child: const Text(AppStrings.leaveCancel)),
-          TextButton(onPressed: () => Navigator.pop(ctx, true), child: const Text(AppStrings.leaveConfirm)),
+          TextButton(onPressed: () => Navigator.pop(ctx), child: const Text(AppStrings.leaveCancel)),
+          TextButton(onPressed: () => Navigator.pop(ctx, 'discard'), child: const Text(AppStrings.discardConfirm)),
+          TextButton(onPressed: () => Navigator.pop(ctx, 'leave'), child: const Text(AppStrings.leaveConfirm)),
         ],
       ),
     );
-    if (leave == true) presenter.leaveConfirmed();
+    if (leave == 'leave') presenter.leaveConfirmed();
+    if (leave == 'discard') await _askReason();
+  }
+
+  Future<void> _askReason() async {
+    if (!mounted) return;
+    final reason = await showDialog<String>(
+      context: context,
+      builder: (ctx) => SimpleDialog(
+        title: Text(AppStrings.discardReasonTitle, style: AppTextStyles.appBarTitle),
+        children: [
+          for (final r in AppStrings.discardReasons)
+            SimpleDialogOption(onPressed: () => Navigator.pop(ctx, r), child: Text(r, style: AppTextStyles.body14)),
+        ],
+      ),
+    );
+    if (reason != null) await presenter.discardConfirmed(reason);
   }
 
   @override

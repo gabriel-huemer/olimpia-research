@@ -1,283 +1,325 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import { CheckSquare } from "lucide-react";
 import { SidebarLayout } from "@/components/SidebarLayout";
 import { useApp } from "@/context/AppContext";
+import { api } from "@/lib/cliente/api";
+import type { Decisao, DetalheCuradoria, ItemFila } from "@/lib/curadoria/tipos";
+
+const NA_FILA = 4;
+const RESUMO = 5;
+const FEITO: Record<Decisao, string> = { APROVAR: "aprovada", CORRIGIR: "corrigida", EXCLUIR: "excluída" };
+const CAMPO =
+  "w-full border border-slate-200 rounded-lg px-3.5 py-2 text-xs text-slate-800 focus:outline-none focus:border-[#008767]";
+const ROTULO = "block text-[10px] font-bold uppercase tracking-wider text-slate-500 mb-1";
 
 export default function RevisaoPage() {
-  const { revisao, dispatchAction, canEdit, showToast } = useApp();
+  const { currentUser, recarregarEstado, showToast } = useApp();
+  const podeDecidir = Boolean(currentUser?.areas.coleta);
+  const podeExcluir = podeDecidir && Boolean(currentUser?.areas.sistema);
 
-  const pendentes = revisao.filter((r) => r.status === "PENDENTE");
-  const [selectedId, setSelectedId] = useState<number>(pendentes[0]?.id || 1);
-  const [novoValor, setNovoValor] = useState("50");
-  const [motivo, setMotivo] = useState(
-    "Erro de digitação confirmado com o operador"
-  );
-  const [showAllQueue, setShowAllQueue] = useState(false);
+  const [fila, setFila] = useState<ItemFila[] | null>(null);
+  const [erroFila, setErroFila] = useState<string | null>(null);
+  const [selecionado, setSelecionado] = useState<string | null>(null);
+  const [mostrarFila, setMostrarFila] = useState(false);
 
-  const itemAtual =
-    pendentes.find((p) => p.id === selectedId) || pendentes[0] || null;
+  const carregarFila = useCallback(async () => {
+    try {
+      const { itens } = await api<{ itens: ItemFila[] }>("/api/curadoria");
+      setFila(itens);
+      setErroFila(null);
+    } catch (e) {
+      setErroFila((e as Error).message);
+    }
+  }, []);
 
   useEffect(() => {
-    if (itemAtual) {
-      if (itemAtual.protocolo === "0038/26") {
-        setNovoValor("50");
-        setMotivo("Erro de digitação confirmado com o operador");
-      } else if (itemAtual.protocolo === "0045/26") {
-        setNovoValor("Família com crianças");
-        setMotivo("Grupo corrigido conforme acompanhantes informados");
-      } else if (itemAtual.protocolo === "0040/26") {
-        setNovoValor("R$ 850,00");
-        setMotivo("Zero extra digitado em campo");
-      } else {
-        setNovoValor("30");
-        setMotivo("Valor verificado pela coordenação OTO");
-      }
-    }
-  }, [itemAtual]);
+    void carregarFila();
+    const timer = setInterval(() => void carregarFila(), 15000);
+    return () => clearInterval(timer);
+  }, [carregarFila]);
 
-  const handleDecision = async (decisao: "APROVAR" | "CORRIGIR" | "EXCLUIR") => {
-    if (!itemAtual || !canEdit) return;
-    if ((decisao === "CORRIGIR" || decisao === "EXCLUIR") && !motivo.trim()) {
-      showToast("Informe o motivo para registrar na trilha de auditoria (RF19).");
-      return;
-    }
+  // Sem escolha (ou escolha que já saiu da fila), mostra o primeiro. Enquanto o item estiver na fila, ele não troca sozinho.
+  const atual = fila?.find((i) => i.id === selecionado) ?? fila?.[0] ?? null;
 
-    await dispatchAction("CURAR_RESPOSTA", {
-      id: itemAtual.id,
-      decisao,
-      novoValor,
-      motivo,
-    });
-
-    const msgMap = {
-      APROVAR: `Pesquisa ${itemAtual.protocolo} aprovada como está!`,
-      CORRIGIR: `Pesquisa ${itemAtual.protocolo} corrigida para "${novoValor}" e registrada na Auditoria!`,
-      EXCLUIR: `Pesquisa ${itemAtual.protocolo} excluída logicamente e registrada na Auditoria!`,
-    };
-    showToast(msgMap[decisao]);
+  const aposDecidir = async () => {
+    await Promise.all([carregarFila(), recarregarEstado()]);
   };
 
-  const visibleQueue = showAllQueue ? pendentes : pendentes.slice(0, 4);
-  const remainingCount = Math.max(0, pendentes.length - 4);
+  const visiveis = mostrarFila ? fila ?? [] : (fila ?? []).slice(0, NA_FILA);
+  const restantes = (fila?.length ?? 0) - visiveis.length;
 
   return (
     <SidebarLayout breadcrumb="Inteligência turística / Revisão de respostas sinalizadas">
-      {/* Cabeçalho */}
       <div className="flex items-start gap-3 mb-5">
         <div className="w-9 h-9 rounded-lg bg-white border border-slate-200 flex items-center justify-center text-[#182657] shadow-2xs shrink-0 mt-0.5">
           <CheckSquare className="w-5 h-5" />
         </div>
         <div>
-          <h1 className="text-xl font-bold text-slate-900 leading-tight">
-            Revisão
-          </h1>
+          <h1 className="text-xl font-bold text-slate-900 leading-tight">Revisão</h1>
           <p className="text-xs text-slate-500 mt-0.5">
-            {pendentes.length} respostas aguardam decisão.
+            {fila === null
+              ? "Carregando a fila..."
+              : fila.length === 1
+              ? "1 resposta aguarda decisão."
+              : `${fila.length} respostas aguardam decisão.`}
           </p>
         </div>
       </div>
 
+      {erroFila && (
+        <div role="alert" className="mb-4 bg-rose-50 border border-rose-200 rounded-lg px-4 py-2.5 text-xs text-rose-800">
+          {erroFila}{" "}
+          <button type="button" onClick={() => void carregarFila()} className="font-semibold underline">
+            Tentar de novo
+          </button>
+        </div>
+      )}
+
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-5 items-start">
-        {/* Coluna esquerda: FILA (MAIS ANTIGAS PRIMEIRO) */}
         <div className="lg:col-span-4 space-y-2.5">
           <div className="text-[11px] font-bold uppercase tracking-wider text-slate-500">
             FILA (MAIS ANTIGAS PRIMEIRO)
           </div>
-
-          {visibleQueue.map((item) => {
-            const isSelected = itemAtual?.id === item.id;
-            return (
-              <button
-                key={item.id}
-                type="button"
-                onClick={() => setSelectedId(item.id)}
-                className={`w-full text-left bg-white rounded-xl p-3.5 transition border ${
-                  isSelected
-                    ? "border-2 border-[#008767] shadow-2xs"
-                    : "border-slate-200 hover:border-slate-300"
-                }`}
-              >
-                <div className="flex items-center gap-1.5 text-xs">
-                  <span className="px-1.5 py-0.5 rounded bg-slate-100 text-slate-900 font-mono font-bold">
-                    {item.protocolo}
-                  </span>
-                  <span className="font-semibold text-[#182657]">
-                    · {item.resumoMotivo}
-                  </span>
-                </div>
-                <div className="text-xs text-slate-500 mt-1">
-                  {item.operador} · {item.dataCurta}
-                </div>
-              </button>
-            );
-          })}
-
-          {!showAllQueue && remainingCount > 0 && (
+          {visiveis.map((item) => (
+            <button
+              key={item.id}
+              type="button"
+              aria-pressed={atual?.id === item.id}
+              onClick={() => setSelecionado(item.id)}
+              className={`w-full text-left bg-white rounded-xl p-3.5 transition border ${
+                atual?.id === item.id
+                  ? "border-2 border-[#008767] shadow-2xs"
+                  : "border-slate-200 hover:border-slate-300"
+              }`}
+            >
+              <div className="flex flex-wrap items-center gap-1.5 text-xs">
+                <span className="px-1.5 py-0.5 rounded bg-slate-100 text-slate-900 font-mono font-bold">
+                  {item.protocolo}
+                </span>
+                <span className="font-semibold text-[#182657]">{item.pergunta}</span>
+              </div>
+              <div className="text-xs text-slate-500 mt-1">
+                {item.operador} · {item.coletada}
+              </div>
+            </button>
+          ))}
+          {restantes > 0 && (
             <button
               type="button"
-              onClick={() => setShowAllQueue(true)}
+              onClick={() => setMostrarFila(true)}
               className="text-xs text-slate-500 hover:text-slate-800 font-medium px-1 pt-1 block"
             >
-              + {remainingCount} outras
+              + {restantes} outras
             </button>
           )}
         </div>
 
-        {/* Coluna direita: Detalhe da pesquisa + Correção */}
-        <div className="lg:col-span-8 space-y-4">
-          {itemAtual ? (
-            <>
-              <div className="bg-white border border-slate-200 rounded-xl p-5 shadow-2xs">
-                <div className="flex flex-wrap items-center gap-2 text-sm font-bold text-slate-900 mb-3">
-                  <span>Pesquisa</span>
-                  <span className="px-2 py-0.5 rounded bg-slate-100 text-slate-900 font-mono text-xs">
-                    {itemAtual.protocolo}
-                  </span>
-                  <span>· {itemAtual.cidadeOrigem}</span>
-                </div>
-
-                {/* Alerta amarelo com o motivo */}
-                <div className="bg-[#fefce8] border border-[#fde047] rounded-lg px-4 py-2.5 text-xs text-slate-800 mb-4">
-                  <span className="font-bold text-slate-900">
-                    {itemAtual.motivoDetalhado.split(".")[0]}.
-                  </span>
-                  {itemAtual.motivoDetalhado.slice(
-                    itemAtual.motivoDetalhado.indexOf(".") + 1
-                  )}
-                </div>
-
-                {/* Tabela de campos da coleta */}
-                <div className="divide-y divide-slate-200 text-sm mb-5">
-                  <div className="py-3 grid grid-cols-12 items-center">
-                    <div className="col-span-4 text-slate-500">Idade</div>
-                    <div className="col-span-8">
-                      <span
-                        className={
-                          itemAtual.campoSuspeito === "Idade"
-                            ? "px-1.5 py-0.5 rounded bg-[#fef08a] text-[#182657] font-extrabold"
-                            : "text-[#182657] font-medium"
-                        }
-                      >
-                        {itemAtual.dadosColeta.idade}
-                      </span>
-                    </div>
-                  </div>
-
-                  <div className="py-3 grid grid-cols-12 items-center">
-                    <div className="col-span-4 text-slate-500">Gênero</div>
-                    <div className="col-span-8 text-[#182657] font-medium">
-                      {itemAtual.dadosColeta.genero}
-                    </div>
-                  </div>
-
-                  <div className="py-3 grid grid-cols-12 items-center">
-                    <div className="col-span-4 text-slate-500">Estado civil</div>
-                    <div className="col-span-8 text-[#182657] font-medium">
-                      {itemAtual.dadosColeta.estadoCivil}
-                    </div>
-                  </div>
-
-                  <div className="py-3 grid grid-cols-12 items-center">
-                    <div className="col-span-4 text-slate-500">Gasto diário</div>
-                    <div className="col-span-8 text-[#182657] font-medium">
-                      <span
-                        className={
-                          itemAtual.campoSuspeito === "Gasto diário"
-                            ? "px-1.5 py-0.5 rounded bg-[#fef08a] text-[#182657] font-extrabold"
-                            : ""
-                        }
-                      >
-                        {itemAtual.dadosColeta.gastoDiario}
-                      </span>
-                    </div>
-                  </div>
-
-                  <div className="py-3 grid grid-cols-12 items-center">
-                    <div className="col-span-4 text-slate-500">Coletada</div>
-                    <div className="col-span-8 text-[#182657] font-medium">
-                      {itemAtual.dadosColeta.coletadaEm}
-                    </div>
-                  </div>
-                </div>
-
-                {/* Botões de decisão (UC08 / RF19) */}
-                {canEdit && (
-                  <div className="flex flex-wrap items-center gap-2.5">
-                    <button
-                      type="button"
-                      onClick={() => handleDecision("APROVAR")}
-                      className="px-4 py-2.5 rounded-lg bg-[#008767] hover:bg-[#006e54] text-white text-xs font-semibold transition"
-                    >
-                      Aprovar como está
-                    </button>
-
-                    <button
-                      type="button"
-                      onClick={() => handleDecision("CORRIGIR")}
-                      className="px-4 py-2.5 rounded-lg bg-[#182657] hover:bg-[#23366e] text-white text-xs font-semibold transition"
-                    >
-                      Corrigir valor
-                    </button>
-
-                    <button
-                      type="button"
-                      onClick={() => handleDecision("EXCLUIR")}
-                      className="px-4 py-2.5 rounded-lg bg-white hover:bg-rose-50 border border-rose-200 text-rose-800 text-xs font-semibold transition"
-                    >
-                      Excluir
-                    </button>
-                  </div>
-                )}
-              </div>
-
-              {/* Card inferior: Correção */}
-              <div className="bg-white border border-slate-200 rounded-xl p-5 shadow-2xs space-y-3.5">
-                <h2 className="text-sm font-bold text-slate-900">Correção</h2>
-
-                <div>
-                  <label
-                    htmlFor="revisao-novo-valor"
-                    className="block text-[10px] font-bold uppercase tracking-wider text-slate-500 mb-1"
-                  >
-                    NOVO VALOR DA {itemAtual.campoSuspeito.toUpperCase()}
-                  </label>
-                  <input
-                    id="revisao-novo-valor"
-                    type="text"
-                    value={novoValor}
-                    disabled={!canEdit}
-                    onChange={(e) => setNovoValor(e.target.value)}
-                    className="w-full border border-slate-200 rounded-lg px-3.5 py-2 text-xs text-slate-800 focus:outline-none focus:border-[#008767]"
-                  />
-                </div>
-
-                <div>
-                  <label
-                    htmlFor="revisao-motivo"
-                    className="block text-[10px] font-bold uppercase tracking-wider text-slate-500 mb-1"
-                  >
-                    MOTIVO (FICA NA AUDITORIA)
-                  </label>
-                  <input
-                    id="revisao-motivo"
-                    type="text"
-                    value={motivo}
-                    disabled={!canEdit}
-                    onChange={(e) => setMotivo(e.target.value)}
-                    className="w-full border border-slate-200 rounded-lg px-3.5 py-2 text-xs text-slate-800 focus:outline-none focus:border-[#008767]"
-                  />
-                </div>
-              </div>
-            </>
+        <div className="lg:col-span-8">
+          {atual ? (
+            <PainelDecisao
+              key={atual.id}
+              id={atual.id}
+              podeDecidir={podeDecidir}
+              podeExcluir={podeExcluir}
+              avisar={showToast}
+              aoDecidir={aposDecidir}
+            />
           ) : (
-            <div className="bg-white border border-slate-200 rounded-xl p-8 text-center text-xs text-slate-500">
-              Todas as respostas sinalizadas foram revisadas!
-            </div>
+            fila !== null && (
+              <div className="bg-white border border-slate-200 rounded-xl p-8 text-center text-xs text-slate-500">
+                Todas as respostas sinalizadas foram revisadas!
+              </div>
+            )
           )}
         </div>
       </div>
     </SidebarLayout>
+  );
+}
+
+interface PainelProps {
+  id: string;
+  podeDecidir: boolean;
+  podeExcluir: boolean;
+  avisar: (msg: string) => void;
+  aoDecidir: () => Promise<void>;
+}
+
+/** Remontado a cada item (key): valor e motivo sempre começam vazios. */
+function PainelDecisao({ id, podeDecidir, podeExcluir, avisar, aoDecidir }: PainelProps) {
+  const [detalhe, setDetalhe] = useState<DetalheCuradoria | null>(null);
+  const [erro, setErro] = useState<string | null>(null);
+  const [novoValor, setNovoValor] = useState("");
+  const [motivo, setMotivo] = useState("");
+  const [verTodas, setVerTodas] = useState(false);
+  const [enviando, setEnviando] = useState(false);
+  const travado = useRef(false);
+
+  useEffect(() => {
+    const c = new AbortController();
+    api<DetalheCuradoria>(`/api/curadoria/${id}`, { signal: c.signal })
+      .then(setDetalhe)
+      .catch((e) => {
+        if (!c.signal.aborted) setErro((e as Error).message);
+      });
+    return () => c.abort();
+  }, [id]);
+
+  const decidir = async (decisao: Decisao) => {
+    if (!detalhe || travado.current) return;
+    if (decisao === "CORRIGIR" && !novoValor.trim()) return setErro("Informe o novo valor.");
+    if (decisao !== "APROVAR" && !motivo.trim()) return setErro("Informe o motivo.");
+    travado.current = true;
+    setEnviando(true);
+    setErro(null);
+    try {
+      const r = await api<{ aviso: string | null }>(`/api/curadoria/${id}`, {
+        method: "POST",
+        body: { decisao, motivo, ...(decisao === "CORRIGIR" && { novoValor }) },
+      });
+      avisar(`Resposta de ${detalhe.protocolo} ${FEITO[decisao]}.${r.aviso ? ` ${r.aviso}` : ""}`);
+      await aoDecidir();
+    } catch (e) {
+      const { message, status } = e as Error & { status?: number };
+      if (status === 409 || status === 404) {
+        avisar(message);
+        await aoDecidir();
+      } else {
+        setErro(message);
+      }
+    } finally {
+      travado.current = false;
+      setEnviando(false);
+    }
+  };
+
+  const caixaErro = erro && (
+    <div role="alert" className="bg-rose-50 border border-rose-200 rounded-lg px-4 py-2.5 text-xs text-rose-800">
+      {erro}
+    </div>
+  );
+  if (!detalhe) {
+    return (
+      caixaErro || (
+        <div className="bg-white border border-slate-200 rounded-xl p-8 text-center text-xs text-slate-500">
+          Carregando a pesquisa...
+        </div>
+      )
+    );
+  }
+
+  const ordenadas = [...detalhe.respostas].sort((a, b) => Number(b.sinalizada) - Number(a.sinalizada));
+  const respostas = verTodas ? detalhe.respostas : ordenadas.slice(0, RESUMO);
+  const numerico = detalhe.tipo === "NUMERO" || detalhe.tipo === "MOEDA";
+
+  return (
+    <div className="bg-white border border-slate-200 rounded-xl p-5 shadow-2xs space-y-4">
+      <div className="flex flex-wrap items-center gap-2 text-sm font-bold text-slate-900">
+        <span>Pesquisa</span>
+        <span className="px-2 py-0.5 rounded bg-slate-100 text-slate-900 font-mono text-xs">{detalhe.protocolo}</span>
+        <span>· {detalhe.origem}</span>
+      </div>
+      <p className="text-xs text-slate-500">
+        {detalhe.operador} · {detalhe.local} · {detalhe.coletada}
+      </p>
+
+      <div className="bg-[#fefce8] border border-[#fde047] rounded-lg px-4 py-2.5 text-xs text-slate-800">
+        {detalhe.motivos.map((m, i) => (
+          <div key={i} className="font-bold text-slate-900">
+            {m}
+          </div>
+        ))}
+        {detalhe.mantidoPeloPesquisador && <div>O pesquisador escolheu &quot;Manter e sinalizar&quot;.</div>}
+      </div>
+
+      <dl className="divide-y divide-slate-200 text-sm">
+        {respostas.map((r) => (
+          <div key={r.pergunta} className="py-3 grid grid-cols-12 gap-2">
+            <dt className="col-span-5 text-slate-500">{r.pergunta}</dt>
+            <dd className="col-span-7 text-[#182657] font-medium break-words">
+              <span className={r.sinalizada ? "px-1.5 py-0.5 rounded bg-[#fef08a] font-extrabold" : ""}>{r.valor}</span>
+            </dd>
+          </div>
+        ))}
+      </dl>
+      {detalhe.respostas.length > RESUMO && (
+        <button
+          type="button"
+          aria-expanded={verTodas}
+          onClick={() => setVerTodas((v) => !v)}
+          className="text-xs text-[#182657] font-semibold underline"
+        >
+          {verTodas ? "Ver menos" : `Ver todas as respostas (${detalhe.respostas.length})`}
+        </button>
+      )}
+
+      {podeDecidir && (
+        <div className="border-t border-slate-200 pt-4 space-y-3.5">
+          {numerico && (
+            <div>
+              <label htmlFor="revisao-novo-valor" className={ROTULO}>
+                Novo valor (para corrigir): {detalhe.pergunta}
+              </label>
+              <input
+                id="revisao-novo-valor"
+                type="text"
+                inputMode="decimal"
+                value={novoValor}
+                disabled={enviando}
+                onChange={(e) => setNovoValor(e.target.value)}
+                className={CAMPO}
+              />
+            </div>
+          )}
+          <div>
+            <label htmlFor="revisao-motivo" className={ROTULO}>
+              Motivo (fica na auditoria; obrigatório {podeExcluir ? "para corrigir ou excluir" : "para corrigir"})
+            </label>
+            <input
+              id="revisao-motivo"
+              type="text"
+              maxLength={500}
+              value={motivo}
+              disabled={enviando}
+              onChange={(e) => setMotivo(e.target.value)}
+              className={CAMPO}
+            />
+          </div>
+          {caixaErro}
+          <div className="flex flex-wrap items-center gap-2.5 [&>button]:px-4 [&>button]:py-2.5 [&>button]:rounded-lg [&>button]:text-xs [&>button]:font-semibold [&>button]:transition [&>button:disabled]:opacity-50">
+            <button
+              type="button"
+              disabled={enviando}
+              onClick={() => void decidir("APROVAR")}
+              className="bg-[#008767] hover:bg-[#006e54] text-white"
+            >
+              Aprovar como está
+            </button>
+            {numerico && (
+              <button
+                type="button"
+                disabled={enviando}
+                onClick={() => void decidir("CORRIGIR")}
+                className="bg-[#182657] hover:bg-[#23366e] text-white"
+              >
+                Corrigir valor
+              </button>
+            )}
+            {podeExcluir && (
+              <button
+                type="button"
+                disabled={enviando}
+                onClick={() => void decidir("EXCLUIR")}
+                className="bg-white hover:bg-rose-50 border border-rose-200 text-rose-800"
+              >
+                Excluir resposta
+              </button>
+            )}
+          </div>
+        </div>
+      )}
+    </div>
   );
 }

@@ -87,7 +87,7 @@ test("perfil personalizado vale na hora: criar, entrar, mudar áreas e desativar
   assert.ok([302, 303, 307, 308, 403].includes((await u("/sistema/usuarios")).status));
   const estado = await json(await u("/api/state"));
   assert.equal(estado.status, 200);
-  assert.ok(Array.isArray(estado.corpo.pesquisas));
+  assert.equal((await u("/api/pesquisas")).status, 200);
   assert.ok(!("auditoria" in estado.corpo), "sem Sistema não recebe auditoria");
   assert.equal((await u("/api/admin/usuarios")).status, 403);
 
