@@ -22,6 +22,24 @@ class SessionLocalDataSource {
     return rows.firstOrNull;
   }
 
+  Future<void> saveResearcher(String code, String name, String location) async {
+    final db = await _database.db;
+    await db.insert(
+      DbSchema.researchers,
+      {'code': code, 'name': name, 'location': location},
+      conflictAlgorithm: ConflictAlgorithm.replace,
+    );
+  }
+
+  /// Removes the code from the offline list. Surveys of this code stay in the queue.
+  Future<void> forgetResearcher(String code) async {
+    final db = await _database.db;
+    await db.transaction((txn) async {
+      await txn.delete(DbSchema.session, where: 'researcher_code = ?', whereArgs: [code]);
+      await txn.delete(DbSchema.researchers, where: 'code = ?', whereArgs: [code]);
+    });
+  }
+
   Future<void> open(String code) async {
     final db = await _database.db;
     await db.insert(

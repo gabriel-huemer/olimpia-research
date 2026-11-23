@@ -13,6 +13,8 @@ abstract final class AppStrings {
   static const loginCodeLabel = 'CÓDIGO DO PESQUISADOR';
   static const loginButton = 'Entrar';
   static const loginHelp = 'Esqueceu o código? Fale com a coordenação do OTO.';
+  static const loginUnavailable =
+      'Sem conexão com o servidor. A primeira entrada neste aparelho precisa de internet.';
   static const loginInvalid =
       'Código não encontrado. Confira com a coordenação do OTO.';
 
@@ -56,8 +58,9 @@ abstract final class AppStrings {
   static const flagged = 'Sinalizada para curadoria';
   static const leaveTitle = 'Sair da pesquisa?';
   static const leaveBody =
-      'As respostas ficam salvas no aparelho. Você pode continuar depois tocando em "Nova pesquisa".';
+      'As respostas ficam salvas no aparelho. Você pode continuar depois tocando em "Nova pesquisa". Cancelar a entrevista apaga as respostas.';
   static const leaveConfirm = 'Sair';
+  static const discardConfirm = 'Cancelar entrevista';
   static const leaveCancel = 'Continuar';
   static const showingCitiesOf = 'Mostrando só cidades de';
   static const noCityFound = 'Nenhuma cidade encontrada';

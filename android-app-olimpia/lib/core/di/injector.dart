@@ -6,6 +6,7 @@ import '../../data/datasources/local/questionnaire_local_datasource.dart';
 import '../../data/datasources/local/seed_asset_datasource.dart';
 import '../../data/datasources/local/session_local_datasource.dart';
 import '../../data/datasources/local/survey_local_datasource.dart';
+import '../../data/datasources/remote/researcher_api.dart';
 import '../../data/datasources/remote/sync_api.dart';
 import '../../data/repositories/auth_repository_impl.dart';
 import '../../data/repositories/questionnaire_repository_impl.dart';
@@ -34,8 +35,15 @@ const _syncApiToken = String.fromEnvironment('SYNC_API_TOKEN');
 Future<void> configureDependencies({
   AppDatabase? database,
   SyncApi? syncApi,
+  ResearcherApi? researcherApi,
   AssetBundle? bundle,
 }) async {
+  // Server used to check codes; null = demo mode (bundled list only).
+  final researchers =
+      researcherApi ??
+      (_syncApiUrl.isEmpty
+          ? null
+          : HttpResearcherApi(baseUrl: _syncApiUrl, token: _syncApiToken.isEmpty ? null : _syncApiToken));
   // Infra
   sl
     ..registerSingleton<AppDatabase>(database ?? AppDatabase())
@@ -56,9 +64,9 @@ Future<void> configureDependencies({
     ..registerLazySingleton(ConnectivityService.new)
     // Repositories
     ..registerLazySingleton<QuestionnaireRepository>(
-      () => QuestionnaireRepositoryImpl(sl(), sl()),
+      () => QuestionnaireRepositoryImpl(sl(), sl(), demoResearchers: researchers == null),
     )
-    ..registerLazySingleton<AuthRepository>(() => AuthRepositoryImpl(sl()))
+    ..registerLazySingleton<AuthRepository>(() => AuthRepositoryImpl(sl(), api: researchers))
     ..registerLazySingleton<SurveyRepository>(
       () => SurveyRepositoryImpl(sl(), sl()),
     )

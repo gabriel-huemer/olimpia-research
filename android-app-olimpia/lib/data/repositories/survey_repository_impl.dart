@@ -63,6 +63,12 @@ class SurveyRepositoryImpl implements SurveyRepository {
   }
 
   @override
+  Future<void> discardDraft(String surveyId) async {
+    await _local.deleteDraft(surveyId);
+    _notify();
+  }
+
+  @override
   Future<Survey?> byId(String id) async {
     final rows = await _local.full(id);
     return rows == null

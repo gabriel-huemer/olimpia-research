@@ -42,6 +42,17 @@ class SurveyLocalDataSource {
     return rows.firstOrNull;
   }
 
+  Future<void> deleteDraft(String id) async {
+    final db = await _database.db;
+    await db.transaction((txn) async {
+      final removed = await txn.delete(DbSchema.surveys, where: "id = ? AND status = 'draft'", whereArgs: [id]);
+      if (removed == 0) return;
+      for (final table in [DbSchema.answers, DbSchema.answerHistory, DbSchema.flags]) {
+        await txn.delete(table, where: 'survey_id = ?', whereArgs: [id]);
+      }
+    });
+  }
+
   /// Inserts a survey with the next protocol of the researcher inside one transaction (no gaps/duplicates).
   Future<int> insertWithNextProtocol(Row row) async {
     final db = await _database.db;
