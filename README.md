@@ -131,6 +131,19 @@ privada/VPN), para que só as pessoas autorizadas, conectadas à rede certa, con
 
 **Ainda não está no ar.** A configuração pronta para testar está em [deploy/README.md](deploy/README.md).
 
+## Continuidade
+
+O MVP já funciona: coleta offline no app, painel com os indicadores, banco central e testes automatizados.
+Ainda ficam alguns pontos para colocar o sistema em uso e evoluir.
+
+- **Hospedar e rodar um piloto.** O contêiner e o HTTPS já estão prontos (ver [deploy/README.md](deploy/README.md)),
+  falta subir em um servidor e coletar com pesquisadores em aparelhos reais.
+- **Importar o histórico real.** A importação de planilhas funciona e foi testada com dados fictícios; falta a
+  planilha da Secretaria para trazer os períodos anteriores.
+- **Fechar a administração na rede privada.** A camada com Tailscale descrita acima ainda não está no ar.
+- **Novas integrações.** Hoje entram só os municípios do IBGE; outras fontes podem ser somadas conforme a Secretaria precisar.
+- **Outras pesquisas do OTO.** Além da demanda turística, incluir indicadores que o cliente citou, como taxa de ocupação e emprego.
+
 ## Equipe
 
 Hugo Rubira Zanni, Gabriel Huemer, João Pedro Baratella Mattos, Mark Seiji Takakura, Gabriel de Oliveira Merenciano e
