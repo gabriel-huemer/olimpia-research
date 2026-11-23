@@ -30,12 +30,12 @@ END $$;
 
 -- ===== 1. Estrutura
 SELECT pg_temp.afirma((SELECT count(*) FROM information_schema.tables
-        WHERE table_schema='oto' AND table_type='BASE TABLE' AND table_name <> 'schema_migrations') = 32,
-        '32 tabelas do modelo');
+        WHERE table_schema='oto' AND table_type='BASE TABLE' AND table_name <> 'schema_migrations') = 33,
+        '33 tabelas do modelo');
 SELECT pg_temp.afirma((SELECT count(*) FROM uf) = 27, '27 UFs carregadas');
 SELECT pg_temp.afirma((SELECT count(*) FROM pais) >= 249, 'países carregados');
-SELECT pg_temp.afirma((SELECT count(*) FROM pg_trigger WHERE tgname = 'trg_auditoria') = 21,
-        '21 tabelas com trigger de auditoria');
+SELECT pg_temp.afirma((SELECT count(*) FROM pg_trigger WHERE tgname = 'trg_auditoria') = 22,
+        '22 tabelas com trigger de auditoria');
 
 -- ===== 2. Fixtures mínimas (como dono do banco)
 INSERT INTO municipio VALUES (3543402,'Ribeirão Preto','SP') ON CONFLICT DO NOTHING;
