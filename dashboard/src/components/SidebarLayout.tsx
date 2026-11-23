@@ -2,18 +2,22 @@
 
 import React, { useState } from "react";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import {
   Search,
   BarChart2,
   ClipboardList,
   Sliders,
   Database,
-  LogIn,
   LogOut,
 } from "lucide-react";
 import { useApp } from "@/context/AppContext";
+import { ROTA_LOGIN } from "@/lib/auth/origem";
 import { podeAcessar } from "@/lib/auth/permissoes";
+
+// Entrada discreta da equipe: 5 cliques no logo em até 3s. Fora do componente porque o
+// primeiro clique pode trocar de página e remontar a barra.
+let cliquesNoLogo: number[] = [];
 
 interface NavChild {
   label: string;
@@ -36,6 +40,7 @@ export function SidebarLayout({
   children: React.ReactNode;
 }) {
   const pathname = usePathname();
+  const router = useRouter();
   const {
     currentUser,
     sessaoCarregada,
@@ -104,6 +109,17 @@ export function SidebarLayout({
     ? "sistema"
     : "analises";
 
+  const aoClicarNoLogo = (e: React.MouseEvent) => {
+    if (currentUser) return;
+    const agora = Date.now();
+    cliquesNoLogo = [...cliquesNoLogo.filter((t) => agora - t < 3000), agora];
+    if (cliquesNoLogo.length >= 5) {
+      cliquesNoLogo = [];
+      e.preventDefault();
+      router.push(ROTA_LOGIN);
+    }
+  };
+
   const toggleGroup = (id: string) => {
     setOpenGroups((prev) => ({ ...prev, [id]: !prev[id] }));
   };
@@ -114,7 +130,7 @@ export function SidebarLayout({
       <aside className="w-[244px] shrink-0 bg-[#182657] text-white flex flex-col justify-between select-none print:hidden">
         <div className="p-3.5 space-y-4">
           {/* Logo OTO no topo */}
-          <Link href="/analises/panorama" className="block">
+          <Link href="/analises/panorama" className="block" onClick={aoClicarNoLogo}>
             <div className="bg-white rounded-xl px-3.5 py-2.5 inline-flex items-center w-full shadow-sm">
               <span className="text-[20px] font-extrabold tracking-tight text-[#182657] leading-none">
                 OT
@@ -228,8 +244,8 @@ export function SidebarLayout({
           </div>
         </div>
 
-        {/* Rodapé: usuário logado (Sair) ou visitante (Entrar) */}
-        <div className="p-3 border-t border-[#293b75]">
+        {/* Rodapé: só para quem está logado (visitante não vê nada de login) */}
+        <div className={currentUser ? "p-3 border-t border-[#293b75]" : "hidden"}>
           {currentUser ? (
             <div className="flex items-center justify-between gap-2 px-1.5 py-1">
               <div className="flex items-center gap-2.5 min-w-0">
@@ -251,15 +267,7 @@ export function SidebarLayout({
                 <LogOut className="w-4 h-4" />
               </button>
             </div>
-          ) : (
-            <Link
-              href={`/login?proximo=${encodeURIComponent(pathname)}`}
-              className="w-full flex items-center justify-center gap-2 px-3 py-2 rounded-lg bg-[#23366e] hover:bg-[#2c4285] text-xs font-semibold text-white transition"
-            >
-              <LogIn className="w-4 h-4" />
-              <span>Entrar (equipe OTO)</span>
-            </Link>
-          )}
+          ) : null}
         </div>
       </aside>
 
@@ -285,7 +293,7 @@ export function SidebarLayout({
               <span>{dbConnected ? "PostgreSQL (oto-db)" : "Base OTO ativa"}</span>
             </span>
             <div className="inline-flex items-center px-3.5 py-1 rounded-full border border-slate-200 bg-white text-xs font-medium text-slate-800 shadow-2xs">
-              {!sessaoCarregada ? "…" : currentUser ? `${currentUser.nome} · ${currentUser.perfil.nome}` : "Visitante · acesso público"}
+              {!sessaoCarregada ? "…" : currentUser ? `${currentUser.nome} · ${currentUser.perfil.nome}` : "Acesso público"}
             </div>
           </div>
         </div>

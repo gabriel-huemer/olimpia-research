@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # Cria (ou recria a senha de) 3 contas de TESTE do painel web, uma de cada perfil padrão:
-#   admin.teste@oto.local (ADMINISTRADOR), visualizador.teste@oto.local (VISUALIZADOR),
+#   admin.teste@oto.local (ADMINISTRADOR), visualizador.teste@oto.local (VISUALIZADOR; não deve conseguir entrar),
 #   pesquisador.teste@oto.local (PESQUISADOR, código OTO900; não deve conseguir entrar no painel).
 # NÃO use em produção.
 #

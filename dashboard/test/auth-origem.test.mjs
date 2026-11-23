@@ -1,6 +1,6 @@
 import assert from "node:assert/strict";
 import test from "node:test";
-import { origemPermitida, destinoSeguro } from "../src/lib/auth/origem.ts";
+import { origemPermitida, destinoSeguro, ROTA_LOGIN } from "../src/lib/auth/origem.ts";
 
 test("POST com Origin igual ao Host e aceito", () => {
   assert.equal(origemPermitida({ origin: "https://oto.olimpia.sp.gov.br", host: "oto.olimpia.sp.gov.br" }), true);
@@ -27,5 +27,5 @@ test("redirecionamento pos-login so aceita caminho interno (open redirect)", () 
   assert.equal(destinoSeguro("/\\evil.example"), "/analises/panorama");
   assert.equal(destinoSeguro("javascript:alert(1)"), "/analises/panorama");
   assert.equal(destinoSeguro(undefined), "/analises/panorama");
-  assert.equal(destinoSeguro("/login"), "/analises/panorama");
+  assert.equal(destinoSeguro(ROTA_LOGIN), "/analises/panorama");
 });

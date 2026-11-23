@@ -49,7 +49,7 @@ export async function POST(req: NextRequest) {
   limitadores.porEmail.registrarSucesso(email);
 
   if (!temAcessoWeb(u.areas)) {
-    return erro(403, "Seu perfil não tem acesso ao painel web. Pesquisadores usam o aplicativo.");
+    return erro(401, GENERICO); // visualizador e pesquisador não fazem login no painel
   }
 
   const token = await criarToken({ uid: u.id, perfilId: u.perfil.id }, segredo);

@@ -2,6 +2,7 @@
 // porque precisam responder 401/403 em JSON e não redirecionar.
 import { NextRequest, NextResponse } from "next/server";
 import { areaDaRota, podeAcessar } from "@/lib/auth/permissoes";
+import { DESTINO_PADRAO } from "@/lib/auth/origem";
 import { sessaoAtual } from "@/lib/auth/servidor";
 
 export async function proxy(req: NextRequest) {
@@ -10,12 +11,11 @@ export async function proxy(req: NextRequest) {
 
   const usuario = await sessaoAtual(req);
   if (!usuario) {
-    const login = new URL("/login", req.url);
-    login.searchParams.set("proximo", req.nextUrl.pathname + req.nextUrl.search);
-    return NextResponse.redirect(login);
+    // Visitante volta para a parte pública; não revelamos onde fica o login.
+    return NextResponse.redirect(new URL(DESTINO_PADRAO, req.url));
   }
   if (!podeAcessar(usuario.areas, area)) {
-    const inicio = new URL("/analises/panorama", req.url);
+    const inicio = new URL(DESTINO_PADRAO, req.url);
     inicio.searchParams.set("negado", area);
     return NextResponse.redirect(inicio);
   }

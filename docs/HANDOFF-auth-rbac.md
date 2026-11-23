@@ -30,7 +30,7 @@ A branch nasceu de `feat/ingestao-real` (já contém os commits de ingestão e t
 ## Estado em 2026-11-22: implementado
 - `dashboard/src/lib/auth/`: permissoes, token, senha, limitador, origem, sync (token do app), servidor (sessão relida do banco a cada requisição) e admin (perfis/usuários).
 - `src/proxy.ts` redireciona páginas de Coleta/Sistema; as APIs respondem 401/403 sozinhas. `/api/state` tem lista de ações por área (ação desconhecida = 400), autor da auditoria vem da sessão e a resposta só traz as coleções das áreas do perfil.
-- Rotas: `/api/auth/{login,logout,sessao}`, `/api/admin/perfis[/id]`, `/api/admin/usuarios[/id]`. Tela `/login`; Sistema → Usuários lê o banco (perfis, áreas, usuários, ativo).
+- Rotas: `/api/auth/{login,logout,sessao}`, `/api/admin/perfis[/id]`, `/api/admin/usuarios[/id]`. Tela `/acesso-oto` (sem link público; 5 cliques no logo); VISUALIZADOR não faz login; Sistema → Usuários lê o banco (perfis, áreas, usuários, ativo).
 - Banco: `V005__perfis_acesso.sql` (tabela `perfil_acesso`, perfis padrão imutáveis, auditoria, grants) + checks no `smoke_test.sql`.
 - Contas de teste: `oto-db/scripts/criar_usuarios_teste.sh` (senhas aleatórias em `oto-db/.usuarios-teste*.env`, fora do Git).
 - **Novo**: `/api/v1/pesquisas/lote` exige `Authorization: Bearer <SYNC_API_TOKEN>` (antes aceitava qualquer um). O app recebe via `--dart-define=SYNC_API_TOKEN=...`; `popular_demo.py` lê a variável `SYNC_API_TOKEN`.

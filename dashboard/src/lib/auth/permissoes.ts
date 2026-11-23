@@ -42,9 +42,9 @@ export function podeAcessar(areas: AreasPerfil | null | undefined, area: string)
   return areas?.[area as Area] === true;
 }
 
-/** Perfil com acesso a alguma área restrita do painel web (pode receber sessão). */
+/** Só faz login quem tem alguma área restrita. Quem vê apenas Análises (pública) não precisa de conta. */
 export function temAcessoWeb(areas: AreasPerfil | null | undefined): boolean {
-  return AREAS.some((a) => areas?.[a] === true);
+  return AREAS.some((a) => !AREAS_PUBLICAS.includes(a) && areas?.[a] === true);
 }
 
 export function perfilEditavel(perfil: { nome: string; padrao: boolean }): boolean {

@@ -41,11 +41,11 @@ test("visitante anonimo ve Analises e a API publica", async () => {
   assert.ok((await r.json()).panorama);
 });
 
-test("visitante anonimo e mandado ao login em Coleta e Sistema", async () => {
+test("visitante anonimo volta para Analises em Coleta e Sistema, sem ver onde fica o login", async () => {
   for (const p of ["/coleta/pesquisas", "/coleta/revisao", "/sistema/usuarios", "/sistema/auditoria"]) {
     const r = await get(p);
     assert.ok([302, 303, 307, 308].includes(r.status), `${p} -> ${r.status}`);
-    assert.match(r.headers.get("location") ?? "", /\/login/);
+    assert.equal(new URL(r.headers.get("location"), base).pathname, "/analises/panorama");
   }
 });
 
@@ -78,22 +78,22 @@ test("administrador entra, usa Coleta/Sistema e o cookie e HttpOnly", async () =
   assert.equal((await get("/api/state", s.cookie)).status, 200);
 });
 
-test("visualizador entra mas so ve Analises: Coleta e Sistema dao 403/redirect", async () => {
+test("visualizador nao faz login: mesma resposta de senha errada e nenhum cookie", async () => {
   const s = await entrar(env("TEST_VIS_EMAIL"), env("TEST_VIS_SENHA"));
-  assert.equal(s.status, 200);
-  assert.equal((await get("/analises/panorama", s.cookie)).status, 200);
-  for (const p of ["/coleta/pesquisas", "/sistema/usuarios"]) {
-    const r = await get(p, s.cookie);
-    assert.ok([302, 303, 307, 308, 403].includes(r.status), `${p} -> ${r.status}`);
-  }
-  assert.equal((await get("/api/state", s.cookie)).status, 403);
-  const w = await post("/api/state", { action: "CRIAR_USUARIO", payload: { nome: "X", perfil: "ADMINISTRADOR" } }, s.cookie);
-  assert.equal(w.status, 403);
+  assert.equal(s.status, 401);
+  assert.equal(s.cookie, "");
+});
+
+test("a pagina publica nao aponta para o login e /login nao existe", async () => {
+  const html = await (await get("/analises/panorama")).text();
+  assert.doesNotMatch(html, /href="[^"]*(login|acesso)/i);
+  assert.doesNotMatch(html, /Entrar/);
+  assert.equal((await get("/login")).status, 404);
 });
 
 test("pesquisador nao tem acesso ao painel web", async () => {
   const s = await entrar(env("TEST_PESQ_EMAIL"), env("TEST_PESQ_SENHA"));
-  assert.ok([401, 403].includes(s.status), `login pesquisador -> ${s.status}`);
+  assert.equal(s.status, 401);
   assert.equal(s.cookie, "");
 });
 

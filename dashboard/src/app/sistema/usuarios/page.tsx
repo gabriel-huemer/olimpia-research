@@ -47,7 +47,7 @@ export default function UsuariosPage() {
   const [novoNome, setNovoNome] = useState("");
   const [novoEmail, setNovoEmail] = useState("");
   const [novaSenha, setNovaSenha] = useState("");
-  const [novoPerfilId, setNovoPerfilId] = useState<number>(3);
+  const [novoPerfilId, setNovoPerfilId] = useState<number>(1);
   const [nomePerfil, setNomePerfil] = useState("");
   const [areasPerfil, setAreasPerfil] = useState<Areas>({ analises: true, coleta: false, sistema: false });
 
@@ -111,7 +111,8 @@ export default function UsuariosPage() {
     }
   };
 
-  const perfisWeb = perfis.filter((p) => p.nome !== "PESQUISADOR");
+  // Só recebe conta quem tem Coleta ou Sistema; Análises é pública e não exige login.
+  const perfisWeb = perfis.filter((p) => p.areas.coleta || p.areas.sistema);
 
   return (
     <SidebarLayout breadcrumb="Inteligência turística / Usuários e perfis">
@@ -194,6 +195,9 @@ export default function UsuariosPage() {
                             }
                             className="text-xs border border-slate-200 rounded-md px-2 py-1 bg-white disabled:opacity-60"
                           >
+                            {!perfisWeb.some((p) => p.id === u.perfil.id) && (
+                              <option value={u.perfil.id}>{u.perfil.nome} (não faz login)</option>
+                            )}
                             {perfisWeb.map((p) => (
                               <option key={p.id} value={p.id}>
                                 {p.nome}
